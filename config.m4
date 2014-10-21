@@ -7,7 +7,7 @@ PHP_ARG_ENABLE(cryptopp_test,
 
 if test $PHP_CRYPTOPP_TEST != "no"; then
     for i in $PHP_CRYPTOPP_TEST /usr/local /usr; do
-        test -f $i/include/crypto++/aes.h && CRYPTOPP_DIR=$i/include/crypto++ && break
+        test -f $i/include/cryptopp/aes.h && CRYPTOPP_DIR=$i/include/cryptopp && break
     done
 
     if test -z "$CRYPTOPP_DIR"; then
