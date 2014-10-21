@@ -1,0 +1,25 @@
+CFLAGS="$CFLAGS -Wall"
+CXXFLAGS+=" -std=c++0x "
+
+PHP_ARG_ENABLE(cryptopp_test,
+    [Whether to enable the "cryptopp_test" extension],
+    [ --enable-cryptopp-test Enable "cryptopp_test" extension support])
+
+if test $PHP_CRYPTOPP_TEST != "no"; then
+    for i in $PHP_CRYPTOPP_TEST /usr/local /usr; do
+        test -f $i/include/crypto++/aes.h && CRYPTOPP_DIR=$i/include/crypto++ && break
+    done
+
+    if test -z "$CRYPTOPP_DIR"; then
+        AC_MSG_ERROR(aes.h not found. Please reinstall crypto++.)
+    fi
+
+    PHP_ADD_INCLUDE($CRYPTOPP_DIR)
+    PHP_REQUIRE_CXX()
+    PHP_SUBST(CRYPTOPP_SHARED_LIBADD)
+    PHP_ADD_LIBRARY(stdc++, 1, CRYPTOPP_SHARED_LIBADD)
+    PHP_ADD_LIBRARY(cryptopp, 1, CRYPTOPP_SHARED_LIBADD)
+    PHP_ADD_LIBRARY(pthread, 1, CRYPTOPP_SHARED_LIBADD)
+    PHP_NEW_EXTENSION(cryptopp_test, cryptopp_test.cpp, $ext_shared)
+fi
+
