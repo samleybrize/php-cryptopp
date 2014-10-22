@@ -1,5 +1,5 @@
 CFLAGS="$CFLAGS -Wall"
-CXXFLAGS+=" -std=c++0x "
+dnl CXXFLAGS+=" -std=c++0x "
 
 PHP_ARG_ENABLE(cryptopp_test,
     [Whether to enable the "cryptopp_test" extension],
