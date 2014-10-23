@@ -1,6 +1,6 @@
 #include "../php_cryptopp_test.h"
-#include "md5.h"
-#include "hash.h"
+#include "php_hash.h"
+#include "php_md5.h"
 #include <md5.h>
 
 PHP_FUNCTION(cryptopp_md5) {

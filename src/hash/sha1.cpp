@@ -1,6 +1,6 @@
 #include "../php_cryptopp_test.h"
-#include "sha1.h"
-#include "hash.h"
+#include "php_hash.h"
+#include "php_sha1.h"
 #include <sha.h>
 
 
