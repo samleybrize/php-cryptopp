@@ -20,6 +20,6 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
     PHP_ADD_LIBRARY(stdc++, 1, CRYPTOPP_TEST_SHARED_LIBADD)
     PHP_ADD_LIBRARY(cryptopp, 1, CRYPTOPP_TEST_SHARED_LIBADD)
     PHP_ADD_LIBRARY(pthread, 1, CRYPTOPP_TEST_SHARED_LIBADD)
-    PHP_NEW_EXTENSION(cryptopp_test, cryptopp_test.cpp, $ext_shared)
+    PHP_NEW_EXTENSION(cryptopp_test, src/cryptopp_test.cpp, $ext_shared)
 fi
 
