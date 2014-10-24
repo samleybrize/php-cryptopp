@@ -17,6 +17,7 @@ HAS_ERROR=0
 BASH_FILE_LIST=$(find src -name "*_config.sh")
 PHP_FUNCTIONS=""
 SRC_FILE_LIST="src/cryptopp_test.cpp"
+HEADER_FILE_LIST=""
 IFS=$'\n'
 
 for i in $BASH_FILE_LIST; do
@@ -32,7 +33,8 @@ for i in $BASH_FILE_LIST; do
     test "${FILE_OUTPUT[0]}" = "DISABLED" && continue
 
     SRC_FILE_LIST="$SRC_FILE_LIST ${FILE_OUTPUT[0]}"
-    PHP_FUNCTIONS="$PHP_FUNCTIONS ${FILE_OUTPUT[1]}"
+    HEADER_FILE_LIST="$HEADER_FILE_LIST ${FILE_OUTPUT[1]}"
+    PHP_FUNCTIONS="$PHP_FUNCTIONS ${FILE_OUTPUT[2]}"
 done
 
 PHP_FUNCTIONS=$(trim $PHP_FUNCTIONS)
@@ -42,10 +44,21 @@ if [ "" = "$PHP_FUNCTIONS" ]; then
     exit 1
 fi
 
+# build includes for header files
+IFS=$' '
+HEADER_FILE_INCLUDES=""
+
+for i in $HEADER_FILE_LIST; do
+    HEADER_FILE_INCLUDES="$HEADER_FILE_INCLUDES
+#include \"$i\""
+done
+
 # write PHP function list to a header file
 cat <<EOF > ./src/php_functions.h
 #ifndef PHP_FUNCTIONS_H
 #define PHP_FUNCTIONS_H
+
+$HEADER_FILE_INCLUDES
 
 #define CRYPTOPP_TEST_PHP_FUNCTIONS $PHP_FUNCTIONS
 

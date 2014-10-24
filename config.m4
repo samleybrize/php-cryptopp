@@ -19,6 +19,11 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
     test ! -x "./config.sh" && AC_MSG_ERROR(config.sh must be executable)
     SRC_FILE_LIST=$(CRYPTOPP_DIR=$CRYPTOPP_DIR ./config.sh)
 
+    if test ! $? -eq 0; then
+        AC_MSG_ERROR($SRC_FILE_LIST)
+    fi
+
+
     PHP_ADD_INCLUDE($CRYPTOPP_DIR)
     PHP_REQUIRE_CXX()
     PHP_SUBST(CRYPTOPP_TEST_SHARED_LIBADD)
