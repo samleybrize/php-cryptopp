@@ -17,7 +17,7 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
 
     dnl retrieve PHP functions list added by this extension, and cpp file list
     test ! -x "./config.sh" && AC_MSG_ERROR(config.sh must be executable)
-    SRC_FILE_LIST=$(./config.sh)
+    SRC_FILE_LIST=$(CRYPTOPP_DIR=$CRYPTOPP_DIR ./config.sh)
 
     PHP_ADD_INCLUDE($CRYPTOPP_DIR)
     PHP_REQUIRE_CXX()
