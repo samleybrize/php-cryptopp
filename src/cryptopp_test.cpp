@@ -1,13 +1,13 @@
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 
+#include "php_functions.h"
 #include "php_cryptopp_test.h"
 
 #include "hash/php_md5.h"
 #include "hash/php_sha1.h"
 
 zend_function_entry cryptopp_test_functions[] = {
-    PHP_FE(cryptopp_md5, NULL)
-    PHP_FE(cryptopp_sha1, NULL)
+    CRYPTOPP_TEST_PHP_FUNCTIONS
     {NULL, NULL, NULL}
 };
 

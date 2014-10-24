@@ -15,20 +15,10 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
         AC_MSG_ERROR(aes.h not found. Please reinstall crypto++.)
     fi
 
-    dnl retrieve PHP functions list added by this extension
-    BASH_FILE_LIST=$(find src -name "*_functions.sh")
-    PHP_FUNCTIONS=""
+    dnl retrieve PHP functions list added by this extension, and cpp file list
+    test ! -x "./config.sh" && AC_MSG_ERROR(config.sh must be executable)
+    SRC_FILE_LIST=$(./config.sh)
 
-    for i in $BASH_FILE_LIST; do
-        test ! -x $i && AC_MSG_ERROR(file $i must be executable) && continue
-        FILE_PHP_FUNCTIONS=($($i))
-        test "$FILE_PHP_FUNCTIONS" = "DISABLED" && continue
-
-        PHP_FUNCTIONS="$PHP_FUNCTIONS ${FILE_PHP_FUNCTIONS[[@]:1]}"
-    done
-echo "$PHP_FUNCTIONS" > /root/test
-
-    SRC_FILE_LIST=$(find src -name "*.cpp")
     PHP_ADD_INCLUDE($CRYPTOPP_DIR)
     PHP_REQUIRE_CXX()
     PHP_SUBST(CRYPTOPP_TEST_SHARED_LIBADD)

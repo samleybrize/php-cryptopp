@@ -1,4 +1,5 @@
 !*
 .libs
 *.lo
+php_functions.h
 
