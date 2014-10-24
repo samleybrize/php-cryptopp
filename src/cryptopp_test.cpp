@@ -8,11 +8,15 @@ zend_function_entry cryptopp_test_functions[] = {
     {NULL, NULL, NULL}
 };
 
+PHP_MINIT_FUNCTION(cryptopp_test) {
+    PHP_MINIT_STATEMENTS
+}
+
 zend_module_entry cryptopp_test_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_CRYPTOPP_TEST_EXTNAME,
     cryptopp_test_functions,
-    NULL,
+    PHP_MINIT(cryptopp_test),
     NULL,
     NULL,
     NULL,

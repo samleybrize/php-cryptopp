@@ -5,7 +5,9 @@ extern "C" {
 #include "php.h"
 }
 
-PHP_FUNCTION(cryptopp_md5);
+void init_class_HashMd5(TSRMLS_D);
+PHP_METHOD(HashMd5, __construct);
+PHP_METHOD(HashMd5, hash);
 
 #endif
 

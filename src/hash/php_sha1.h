@@ -5,7 +5,9 @@ extern "C" {
 #include "php.h"
 }
 
-PHP_FUNCTION(cryptopp_sha1);
+void init_class_HashSha1(TSRMLS_D);
+PHP_METHOD(HashSha1, __construct);
+PHP_METHOD(HashSha1, hash);
 
 #endif
 
