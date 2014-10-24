@@ -10,6 +10,7 @@ zend_class_entry *cryptopp_test_ce_hash_sha1;
 
 static zend_function_entry hash_sha1_methods[] = {
     PHP_ME(HashSha1, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(HashSha1, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
     PHP_ME(HashSha1, hash, NULL, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
@@ -23,8 +24,23 @@ void init_class_HashSha1(TSRMLS_D) {
 /*
  * PHP methods definitions
  */
+std::map<long, CryptoPP::SHA1> cryptoppBindHashSha1;
+
 PHP_METHOD(HashSha1, __construct) {
-    php_printf("instanciate HashSha1\n");
+    long handle = Z_OBJ_HANDLE_P(getThis());
+    CryptoPP::SHA1 hash;
+    cryptoppBindHashSha1[handle] = hash;
+
+    php_printf("construct HashSha1 (handle: %ld)\n", handle); // TODO
+    php_printf("map size: %ld\n", cryptoppBindHashSha1.size()); // TODO
+}
+
+PHP_METHOD(HashSha1, __destruct) {
+    long handle = Z_OBJ_HANDLE_P(getThis());
+    cryptoppBindHashSha1.erase(handle);
+
+    php_printf("destruct HashSha1 (handle: %ld)\n", handle); // TODO
+    php_printf("map size: %ld\n", cryptoppBindHashSha1.size()); // TODO
 }
 
 PHP_METHOD(HashSha1, hash) {
@@ -35,8 +51,12 @@ PHP_METHOD(HashSha1, hash) {
         return;
     }
 
-    CryptoPP::SHA1 hash;
-    hash(hash, CryptoPP::SHA1::DIGESTSIZE, "sha1", (byte*) msg, msgSize)
-}
+    long handle         = Z_OBJ_HANDLE_P(getThis());
+    CryptoPP::SHA1 hash = cryptoppBindHashSha1[handle];
 
+    byte digest[CryptoPP::SHA1::DIGESTSIZE];
+    hash.CalculateDigest(digest, (byte*) msg, msgSize);
+
+    RETVAL_STRINGL((char*) digest, CryptoPP::SHA1::DIGESTSIZE, 1);
+}
 

@@ -10,6 +10,7 @@ zend_class_entry *cryptopp_test_ce_hash_sha3_256;
 
 static zend_function_entry hash_sha3_256_methods[] = {
     PHP_ME(HashSha3_256, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(HashSha3_256, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
     PHP_ME(HashSha3_256, hash, NULL, ZEND_ACC_PUBLIC)
     {NULL, NULL, NULL}
 };
@@ -23,8 +24,23 @@ void init_class_HashSha3(TSRMLS_D) {
 /*
  * PHP methods definitions
  */
+std::map<long, CryptoPP::SHA3_256> cryptoppBindHashSha3_256;
+
 PHP_METHOD(HashSha3_256, __construct) {
-    php_printf("instanciate HashSha3_256\n");
+    long handle = Z_OBJ_HANDLE_P(getThis());
+    CryptoPP::SHA3_256 hash;
+    cryptoppBindHashSha3_256[handle] = hash;
+
+    php_printf("construct HashSha3_256 (handle: %ld)\n", handle); // TODO
+    php_printf("map size: %ld\n", cryptoppBindHashSha3_256.size()); // TODO
+}
+
+PHP_METHOD(HashSha3_256, __destruct) {
+    long handle = Z_OBJ_HANDLE_P(getThis());
+    cryptoppBindHashSha3_256.erase(handle);
+
+    php_printf("destruct HashSha3_256 (handle: %ld)\n", handle); // TODO
+    php_printf("map size: %ld\n", cryptoppBindHashSha3_256.size()); // TODO
 }
 
 PHP_METHOD(HashSha3_256, hash) {
@@ -35,7 +51,12 @@ PHP_METHOD(HashSha3_256, hash) {
         return;
     }
 
-    CryptoPP::SHA3_256 hash;
-    hash(hash, CryptoPP::SHA3_256::DIGESTSIZE, "sha3_256", (byte*) msg, msgSize)
+    long handle             = Z_OBJ_HANDLE_P(getThis());
+    CryptoPP::SHA3_256 hash = cryptoppBindHashSha3_256[handle];
+
+    byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
+    hash.CalculateDigest(digest, (byte*) msg, msgSize);
+
+    RETVAL_STRINGL((char*) digest, CryptoPP::SHA3_256::DIGESTSIZE, 1);
 }
 

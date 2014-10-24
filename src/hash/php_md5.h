@@ -7,6 +7,7 @@ extern "C" {
 
 void init_class_HashMd5(TSRMLS_D);
 PHP_METHOD(HashMd5, __construct);
+PHP_METHOD(HashMd5, __destruct);
 PHP_METHOD(HashMd5, hash);
 
 #endif
