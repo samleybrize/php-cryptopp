@@ -15,7 +15,7 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
         AC_MSG_ERROR(aes.h not found. Please reinstall crypto++.)
     fi
 
-    dnl retrieve PHP functions list added by this extension, and cpp file list
+    dnl retrieve cpp file list
     test ! -x "./config.sh" && AC_MSG_ERROR(config.sh must be executable)
     SRC_FILE_LIST=$(CRYPTOPP_DIR=$CRYPTOPP_DIR ./config.sh)
 

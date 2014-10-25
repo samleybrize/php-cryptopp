@@ -1,5 +1,5 @@
 #include "../php_cryptopp_test.h"
-#include "php_hash.h"
+#include "php_hash_interface.h"
 #include "php_sha1.h"
 #include <sha.h>
 
@@ -12,13 +12,14 @@ static zend_function_entry hash_sha1_methods[] = {
     PHP_ME(HashSha1, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(HashSha1, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
     PHP_ME(HashSha1, hash, NULL, ZEND_ACC_PUBLIC)
-    {NULL, NULL, NULL}
+    PHP_FE_END
 };
 
 void init_class_HashSha1(TSRMLS_D) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "HashSha1", hash_sha1_methods);
     cryptopp_test_ce_hash_sha1 = zend_register_internal_class(&ce TSRMLS_CC);
+    zend_class_implements(cryptopp_test_ce_hash_sha1 TSRMLS_CC, 1, cryptopp_test_ce_hash_interface);
 }
 
 /*

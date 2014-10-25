@@ -5,7 +5,7 @@
 
 zend_function_entry cryptopp_test_functions[] = {
     CRYPTOPP_TEST_PHP_FUNCTIONS
-    {NULL, NULL, NULL}
+    PHP_FE_END
 };
 
 PHP_MINIT_FUNCTION(cryptopp_test) {

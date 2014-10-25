@@ -1,5 +1,5 @@
 #include "../php_cryptopp_test.h"
-#include "php_hash.h"
+#include "php_hash_interface.h"
 #include "php_md5.h"
 #include <md5.h>
 #include <map>
@@ -13,13 +13,14 @@ static zend_function_entry hash_md5_methods[] = {
     PHP_ME(HashMd5, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(HashMd5, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
     PHP_ME(HashMd5, hash, NULL, ZEND_ACC_PUBLIC)
-    {NULL, NULL, NULL}
+    PHP_FE_END
 };
 
 void init_class_HashMd5(TSRMLS_D) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "HashMd5", hash_md5_methods);
     cryptopp_test_ce_hash_md5 = zend_register_internal_class(&ce TSRMLS_CC);
+    zend_class_implements(cryptopp_test_ce_hash_md5 TSRMLS_CC, 1, cryptopp_test_ce_hash_interface);
 }
 
 /*
