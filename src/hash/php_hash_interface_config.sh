@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # cpp files to include
-echo "src/hash/hash_interface.cpp"
+echo "src/hash/php_hash_interface.cpp"
 
 # header files to include
 echo "hash/php_hash_interface.h"

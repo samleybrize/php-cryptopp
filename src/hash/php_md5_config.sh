@@ -3,7 +3,7 @@
 test ! -f "$CRYPTOPP_DIR/md5.h" && echo "DISABLED" && exit 0
 
 # cpp files to include
-echo "src/hash/md5.cpp"
+echo "src/hash/php_md5.cpp"
 
 # header files to include
 echo "hash/php_md5.h"

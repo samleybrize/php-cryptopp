@@ -15,16 +15,16 @@ trim() {
 # config file list
 BASH_FILE_LIST=""
 
-BASH_FILE_LIST="$BASH_FILE_LIST src/hash/hash_interface_config.sh"
-BASH_FILE_LIST="$BASH_FILE_LIST src/hash/md5_config.sh"
-BASH_FILE_LIST="$BASH_FILE_LIST src/hash/sha1_config.sh"
-BASH_FILE_LIST="$BASH_FILE_LIST src/hash/sha3_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_hash_interface_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_md5_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_sha1_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_sha3_config.sh"
 
 # retrieve PHP functions list added by this extension, and cpp file list
 HAS_ERROR=0
 PHP_FUNCTIONS=""
 PHP_MINIT_STATEMENTS=""
-SRC_FILE_LIST="src/cryptopp_test.cpp"
+SRC_FILE_LIST="src/php_cryptopp_test.cpp"
 HEADER_FILE_LIST=""
 
 for i in $BASH_FILE_LIST; do
