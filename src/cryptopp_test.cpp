@@ -10,6 +10,7 @@ zend_function_entry cryptopp_test_functions[] = {
 
 PHP_MINIT_FUNCTION(cryptopp_test) {
     PHP_MINIT_STATEMENTS
+	return SUCCESS;
 }
 
 zend_module_entry cryptopp_test_module_entry = {
