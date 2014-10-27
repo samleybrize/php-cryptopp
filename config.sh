@@ -12,14 +12,20 @@ trim() {
     echo -n "$var"
 }
 
+# config file list
+BASH_FILE_LIST=""
+
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/hash_interface_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/md5_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/sha1_config.sh"
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/sha3_config.sh"
+
 # retrieve PHP functions list added by this extension, and cpp file list
 HAS_ERROR=0
-BASH_FILE_LIST=$(find src -name "*_config.sh")
 PHP_FUNCTIONS=""
 PHP_MINIT_STATEMENTS=""
 SRC_FILE_LIST="src/cryptopp_test.cpp"
 HEADER_FILE_LIST=""
-IFS=$'\n'
 
 for i in $BASH_FILE_LIST; do
     # verify that the file is executable
@@ -38,13 +44,6 @@ for i in $BASH_FILE_LIST; do
     PHP_FUNCTIONS="$PHP_FUNCTIONS ${FILE_OUTPUT[2]}"
     PHP_MINIT_STATEMENTS="$PHP_MINIT_STATEMENTS ${FILE_OUTPUT[3]}"
 done
-
-PHP_FUNCTIONS=$(trim $PHP_FUNCTIONS)
-
-if [ "" = "$PHP_FUNCTIONS" ]; then
-    echo "ERROR: no PHP functions found"
-    exit 1
-fi
 
 # build includes for header files
 IFS=$' '
@@ -71,4 +70,3 @@ EOF
 
 # print the list of source files to add
 echo $SRC_FILE_LIST
-
