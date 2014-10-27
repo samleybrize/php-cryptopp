@@ -2,6 +2,7 @@
 #include "php_hash_interface.h"
 #include "php_sha3.h"
 #include <sha3.h>
+#include <map>
 
 /*
  * PHP class déclaration
@@ -31,17 +32,11 @@ PHP_METHOD(HashSha3_256, __construct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     CryptoPP::SHA3_256 hash;
     cryptoppBindHashSha3_256[handle] = hash;
-
-    php_printf("construct HashSha3_256 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashSha3_256.size()); // TODO
 }
 
 PHP_METHOD(HashSha3_256, __destruct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     cryptoppBindHashSha3_256.erase(handle);
-
-    php_printf("destruct HashSha3_256 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashSha3_256.size()); // TODO
 }
 
 PHP_METHOD(HashSha3_256, hash) {

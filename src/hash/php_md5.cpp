@@ -7,7 +7,7 @@
 /*
  * PHP class déclaration
  */
-zend_class_entry *cryptopp_test_ce_hash_md5;
+zend_class_entry *cryptopp_test_ce_HashMd5;
 
 static zend_function_entry hash_md5_methods[] = {
     PHP_ME(HashMd5, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
@@ -16,11 +16,12 @@ static zend_function_entry hash_md5_methods[] = {
     PHP_FE_END
 };
 
+// init_class_HashMd5
 void init_class_HashMd5(TSRMLS_D) {
     zend_class_entry ce;
     INIT_CLASS_ENTRY(ce, "HashMd5", hash_md5_methods);
-    cryptopp_test_ce_hash_md5 = zend_register_internal_class(&ce TSRMLS_CC);
-    zend_class_implements(cryptopp_test_ce_hash_md5 TSRMLS_CC, 1, cryptopp_test_ce_hash_interface);
+    cryptopp_test_ce_HashMd5 = zend_register_internal_class(&ce TSRMLS_CC);
+    zend_class_implements(cryptopp_test_ce_HashMd5 TSRMLS_CC, 1, cryptopp_test_ce_hash_interface);
 }
 
 /*
@@ -31,18 +32,11 @@ std::map<long, CryptoPP::Weak::MD5> cryptoppBindHashMd5;
 PHP_METHOD(HashMd5, __construct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     CryptoPP::Weak::MD5 hash;
-    cryptoppBindHashMd5[handle] = hash;
-
-    php_printf("construct HashMd5 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashMd5.size()); // TODO
 }
 
 PHP_METHOD(HashMd5, __destruct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     cryptoppBindHashMd5.erase(handle);
-
-    php_printf("destruct HashMd5 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashMd5.size()); // TODO
 }
 
 PHP_METHOD(HashMd5, hash) {

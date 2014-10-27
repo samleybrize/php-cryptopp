@@ -2,6 +2,7 @@
 #include "php_hash_interface.h"
 #include "php_sha1.h"
 #include <sha.h>
+#include <map>
 
 /*
  * PHP class déclaration
@@ -31,17 +32,11 @@ PHP_METHOD(HashSha1, __construct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     CryptoPP::SHA1 hash;
     cryptoppBindHashSha1[handle] = hash;
-
-    php_printf("construct HashSha1 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashSha1.size()); // TODO
 }
 
 PHP_METHOD(HashSha1, __destruct) {
     long handle = Z_OBJ_HANDLE_P(getThis());
     cryptoppBindHashSha1.erase(handle);
-
-    php_printf("destruct HashSha1 (handle: %ld)\n", handle); // TODO
-    php_printf("map size: %ld\n", cryptoppBindHashSha1.size()); // TODO
 }
 
 PHP_METHOD(HashSha1, hash) {
