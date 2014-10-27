@@ -29,9 +29,6 @@ void init_class_HashSha1(TSRMLS_D) {
 std::map<long, CryptoPP::SHA1> cryptoppBindHashSha1;
 
 PHP_METHOD(HashSha1, __construct) {
-    long handle = Z_OBJ_HANDLE_P(getThis());
-    CryptoPP::SHA1 hash;
-    cryptoppBindHashSha1[handle] = hash;
 }
 
 PHP_METHOD(HashSha1, __destruct) {

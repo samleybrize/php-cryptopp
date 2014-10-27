@@ -30,8 +30,6 @@ void init_class_HashMd5(TSRMLS_D) {
 std::map<long, CryptoPP::Weak::MD5> cryptoppBindHashMd5;
 
 PHP_METHOD(HashMd5, __construct) {
-    long handle = Z_OBJ_HANDLE_P(getThis());
-    CryptoPP::Weak::MD5 hash;
 }
 
 PHP_METHOD(HashMd5, __destruct) {

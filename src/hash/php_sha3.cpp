@@ -29,9 +29,6 @@ void init_class_HashSha3(TSRMLS_D) {
 std::map<long, CryptoPP::SHA3_256> cryptoppBindHashSha3_256;
 
 PHP_METHOD(HashSha3_256, __construct) {
-    long handle = Z_OBJ_HANDLE_P(getThis());
-    CryptoPP::SHA3_256 hash;
-    cryptoppBindHashSha3_256[handle] = hash;
 }
 
 PHP_METHOD(HashSha3_256, __destruct) {
