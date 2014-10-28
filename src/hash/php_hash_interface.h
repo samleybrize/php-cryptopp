@@ -53,13 +53,13 @@
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
 #define CRYPTOPP_HASH_REQUIRED_METHODS(classname) \
-    PHP_ME(classname, hash, NULL, ZEND_ACC_PUBLIC)
+    PHP_ME(classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)
 
 #define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname) \
-    PHP_METHOD(classname, hash);
+    PHP_METHOD(classname, calculateDigest);
 
-#define CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)  \
-    PHP_METHOD(classname, hash) {                                                   \
+#define CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)      \
+    PHP_METHOD(classname, calculateDigest) {                                        \
         char *msg   = NULL;                                                         \
         int msgSize = 0;                                                            \
                                                                                     \
@@ -75,6 +75,10 @@
                                                                                     \
         RETVAL_STRINGL((char*) digest, nativeClassname::DIGESTSIZE, 1);             \
     }
+
+ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_calculateDigest, 0)
+    ZEND_ARG_INFO(0, data)
+ZEND_END_ARG_INFO()
 
 extern zend_class_entry *cryptopp_ce_HashInterface;
 

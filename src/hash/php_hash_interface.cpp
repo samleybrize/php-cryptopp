@@ -1,11 +1,10 @@
 #include "../php_cryptopp.h"
 #include "php_hash_interface.h"
 
-// TODO arg info
 zend_class_entry *cryptopp_ce_HashInterface;
 
 static zend_function_entry cryptopp_methods_HashInterface[] = {
-    PHP_ABSTRACT_ME(HashInterface, hash, NULL)
+    PHP_ABSTRACT_ME(HashInterface, calculateDigest, arginfo_HashInterface_calculateDigest)
     PHP_FE_END
 };
 
