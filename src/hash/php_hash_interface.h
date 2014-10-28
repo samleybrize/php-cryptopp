@@ -3,7 +3,6 @@
 
 #include "../php_cryptopp.h"
 
-// TODO type->properties_info ?????
 #define CRYPTOPP_HASH_INIT_CLASS(classname, nativeClassname, classEntryPtrName, classMethodsVarName) \
     zend_object_handlers classname ## _object_handlers;                     \
     struct classname ## Container {                                         \
@@ -27,7 +26,12 @@
                                                                             \
         ALLOC_HASHTABLE(obj->std.properties);                               \
         zend_hash_init(obj->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);     \
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *)); \
+                                                                            \
+        if (PHP_VERSION_ID < 50399) {                                       \
+            zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *)); \
+        } else {                                                            \
+            object_properties_init((zend_object*) &(obj->std), type);       \
+        }                                                                   \
                                                                             \
         retval.handle   = zend_objects_store_put(obj, NULL, classname ## _free_storage, NULL TSRMLS_CC); \
         retval.handlers = &classname ## _object_handlers;                   \
