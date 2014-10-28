@@ -2,7 +2,7 @@
 #define PHP_CRYPTOPP_H
 
 #define PHP_CRYPTOPP_EXTNAME "cryptopp"
-#define PHP_CRYPTOPP_VERSION "0.1"
+#define PHP_CRYPTOPP_VERSION "%ext_version%"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -17,5 +17,7 @@ extern "C" {
 
 extern zend_module_entry cryptopp_module_entry;
 #define phpext_cryptopp_ptr &cryptopp_module_entry;
+
+//%configure_inclusion%
 
 #endif

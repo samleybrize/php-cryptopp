@@ -1,12 +1,7 @@
+
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 
-#include "php_functions.h"
 #include "php_cryptopp.h"
-
-zend_function_entry cryptopp_functions[] = {
-    CRYPTOPP_PHP_FUNCTIONS
-    PHP_FE_END
-};
 
 PHP_MINIT_FUNCTION(cryptopp) {
     PHP_MINIT_STATEMENTS
@@ -16,7 +11,7 @@ PHP_MINIT_FUNCTION(cryptopp) {
 zend_module_entry cryptopp_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_CRYPTOPP_EXTNAME,
-    cryptopp_functions,
+    NULL,
     PHP_MINIT(cryptopp),
     NULL,
     NULL,

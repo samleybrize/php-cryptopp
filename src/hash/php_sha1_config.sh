@@ -8,8 +8,5 @@ echo "src/hash/php_sha1.cpp"
 # header files to include
 echo "hash/php_sha1.h"
 
-# declared PHP functions
-echo "//"
-
 # init functions
-echo "CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_CALL(HashSha1)"
+echo "CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha1)"

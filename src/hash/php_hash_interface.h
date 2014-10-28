@@ -1,9 +1,7 @@
 #ifndef HASH_HASH_INTERFACE_H
 #define HASH_HASH_INTERFACE_H
 
-extern "C" {
-#include "php.h"
-}
+#include "../php_cryptopp.h"
 
 // TODO type->properties_info ?????
 #define CRYPTOPP_HASH_INIT_CLASS(classname, nativeClassname, classEntryPtrName, classMethodsVarName) \
@@ -36,7 +34,7 @@ extern "C" {
                                                                             \
         return retval;                                                      \
     }                                                                       \
-    CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_HEADER(classname) {                   \
+    CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(classname) {                       \
         zend_class_entry ce;                                                \
         INIT_CLASS_ENTRY(ce, #classname, classMethodsVarName);              \
         classEntryPtrName = zend_register_internal_class(&ce TSRMLS_CC);    \
@@ -48,19 +46,19 @@ extern "C" {
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_HashInterface); \
     }
 
-#define CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
-#define CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
+#define CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
+#define CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 #define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
-#define CRYPTOPP_HASH_GET_REQUIRED_METHODS(classname) \
+#define CRYPTOPP_HASH_REQUIRED_METHODS(classname) \
     PHP_ME(classname, hash, NULL, ZEND_ACC_PUBLIC)
 
-#define CRYPTOPP_HASH_GET_REQUIRED_METHODS_HEADER(classname) \
+#define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname) \
     PHP_METHOD(classname, hash);
 
-#define CRYPTOPP_HASH_GET_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)  \
+#define CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)  \
     PHP_METHOD(classname, hash) {                                                   \
         char *msg   = NULL;                                                         \
         int msgSize = 0;                                                            \

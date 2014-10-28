@@ -5,13 +5,6 @@ if [ ! -f config.m4 ]; then
     exit 1
 fi
 
-trim() {
-    local var=$@
-    var="${var#"${var%%[![:space:]]*}"}"   # remove leading whitespace characters
-    var="${var%"${var##*[![:space:]]}"}"   # remove trailing whitespace characters
-    echo -n "$var"
-}
-
 # config file list
 BASH_FILE_LIST=""
 
@@ -22,7 +15,6 @@ BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_sha3_config.sh"
 
 # retrieve PHP functions list added by this extension, and cpp file list
 HAS_ERROR=0
-PHP_FUNCTIONS=""
 PHP_MINIT_STATEMENTS=""
 SRC_FILE_LIST="src/php_cryptopp.cpp"
 HEADER_FILE_LIST=""
@@ -41,12 +33,10 @@ for i in $BASH_FILE_LIST; do
 
     SRC_FILE_LIST="$SRC_FILE_LIST ${FILE_OUTPUT[0]}"
     HEADER_FILE_LIST="$HEADER_FILE_LIST ${FILE_OUTPUT[1]}"
-    PHP_FUNCTIONS="$PHP_FUNCTIONS ${FILE_OUTPUT[2]}"
-    PHP_MINIT_STATEMENTS="$PHP_MINIT_STATEMENTS ${FILE_OUTPUT[3]}"
+    PHP_MINIT_STATEMENTS="$PHP_MINIT_STATEMENTS ${FILE_OUTPUT[2]}"
 done
 
 # build includes for header files
-IFS=$' '
 HEADER_FILE_INCLUDES=""
 
 for i in $HEADER_FILE_LIST; do
@@ -55,18 +45,17 @@ for i in $HEADER_FILE_LIST; do
 done
 
 # write PHP function list to a header file
-cat <<EOF > ./src/php_functions.h
-#ifndef PHP_FUNCTIONS_H
-#define PHP_FUNCTIONS_H
+CONFIGURE_INCLUSION="$HEADER_FILE_INCLUDES
 
-$HEADER_FILE_INCLUDES
+#define PHP_MINIT_STATEMENTS $PHP_MINIT_STATEMENTS"
 
-#define CRYPTOPP_PHP_FUNCTIONS $PHP_FUNCTIONS
-#define PHP_MINIT_STATEMENTS $PHP_MINIT_STATEMENTS
-
-#endif
-
-EOF
+EXTENSION_VERSION="0.1"
+EXTENSION_VERSION_TAG="\%ext_version\%"
+CONFIGURE_INCLUSION_TAG="//%configure_inclusion%"
+PHP_CRYPTOPP_H_RAW=$(cat src/php_cryptopp.raw.h)
+PHP_CRYPTOPP_H_RAW=${PHP_CRYPTOPP_H_RAW/$CONFIGURE_INCLUSION_TAG/$CONFIGURE_INCLUSION}
+PHP_CRYPTOPP_H_RAW=${PHP_CRYPTOPP_H_RAW/$EXTENSION_VERSION_TAG/$EXTENSION_VERSION}
+echo "$PHP_CRYPTOPP_H_RAW" > src/php_cryptopp.h
 
 # print the list of source files to add
 echo $SRC_FILE_LIST
