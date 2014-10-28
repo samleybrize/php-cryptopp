@@ -36,7 +36,7 @@ extern "C" {
                                                                             \
         return retval;                                                      \
     }                                                                       \
-    void init_class_ ## classname(TSRMLS_D) {                               \
+    CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_HEADER(classname) {                   \
         zend_class_entry ce;                                                \
         INIT_CLASS_ENTRY(ce, #classname, classMethodsVarName);              \
         classEntryPtrName = zend_register_internal_class(&ce TSRMLS_CC);    \
@@ -47,6 +47,9 @@ extern "C" {
                                                                             \
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_HashInterface); \
     }
+
+#define CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
+#define CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 #define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;

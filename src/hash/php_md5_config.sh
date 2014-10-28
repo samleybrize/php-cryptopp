@@ -9,8 +9,7 @@ echo "src/hash/php_md5.cpp"
 echo "hash/php_md5.h"
 
 # declared PHP functions
-#echo "PHP_FE(cryptopp_md5, NULL)"
 echo "//"
 
 # init functions
-echo "init_class_HashMd5(TSRMLS_C);"
+echo "CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_CALL(HashMd5)"

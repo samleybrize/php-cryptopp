@@ -9,8 +9,7 @@ echo "src/hash/php_sha1.cpp"
 echo "hash/php_sha1.h"
 
 # declared PHP functions
-#echo "PHP_FE(cryptopp_sha1, NULL)"
 echo "//"
 
 # init functions
-echo "init_class_HashSha1(TSRMLS_C);"
+echo "CRYPTOPP_HASH_GET_INIT_CLASS_FUNC_CALL(HashSha1)"
