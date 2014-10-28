@@ -31,7 +31,7 @@ extern "C" {
         zend_hash_init(obj->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);     \
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *)); \
                                                                             \
-        retval.handle   = zend_objects_store_put(obj, NULL, HashSha1_free_storage, NULL TSRMLS_CC); \
+        retval.handle   = zend_objects_store_put(obj, NULL, classname ## _free_storage, NULL TSRMLS_CC); \
         retval.handlers = &classname ## _object_handlers;                   \
                                                                             \
         return retval;                                                      \
@@ -50,6 +50,30 @@ extern "C" {
 
 #define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
+
+#define CRYPTOPP_HASH_GET_REQUIRED_METHODS(classname) \
+    PHP_ME(classname, hash, NULL, ZEND_ACC_PUBLIC)
+
+#define CRYPTOPP_HASH_GET_REQUIRED_METHODS_HEADER(classname) \
+    PHP_METHOD(classname, hash);
+
+#define CRYPTOPP_HASH_GET_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)  \
+    PHP_METHOD(classname, hash) {                                                   \
+        char *msg   = NULL;                                                         \
+        int msgSize = 0;                                                            \
+                                                                                    \
+        if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) { \
+            return;                                                                 \
+        }                                                                           \
+                                                                                    \
+        nativeClassname *hash;                                                      \
+        hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);                             \
+                                                                                    \
+        byte digest[nativeClassname::DIGESTSIZE];                                   \
+        hash->CalculateDigest(digest, (byte*) msg, msgSize);                        \
+                                                                                    \
+        RETVAL_STRINGL((char*) digest, nativeClassname::DIGESTSIZE, 1);             \
+    }
 
 extern zend_class_entry *cryptopp_test_ce_hash_interface;
 

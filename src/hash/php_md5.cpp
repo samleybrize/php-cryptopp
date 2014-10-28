@@ -2,55 +2,27 @@
 #include "php_hash_interface.h"
 #include "php_md5.h"
 #include <md5.h>
-#include <map>
 
 /*
  * PHP class déclaration
  */
-zend_class_entry *cryptopp_test_ce_HashMd5;
+zend_class_entry *cryptopp_ce_HashMd5;
 
-static zend_function_entry hash_md5_methods[] = {
+static zend_function_entry cryptopp_methods_HashMd5[] = {
     PHP_ME(HashMd5, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-    PHP_ME(HashMd5, __destruct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_DTOR)
-    PHP_ME(HashMd5, hash, NULL, ZEND_ACC_PUBLIC)
+    CRYPTOPP_HASH_GET_REQUIRED_METHODS(HashMd5)
     PHP_FE_END
 };
 
-// init_class_HashMd5
-void init_class_HashMd5(TSRMLS_D) {
-    zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, "HashMd5", hash_md5_methods);
-    cryptopp_test_ce_HashMd5 = zend_register_internal_class(&ce TSRMLS_CC);
-    zend_class_implements(cryptopp_test_ce_HashMd5 TSRMLS_CC, 1, cryptopp_test_ce_hash_interface);
-}
+CRYPTOPP_HASH_INIT_CLASS(HashMd5, CryptoPP::Weak::MD5, cryptopp_ce_HashMd5, cryptopp_methods_HashMd5)
 
 /*
  * PHP methods definitions
  */
-std::map<long, CryptoPP::Weak::MD5> cryptoppBindHashMd5;
-
 PHP_METHOD(HashMd5, __construct) {
+    CryptoPP::Weak::MD5 *hash;
+    hash = new CryptoPP::Weak::MD5();
+    CRYPTOPP_HASH_SET_NATIVE_PTR(HashMd5, hash)
 }
 
-PHP_METHOD(HashMd5, __destruct) {
-    long handle = Z_OBJ_HANDLE_P(getThis());
-    cryptoppBindHashMd5.erase(handle);
-}
-
-PHP_METHOD(HashMd5, hash) {
-    char *msg   = NULL;
-    int msgSize = 0;
-
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) {
-        return;
-    }
-
-    long handle              = Z_OBJ_HANDLE_P(getThis());
-    CryptoPP::Weak::MD5 hash = cryptoppBindHashMd5[handle];
-
-    byte digest[CryptoPP::Weak::MD5::DIGESTSIZE];
-    hash.CalculateDigest(digest, (byte*) msg, msgSize);
-
-    RETVAL_STRINGL((char*) digest, CryptoPP::Weak::MD5::DIGESTSIZE, 1);
-}
-
+CRYPTOPP_HASH_GET_REQUIRED_METHODS_DEFINITIONS(HashMd5, CryptoPP::Weak::MD5)
