@@ -4,7 +4,7 @@
 #include "php_hash_interface.h"
 
 CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(HashSha1);
-PHP_METHOD(HashSha1, __construct);
+PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct);
 CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(HashSha1)
 
 #endif

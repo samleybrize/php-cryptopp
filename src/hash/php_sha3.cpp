@@ -9,7 +9,7 @@
 zend_class_entry *cryptopp_ce_HashSha3_256;
 
 static zend_function_entry cryptopp_methods_HashSha3_256[] = {
-    PHP_ME(HashSha3_256, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_256)
     PHP_FE_END
 };
@@ -24,7 +24,7 @@ void init_classes_HashSha3(TSRMLS_D)
 /*
  * PHP methods definitions
  */
-PHP_METHOD(HashSha3_256, __construct) {
+PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct) {
     CryptoPP::SHA3_256 *hash;
     hash = new CryptoPP::SHA3_256();
     CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha3_256, hash)

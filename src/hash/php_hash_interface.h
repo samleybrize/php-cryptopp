@@ -40,7 +40,7 @@
     }                                                                       \
     CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(classname) {                       \
         zend_class_entry ce;                                                \
-        INIT_CLASS_ENTRY(ce, #classname, classMethodsVarName);              \
+        INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, #classname, classMethodsVarName); \
         classEntryPtrName = zend_register_internal_class(&ce TSRMLS_CC);    \
                                                                             \
         classEntryPtrName->create_object = classname ## _create_handler;    \
@@ -57,13 +57,13 @@
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
 #define CRYPTOPP_HASH_REQUIRED_METHODS(classname) \
-    PHP_ME(classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)
 
 #define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname) \
-    PHP_METHOD(classname, calculateDigest);
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest);
 
 #define CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)      \
-    PHP_METHOD(classname, calculateDigest) {                                        \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest) {         \
         char *msg   = NULL;                                                         \
         int msgSize = 0;                                                            \
                                                                                     \
