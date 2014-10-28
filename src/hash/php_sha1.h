@@ -12,4 +12,3 @@ PHP_METHOD(HashSha1, __construct);
 CRYPTOPP_HASH_GET_REQUIRED_METHODS_HEADER(HashSha1)
 
 #endif
-

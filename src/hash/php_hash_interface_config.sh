@@ -11,4 +11,3 @@ echo "//"
 
 # init functions
 echo "init_interface_HashInterface(TSRMLS_C);"
-

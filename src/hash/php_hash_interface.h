@@ -45,7 +45,7 @@ extern "C" {
         memcpy(&classname ## _object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers)); \
         classname ## _object_handlers.clone_obj = NULL;                     \
                                                                             \
-        zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_test_ce_hash_interface); \
+        zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_HashInterface); \
     }
 
 #define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash
@@ -75,9 +75,8 @@ extern "C" {
         RETVAL_STRINGL((char*) digest, nativeClassname::DIGESTSIZE, 1);             \
     }
 
-extern zend_class_entry *cryptopp_test_ce_hash_interface;
+extern zend_class_entry *cryptopp_ce_HashInterface;
 
 void init_interface_HashInterface(TSRMLS_D);
 
 #endif
-

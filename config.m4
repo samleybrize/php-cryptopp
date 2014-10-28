@@ -1,13 +1,13 @@
 CFLAGS="$CFLAGS -Wall"
 dnl CXXFLAGS+=" -std=c++0x "
 
-PHP_ARG_ENABLE(cryptopp_test,
-    [Whether to enable the "cryptopp_test" extension],
-    [ --enable-cryptopp-test Enable "cryptopp_test" extension support])
+PHP_ARG_ENABLE(cryptopp,
+    [Whether to enable the "cryptopp" extension],
+    [ --enable-cryptopp Enable "cryptopp" extension support])
 
-if test $PHP_CRYPTOPP_TEST != "no"; then
+if test $PHP_CRYPTOPP != "no"; then
     dnl search for cryptopp headers
-    for i in $PHP_CRYPTOPP_TEST /usr/local /usr; do
+    for i in $PHP_CRYPTOPP /usr/local /usr; do
         test -f $i/include/cryptopp/aes.h && CRYPTOPP_DIR=$i/include/cryptopp && break
     done
 
@@ -26,9 +26,8 @@ if test $PHP_CRYPTOPP_TEST != "no"; then
 
     PHP_ADD_INCLUDE($CRYPTOPP_DIR)
     PHP_REQUIRE_CXX()
-    PHP_SUBST(CRYPTOPP_TEST_SHARED_LIBADD)
-    PHP_ADD_LIBRARY(stdc++, 1, CRYPTOPP_TEST_SHARED_LIBADD)
-    PHP_ADD_LIBRARY(cryptopp, 1, CRYPTOPP_TEST_SHARED_LIBADD)
-    PHP_NEW_EXTENSION(cryptopp_test, $SRC_FILE_LIST, $ext_shared)
+    PHP_SUBST(CRYPTOPP_SHARED_LIBADD)
+    PHP_ADD_LIBRARY(stdc++, 1, CRYPTOPP_SHARED_LIBADD)
+    PHP_ADD_LIBRARY(cryptopp, 1, CRYPTOPP_SHARED_LIBADD)
+    PHP_NEW_EXTENSION(cryptopp, $SRC_FILE_LIST, $ext_shared)
 fi
-

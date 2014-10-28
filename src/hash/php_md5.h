@@ -12,4 +12,3 @@ PHP_METHOD(HashMd5, __construct);
 CRYPTOPP_HASH_GET_REQUIRED_METHODS_HEADER(HashMd5)
 
 #endif
-

@@ -14,4 +14,3 @@ echo "//"
 
 # init functions
 echo "init_class_HashSha1(TSRMLS_C);"
-

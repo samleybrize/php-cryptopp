@@ -1,4 +1,4 @@
-#include "../php_cryptopp_test.h"
+#include "../php_cryptopp.h"
 #include "php_hash_interface.h"
 #include "php_md5.h"
 #include <md5.h>

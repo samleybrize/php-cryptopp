@@ -24,7 +24,7 @@ BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_sha3_config.sh"
 HAS_ERROR=0
 PHP_FUNCTIONS=""
 PHP_MINIT_STATEMENTS=""
-SRC_FILE_LIST="src/php_cryptopp_test.cpp"
+SRC_FILE_LIST="src/php_cryptopp.cpp"
 HEADER_FILE_LIST=""
 
 for i in $BASH_FILE_LIST; do
@@ -61,7 +61,7 @@ cat <<EOF > ./src/php_functions.h
 
 $HEADER_FILE_INCLUDES
 
-#define CRYPTOPP_TEST_PHP_FUNCTIONS $PHP_FUNCTIONS
+#define CRYPTOPP_PHP_FUNCTIONS $PHP_FUNCTIONS
 #define PHP_MINIT_STATEMENTS $PHP_MINIT_STATEMENTS
 
 #endif
