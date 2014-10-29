@@ -4,6 +4,8 @@
 zend_class_entry *cryptopp_ce_HashInterface;
 
 static zend_function_entry cryptopp_methods_HashInterface[] = {
+    PHP_ABSTRACT_ME(PHP_CRYPTOPP_NAMESPACE_HashInterface, getName, arginfo_HashInterface_getName)
+    PHP_ABSTRACT_ME(PHP_CRYPTOPP_NAMESPACE_HashInterface, getDigestSize, arginfo_HashInterface_getDigestSize)
     PHP_ABSTRACT_ME(PHP_CRYPTOPP_NAMESPACE_HashInterface, calculateDigest, arginfo_HashInterface_calculateDigest)
     PHP_FE_END
 };

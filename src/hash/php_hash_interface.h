@@ -64,16 +64,24 @@
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((classname ## Container *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
 // php hash classes required methods declarations
-#define CRYPTOPP_HASH_REQUIRED_METHODS(classname) \
+#define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                                       \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC)               \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC)   \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)
 
 // php hash classes required methods declarations to include in the headers
-#define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname) \
+#define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname)                \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize);    \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName);          \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest);
 
 // php hash classes required methods body
 #define CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(classname, nativeClassname)      \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest) {         \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
+        RETURN_LONG(nativeClassname::DIGESTSIZE);                                   \
+    }                                                                               \
+                                                                                    \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest) {             \
         char *msg   = NULL;                                                         \
         int msgSize = 0;                                                            \
                                                                                     \
@@ -91,6 +99,12 @@
     }
 
 // php hash classes methods arg info
+ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getName, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getDigestSize, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_calculateDigest, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
