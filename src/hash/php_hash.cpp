@@ -4,22 +4,19 @@
 #include <string>
 #include <vector>
 
-// TODO
-extern "C" {
-#include <ext/standard/php_array.h>
-}
+using namespace std;
 
-// TODO
-std::vector<std::string> hashAlgoList;
-std::vector<std::string> hashClassList;
+// hash algo list, and corresponding PHP classes
+vector<string> hashAlgoList;
+vector<string> hashClassList;
 
-void addHashAlgo(const std::string algoName, const std::string hashClassname) {
+void addHashAlgo(const string algoName, const string hashClassname) {
     hashAlgoList.push_back(algoName);
     hashClassList.push_back(hashClassname);
 }
 
-std::string getHashAlgoClass(const std::string algoName) {
-    std::vector<std::string>::iterator iterator = std::find(hashAlgoList.begin(), hashAlgoList.end(), algoName);
+string getHashAlgoClass(const string algoName) {
+    vector<string>::iterator iterator = find(hashAlgoList.begin(), hashAlgoList.end(), algoName);
 
     if (iterator == hashAlgoList.end()) {
         // hash algorithm not found
@@ -52,15 +49,12 @@ void init_class_Hash(TSRMLS_D) {
 // PHP methods definitions
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
     array_init(return_value);
-    addHashAlgo("azerty", "dummy"); // TODO
+    vector<string> _algos(hashAlgoList);
+    sort(_algos.begin(), _algos.end());
 
-    for (std::vector<std::string>::iterator it = hashAlgoList.begin(); it != hashAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
     }
-
-    // TODO sort
-    CALL_PHP_FUNCTION1(sort, NULL, return_value)
-//    PHP_FN(sort) (INTERNAL_FUNCTION_PARAM_PASSTHRU);
 }
 
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
@@ -71,7 +65,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
         return;
     }
 
-    std::string classname = getHashAlgoClass(algoName);
+    string classname = getHashAlgoClass(algoName);
 
     if (classname.empty()) {
         // return NULL if algo not found
