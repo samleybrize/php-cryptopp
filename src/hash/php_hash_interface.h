@@ -2,9 +2,10 @@
 #define HASH_HASH_INTERFACE_H
 
 #include "../php_cryptopp.h"
+#include "php_hash.h"
 
 // inits a php hash class
-#define CRYPTOPP_HASH_INIT_CLASS(classname, nativeClassname, classEntryPtrName, classMethodsVarName) \
+#define CRYPTOPP_HASH_INIT_CLASS(algoName, classname, nativeClassname, classEntryPtrName, classMethodsVarName) \
     zend_object_handlers classname ## _object_handlers;                     \
     struct classname ## Container {                                         \
         zend_object std;                                                    \
@@ -49,6 +50,8 @@
         classname ## _object_handlers.clone_obj = NULL;                     \
                                                                             \
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_HashInterface); \
+                                                                            \
+        addHashAlgo(algoName, PHP_CRYPTOPP_NAMESPACE "\\" #classname);      \
     }
 
 // header of the function that init a php hash class

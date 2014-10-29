@@ -8,6 +8,7 @@ fi
 # config file list
 BASH_FILE_LIST=""
 
+BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_hash_config.sh"
 BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_hash_interface_config.sh"
 BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_md5_config.sh"
 BASH_FILE_LIST="$BASH_FILE_LIST src/hash/php_sha1_config.sh"
