@@ -3,9 +3,7 @@
 #include "php_sha3.h"
 #include <sha3.h>
 
-/*
- * PHP class déclaration
- */
+// PHP class déclaration
 zend_class_entry *cryptopp_ce_HashSha3_256;
 
 static zend_function_entry cryptopp_methods_HashSha3_256[] = {
@@ -21,9 +19,7 @@ void init_classes_HashSha3(TSRMLS_D)
     CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha3_256)
 }
 
-/*
- * PHP methods definitions
- */
+// PHP methods definitions
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct) {
     CryptoPP::SHA3_256 *hash;
     hash = new CryptoPP::SHA3_256();

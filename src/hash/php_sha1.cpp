@@ -3,9 +3,7 @@
 #include "php_sha1.h"
 #include <sha.h>
 
-/*
- * PHP class déclaration
- */
+// PHP class déclaration
 zend_class_entry *cryptopp_ce_HashSha1;
 
 static zend_function_entry cryptopp_methods_HashSha1[] = {
@@ -16,9 +14,7 @@ static zend_function_entry cryptopp_methods_HashSha1[] = {
 
 CRYPTOPP_HASH_INIT_CLASS(HashSha1, CryptoPP::SHA1, cryptopp_ce_HashSha1, cryptopp_methods_HashSha1)
 
-/*
- * PHP methods definitions
- */
+// PHP methods definitions
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
