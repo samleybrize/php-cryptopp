@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_HashSha1[] = {
     PHP_FE_END
 };
 
-CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, CryptoPP::SHA1, cryptopp_ce_HashSha1, cryptopp_methods_HashSha1)
+CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, cryptopp_ce_HashSha1, cryptopp_methods_HashSha1)
 /* }}} */
 
 /* {{{ HashSha1 constructor */

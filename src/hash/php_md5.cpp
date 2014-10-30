@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_HashMd5[] = {
     PHP_FE_END
 };
 
-CRYPTOPP_HASH_INIT_CLASS("md5", HashMd5, CryptoPP::Weak::MD5, cryptopp_ce_HashMd5, cryptopp_methods_HashMd5)
+CRYPTOPP_HASH_INIT_CLASS("md5", HashMd5, cryptopp_ce_HashMd5, cryptopp_methods_HashMd5)
 /* }}} */
 
 /* {{{ HashMd5 constructor */

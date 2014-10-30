@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_HashSha3_256[] = {
     PHP_FE_END
 };
 
-CRYPTOPP_HASH_INIT_CLASS("sha3_256", HashSha3_256, CryptoPP::SHA3_256, cryptopp_ce_HashSha3_256, cryptopp_methods_HashSha3_256)
+CRYPTOPP_HASH_INIT_CLASS("sha3_256", HashSha3_256, cryptopp_ce_HashSha3_256, cryptopp_methods_HashSha3_256)
 
 void init_classes_HashSha3(TSRMLS_D)
 {
