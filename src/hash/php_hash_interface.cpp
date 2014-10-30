@@ -71,3 +71,37 @@ void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL((char*) digest, hash->DigestSize(), 1);
 }
+
+/* common implementation of HashInterface::update() */
+void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
+    char *msg   = NULL;
+    int msgSize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) {
+        return;
+    }
+
+    CryptoPP::HashTransformation *hash;
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+
+    hash->Update((byte*) msg, msgSize);
+}
+
+/* common implementation of HashInterface::final() */
+void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
+    CryptoPP::HashTransformation *hash;
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+
+    byte digest[hash->DigestSize()];
+    hash->Final(digest);
+
+    RETVAL_STRINGL((char*) digest, hash->DigestSize(), 1);
+}
+
+/* common implementation of HashInterface::restart() */
+void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
+    CryptoPP::HashTransformation *hash;
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+
+    hash->Restart();
+}
