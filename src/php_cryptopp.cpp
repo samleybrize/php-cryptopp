@@ -3,11 +3,14 @@
 
 #include "php_cryptopp.h"
 
+/* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(cryptopp) {
     PHP_MINIT_STATEMENTS
 	return SUCCESS;
 }
+/* }}} */
 
+/* {{{ Module struct */
 zend_module_entry cryptopp_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_CRYPTOPP_EXTNAME,
@@ -20,6 +23,7 @@ zend_module_entry cryptopp_module_entry = {
     PHP_CRYPTOPP_VERSION,
     STANDARD_MODULE_PROPERTIES
 };
+/* }}} */
 
 #ifdef COMPILE_DL_CRYPTOPP
 extern "C" {

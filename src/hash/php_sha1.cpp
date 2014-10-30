@@ -3,11 +3,12 @@
 #include "php_sha1.h"
 #include <sha.h>
 
-// PHP class args info
+/* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_HashSha1_construct, 0)
 ZEND_END_ARG_INFO()
+/* }}} */
 
-// PHP class déclaration
+/* {{{ PHP class déclaration */
 zend_class_entry *cryptopp_ce_HashSha1;
 
 static zend_function_entry cryptopp_methods_HashSha1[] = {
@@ -17,16 +18,22 @@ static zend_function_entry cryptopp_methods_HashSha1[] = {
 };
 
 CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, CryptoPP::SHA1, cryptopp_ce_HashSha1, cryptopp_methods_HashSha1)
+/* }}} */
 
-// PHP methods definitions
+/* {{{ HashSha1 constructor */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
     CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha1, hash)
 }
+/* }}} */
 
+/* {{{ proto string getName()
+   Return algorithm name */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, getName) {
     RETURN_STRING("sha1", 1);
 }
+/* }}} */
 
-CRYPTOPP_HASH_REQUIRED_METHODS_DEFINITIONS(HashSha1, CryptoPP::SHA1)
+/* include common hash methods definitions */
+CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha1, CryptoPP::SHA1)

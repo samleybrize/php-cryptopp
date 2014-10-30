@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// hash algo list, and corresponding PHP classes
+/* {{{ hash algo list, and corresponding PHP classes */
 vector<string> hashAlgoList;
 vector<string> hashClassList;
 
@@ -28,16 +28,18 @@ string getHashAlgoClass(const string &algoName) {
         return hashClassList[pos];
     }
 }
+/* }}} */
 
-// PHP class args info
+/* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_Hash_getAlgos, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_Hash_getClassname, 0)
     ZEND_ARG_INFO(0, algoName)
 ZEND_END_ARG_INFO()
+/* }}} */
 
-// PHP class déclaration
+/* {{{ PHP class déclaration */
 zend_class_entry *cryptopp_ce_Hash;
 
 static zend_function_entry cryptopp_methods_Hash[] = {
@@ -52,8 +54,10 @@ void init_class_Hash(TSRMLS_D) {
     cryptopp_ce_Hash            = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_Hash->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 }
+/* }}} */
 
-// PHP methods definitions
+/* {{{ proto array getAlgos()
+   Get the list of supported hash algorithms */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
     array_init(return_value);
     vector<string> _algos(hashAlgoList);
@@ -63,7 +67,10 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
         add_next_index_string(return_value, it->c_str(), it->length());
     }
 }
+/* }}} */
 
+/* {{{ proto array getClassname()
+   Get the the name of the class that implements a hash algorithm */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;
@@ -83,3 +90,4 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
         RETURN_STRING(classname.c_str(), 1)
     }
 }
+/* }}} */

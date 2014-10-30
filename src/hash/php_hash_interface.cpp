@@ -1,6 +1,7 @@
 #include "../php_cryptopp.h"
 #include "php_hash_interface.h"
 
+/* {{{ PHP interface declaration */
 zend_class_entry *cryptopp_ce_HashInterface;
 
 static zend_function_entry cryptopp_methods_HashInterface[] = {
@@ -15,3 +16,4 @@ void init_interface_HashInterface(TSRMLS_D) {
     INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, "HashInterface", cryptopp_methods_HashInterface);
     cryptopp_ce_HashInterface = zend_register_internal_interface(&ce TSRMLS_CC);
 }
+/* }}} */
