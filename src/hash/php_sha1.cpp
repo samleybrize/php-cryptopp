@@ -3,11 +3,15 @@
 #include "php_sha1.h"
 #include <sha.h>
 
+// PHP class args info
+ZEND_BEGIN_ARG_INFO(arginfo_HashSha1_construct, 0)
+ZEND_END_ARG_INFO()
+
 // PHP class déclaration
 zend_class_entry *cryptopp_ce_HashSha1;
 
 static zend_function_entry cryptopp_methods_HashSha1[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct, arginfo_HashSha1_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha1)
     PHP_FE_END
 };

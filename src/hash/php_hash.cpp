@@ -15,7 +15,7 @@ void addHashAlgo(const string algoName, const string hashClassname) {
     hashClassList.push_back(hashClassname);
 }
 
-string getHashAlgoClass(const string algoName) {
+string getHashAlgoClass(const string &algoName) {
     vector<string>::iterator iterator = find(hashAlgoList.begin(), hashAlgoList.end(), algoName);
 
     if (iterator == hashAlgoList.end()) {
@@ -29,13 +29,20 @@ string getHashAlgoClass(const string algoName) {
     }
 }
 
+// PHP class args info
+ZEND_BEGIN_ARG_INFO(arginfo_Hash_getAlgos, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_Hash_getClassname, 0)
+    ZEND_ARG_INFO(0, algoName)
+ZEND_END_ARG_INFO()
+
 // PHP class déclaration
-// TODO arginfo
 zend_class_entry *cryptopp_ce_Hash;
 
 static zend_function_entry cryptopp_methods_Hash[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos, arginfo_Hash_getAlgos, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname, arginfo_Hash_getClassname, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
@@ -65,7 +72,8 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
         return;
     }
 
-    string classname = getHashAlgoClass(algoName);
+    string algoNameStr(algoName, algoNameSize);
+    string classname = getHashAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

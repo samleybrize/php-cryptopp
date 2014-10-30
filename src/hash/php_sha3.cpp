@@ -3,11 +3,15 @@
 #include "php_sha3.h"
 #include <sha3.h>
 
+// PHP class args info
+ZEND_BEGIN_ARG_INFO(arginfo_HashSha3_256_construct, 0)
+ZEND_END_ARG_INFO()
+
 // PHP class déclaration
 zend_class_entry *cryptopp_ce_HashSha3_256;
 
 static zend_function_entry cryptopp_methods_HashSha3_256[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct, NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct, arginfo_HashSha3_256_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_256)
     PHP_FE_END
 };
