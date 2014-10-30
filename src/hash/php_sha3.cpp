@@ -61,7 +61,6 @@ void init_classes_HashSha3(TSRMLS_D)
 }
 /* }}} */
 
-// TODO 224 384 512
 /* {{{ HashSha3_* constructor */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, __construct) {
     CryptoPP::SHA3_224 *hash;
