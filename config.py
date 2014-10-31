@@ -37,7 +37,7 @@ configFileList.append("src/hash/config/hash_sha3.py")
 
 # process all config scripts
 phpMinitStatements  = []
-srcFileList         = []
+srcFileList         = ["php_cryptopp.cpp"]
 headerFileList      = []
 
 for configFile in configFileList:
@@ -80,4 +80,4 @@ open("src/php_cryptopp.h", "w").write(mainHeaderContent)
 for key, srcFile in enumerate(srcFileList):
     srcFileList[key] = "src/" + srcFile
 
-print " ".join(srcFileList)
+print(" ".join(srcFileList))
