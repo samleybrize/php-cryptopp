@@ -1,4 +1,5 @@
 !*
 .libs
 *.lo
+*.pyc
 php_cryptopp.h

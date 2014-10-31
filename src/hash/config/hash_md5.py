@@ -3,6 +3,7 @@ import os
 def config(cryptoppDir):
     config = {}
 
+    # check if md5 is supported by installed crypto++
     if not os.path.isfile(cryptoppDir + "/md5.h"):
         config["enabled"] = False
         return config

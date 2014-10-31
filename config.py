@@ -4,13 +4,16 @@ import os
 import re
 import sys
 
-def loadModuleFromFile(filepath):
-    modname = os.path.normpath(filepath)
-    modname = filepath.replace("\\", "/")
-    modname = re.sub("[^a-zA-Z0-9/]", "_", modname)
-    modname = filepath.replace("/", ".")
+EXTENSION_VERSION = "0.1"
 
-    module  = imp.load_source(modname, filepath)
+def loadModuleFromFile(filepath):
+    modname = os.path.splitext(filepath)[0]
+    modname = os.path.normpath(modname)
+    modname = modname.replace("\\", "/")
+    modname = re.sub("[^a-zA-Z0-9/]", "_", modname)
+    modname = modname.replace("/", "-")
+
+    module  = imp.load_source(modname, os.path.abspath(filepath))
     return module
 
 # retrieve command line args
@@ -19,7 +22,10 @@ parser.add_argument("cryptopp_dir", help="Path to the Crypto++ headers")
 args        = parser.parse_args()
 cryptoppDir = args.cryptopp_dir
 
-# TODO test if config.m4 exists
+# verify that config.m4 exists
+if not os.path.isfile("config.m4"):
+    print("ERROR: cannot find 'config.m4' file")
+    sys.exit(1)
 
 # config file list
 configFileList = []
@@ -27,30 +33,34 @@ configFileList.append("src/hash/config/hash.py")
 configFileList.append("src/hash/config/hash_interface.py")
 configFileList.append("src/hash/config/hash_md5.py")
 configFileList.append("src/hash/config/hash_sha1.py")
-configFileList.append("src/hash/config/hashsha3.py")
+configFileList.append("src/hash/config/hash_sha3.py")
 
-# TODO comment
+# process all config scripts
 phpMinitStatements  = []
 srcFileList         = []
 headerFileList      = []
 
 for configFile in configFileList:
-    # verify that file exists
+    # verify that config file exists
     if not os.path.isfile(configFile):
         print("Config file " + configFile + " does not exists")
         sys.exit(1)
 
-    # TODO
+    # retrieve config
     module = loadModuleFromFile(configFile)
     config = module.config(cryptoppDir)
 
     if False == config["enabled"]:
         continue
 
-    # TODO test array keys
-    srcFileList.extend(config["srcFileList"])
-    phpMinitStatements.extend(config["phpMinitStatements"])
-    headerFileList.extend(config["headerFileList"])
+    if "srcFileList" in config:
+        srcFileList.extend(config["srcFileList"])
+
+    if "headerFileList" in config:
+        headerFileList.extend(config["headerFileList"])
+
+    if "phpMinitStatements" in config:
+        phpMinitStatements.extend(config["phpMinitStatements"])
 
 # build includes for header file
 headerFileIncludes = "";
@@ -58,6 +68,16 @@ headerFileIncludes = "";
 for i in headerFileList:
     headerFileIncludes += "#include \"" + i + "\"\n"
 
-# TODO write PHP function list to a header file
+# create main header file
+mainHeaderContent   = open("src/php_cryptopp.raw.h", "r").read()
+configureInclusion  = headerFileIncludes + "\n\n#define PHP_MINIT_STATEMENTS " + " ".join(phpMinitStatements)
+mainHeaderContent   = mainHeaderContent.replace("//%configure_inclusion%", configureInclusion)
+mainHeaderContent   = mainHeaderContent.replace("%ext_version%", EXTENSION_VERSION)
 
-# TODO print the list of source files to add
+open("src/php_cryptopp.h", "w").write(mainHeaderContent)
+
+# print the list of source files to add
+for key, srcFile in enumerate(srcFileList):
+    srcFileList[key] = "src/" + srcFile
+
+print " ".join(srcFileList)

@@ -16,8 +16,7 @@ if test $PHP_CRYPTOPP != "no"; then
     fi
 
     dnl retrieve cpp file list
-    test ! -x "./config.sh" && AC_MSG_ERROR(config.sh must be executable)
-    SRC_FILE_LIST=$(CRYPTOPP_DIR=$CRYPTOPP_DIR ./config.sh)
+    SRC_FILE_LIST=$(/usr/bin/env python ./config.py $CRYPTOPP_DIR)
 
     if test ! $? -eq 0; then
         AC_MSG_ERROR($SRC_FILE_LIST)
