@@ -2,4 +2,5 @@
 !.gitignore
 !config.m4
 !config.sh
+!config.py
 !src
