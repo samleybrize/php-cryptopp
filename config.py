@@ -29,6 +29,8 @@ if not os.path.isfile("config.m4"):
 
 # config file list
 configFileList = []
+configFileList.append("src/exception/config/exception.py")
+
 configFileList.append("src/hash/config/hash.py")
 configFileList.append("src/hash/config/hash_interface.py")
 configFileList.append("src/hash/config/hash_md5.py")

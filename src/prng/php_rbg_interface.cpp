@@ -1,6 +1,8 @@
 #include "../php_cryptopp.h"
 #include "php_rbg_interface.h"
+#include "../exception/php_exception.h"
 #include <string>
+#include <zend_exceptions.h>
 
 /* {{{ PHP interface declaration */
 zend_class_entry *cryptopp_ce_RandomByteGeneratorInterface;
@@ -52,14 +54,23 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
 }
 /* }}} */
 
+// TODO test serialize
+// TODO test clone
 /* common implementation of RandomByteGeneratorInterface::generate() */
 void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
-    int size = 0;
+    long size = 0;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &size)) {
         return;
     }
 
+    // verify that size > 0
+    if (size <= 0) {
+        zend_throw_exception_ex(getCryptoPPException(), 0 TSRMLS_CC, "Size must be a positive integer, %ld given", size);
+        RETURN_FALSE;
+    }
+
+    // generate random bytes
     CryptoPP::RandomNumberGenerator *rbg;
     rbg = CRYPTOPP_RBG_GET_NATIVE_PTR(classname);
 
