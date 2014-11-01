@@ -1,5 +1,5 @@
-#ifndef HASH_INTERFACE_H
-#define HASH_INTERFACE_H
+#ifndef PHP_HASH_INTERFACE_H
+#define PHP_HASH_INTERFACE_H
 
 #include "../php_cryptopp.h"
 #include "php_hash.h"
@@ -133,4 +133,4 @@ void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS);
 void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
-#endif /* HASH_INTERFACE_H */
+#endif /* PHP_HASH_INTERFACE_H */
