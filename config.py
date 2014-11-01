@@ -35,6 +35,9 @@ configFileList.append("src/hash/config/hash_md5.py")
 configFileList.append("src/hash/config/hash_sha1.py")
 configFileList.append("src/hash/config/hash_sha3.py")
 
+configFileList.append("src/prng/config/rbg_interface.py")
+configFileList.append("src/prng/config/rbg.py")
+
 # process all config scripts
 phpMinitStatements  = []
 srcFileList         = ["php_cryptopp.cpp"]

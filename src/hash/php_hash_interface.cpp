@@ -41,11 +41,11 @@ zend_object_value HashInterface_create_handler(zend_class_entry *type TSRMLS_DC)
     ALLOC_HASHTABLE(obj->std.properties);
     zend_hash_init(obj->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
 
-    if (PHP_VERSION_ID < 50399) {
+    #if PHP_VERSION_ID < 50399
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    } else {
+    #else
         object_properties_init((zend_object*) &(obj->std), type);
-    }
+    #endif
 
     retval.handle   = zend_objects_store_put(obj, NULL, HashInterface_free_storage, NULL TSRMLS_CC);
     retval.handlers = &HashInterface_object_handlers;
