@@ -4,7 +4,7 @@ import os
 import re
 import sys
 
-EXTENSION_VERSION = "0.1"
+EXTENSION_VERSION = "0.1.0"
 
 def loadModuleFromFile(filepath):
     modname = os.path.splitext(filepath)[0]

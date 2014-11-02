@@ -19,13 +19,10 @@ static PHP_MINIT_FUNCTION(cryptopp) {
 /* {{{ PHP_MINFO_FUNCTION */
 static PHP_MINFO_FUNCTION(cryptopp) {
     /* libcrypto++ version */
-    char cryptopp_version[6];
+    char cryptopp_version[3];
+    char cryptopp_version_dotted[6];
     sprintf(cryptopp_version, "%d", CRYPTOPP_VERSION);
-    cryptopp_version[4] = cryptopp_version[2];
-    cryptopp_version[2] = cryptopp_version[1];
-    cryptopp_version[1] = '.';
-    cryptopp_version[3] = '.';
-    cryptopp_version[5] = 0;
+    sprintf(cryptopp_version_dotted, "%c.%c.%c", cryptopp_version[0], cryptopp_version[1], cryptopp_version[2]);
 
     /* supported hash algos */
     vector<string> hashAlgoList = getHashAlgoList();
@@ -38,8 +35,8 @@ static PHP_MINFO_FUNCTION(cryptopp) {
 
     php_info_print_table_start();
     php_info_print_table_header(2, "Crypto++ support", "enabled");
-    php_info_print_table_row(2, "Version", PHP_CRYPTOPP_VERSION);
-    php_info_print_table_row(2, "libcrypto++ version", cryptopp_version);
+    php_info_print_table_row(2, "Crypto++ module version", PHP_CRYPTOPP_VERSION);
+    php_info_print_table_row(2, "Crypto++ library version", cryptopp_version_dotted);
     php_info_print_table_row(2, "Supported hash algos", supportedHashList.c_str());
     php_info_print_table_end();
 }
