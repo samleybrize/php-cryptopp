@@ -15,6 +15,12 @@ void addHashAlgo(const string algoName, const string hashClassname) {
     hashClassList.push_back(hashClassname);
 }
 
+vector<string> getHashAlgoList() {
+    vector<string> _algos(hashAlgoList);
+    sort(_algos.begin(), _algos.end());
+    return _algos;
+}
+
 string getHashAlgoClass(const string &algoName) {
     vector<string>::iterator iterator = find(hashAlgoList.begin(), hashAlgoList.end(), algoName);
 
@@ -60,8 +66,7 @@ void init_class_Hash(TSRMLS_D) {
    Get the list of supported hash algorithms */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
     array_init(return_value);
-    vector<string> _algos(hashAlgoList);
-    sort(_algos.begin(), _algos.end());
+    vector<string> _algos = getHashAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
