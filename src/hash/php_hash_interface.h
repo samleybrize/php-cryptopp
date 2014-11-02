@@ -34,6 +34,8 @@
 
 /* php hash classes required methods declarations */
 #define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                                           \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep, arginfo_HashInterface___sleep, ZEND_ACC_PUBLIC)                   \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_HashInterface___wakeup, ZEND_ACC_PUBLIC)                 \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC)                   \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC)       \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)   \
@@ -43,8 +45,10 @@
 
 /* php hash classes required methods declarations to include in the headers */
 #define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname)                \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize);    \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup);         \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep);          \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName);          \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize);    \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update);           \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);            \
@@ -52,6 +56,20 @@
 
 /* php hash classes common methods body */
 #define CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)        \
+    /* {{{ proto string HashInterface::__sleep(void)                                \
+       Prevents serialization of a HashInterface instance */                        \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, "You cannot serialize or unserialize " #classname " instances"); \
+    }                                                                               \
+    /* }}} */                                                                       \
+                                                                                    \
+    /* {{{ proto string HashInterface::__wakeup(void)                               \
+       Prevents use of a HashInterface instance that has been unserialized */       \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup) {                    \
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, "You cannot serialize or unserialize " #classname " instances"); \
+    }                                                                               \
+    /* }}} */                                                                       \
+                                                                                    \
     /* {{{ proto int HashInterface::getDigestSize(void)                             \
        Returns the digest size */                                                   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
@@ -88,6 +106,12 @@
     /* }}} */
 
 /* {{{ php hash classes methods arg info */
+ZEND_BEGIN_ARG_INFO(arginfo_HashInterface___wakeup, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_HashInterface___sleep, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getName, 0)
 ZEND_END_ARG_INFO()
 

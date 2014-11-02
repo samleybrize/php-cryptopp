@@ -54,8 +54,6 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
 }
 /* }}} */
 
-// TODO test serialize
-// TODO test clone
 /* common implementation of RandomByteGeneratorInterface::generate() */
 void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
     long size = 0;
