@@ -61,7 +61,7 @@ void init_classes_HashSha3(TSRMLS_D)
 }
 /* }}} */
 
-/* {{{ HashSha3_* constructor */
+/* {{{ proto HashSha3_*::__construct(void) */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, __construct) {
     CryptoPP::SHA3_224 *hash;
     hash = new CryptoPP::SHA3_224();
@@ -87,7 +87,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, __construct) {
 }
 /* }}} */
 
-/* {{{ proto string getName()
+/* {{{ proto string HashSha3_*::getName(void)
    Return algorithm name */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, getName) {
     RETURN_STRING("sha3_224", 1);

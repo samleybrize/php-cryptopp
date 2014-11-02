@@ -56,7 +56,7 @@ void init_class_Hash(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ proto array getAlgos()
+/* {{{ proto array Hash::getAlgos(void)
    Get the list of supported hash algorithms */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
     array_init(return_value);
@@ -69,7 +69,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
 }
 /* }}} */
 
-/* {{{ proto array getClassname()
+/* {{{ proto array Hash::getClassname(string algoName)
    Get the the name of the class that implements a hash algorithm */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
     char *algoName      = NULL;

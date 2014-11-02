@@ -39,7 +39,7 @@
 
 /* php rbg classes common methods body */
 #define CRYPTOPP_RBG_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
-    /* {{{ proto string generate(size)                                              \
+    /* {{{ proto string generate(int size)                                          \
        generate random byte sequence */                                             \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate) {                    \
         RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAM_PASSTHRU);    \

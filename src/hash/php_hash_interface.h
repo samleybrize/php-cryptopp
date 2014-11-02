@@ -52,35 +52,35 @@
 
 /* php hash classes common methods body */
 #define CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)        \
-    /* {{{ proto int getDigestSize()                                                \
+    /* {{{ proto int HashInterface::getDigestSize(void)                             \
        Returns the digest size */                                                   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
         RETURN_LONG(nativeClassname::DIGESTSIZE);                                   \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string calculateDigest(data)                                       \
+    /* {{{ proto string HashInterface::calculateDigest(string data)                 \
        Calculate the digest */                                                      \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest) {             \
         HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAM_PASSTHRU);            \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string update(data)                                                \
+    /* {{{ proto string HashInterface::update(string data)                          \
        Adds data to the current incremental hash */                                 \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update) {                      \
         HashInterface_update(INTERNAL_FUNCTION_PARAM_PASSTHRU);                     \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string final()                                                     \
+    /* {{{ proto string HashInterface::final(void)                                  \
        Finalize an incremental hash and return resulting digest */                  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final) {                       \
         HashInterface_final(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string restart()                                                   \
+    /* {{{ proto string HashInterface::restart(void)                                \
        Discard the current incremental hash */                                      \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart) {                     \
         HashInterface_restart(INTERNAL_FUNCTION_PARAM_PASSTHRU);                    \
