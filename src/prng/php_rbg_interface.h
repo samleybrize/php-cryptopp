@@ -47,14 +47,14 @@
     /* {{{ proto string RandomByteGeneratorInterface::__sleep(void)                 \
        Prevents serialization of a RandomByteGeneratorInterface instance */         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, "You cannot serialize or unserialize " #classname " instances"); \
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
     /* {{{ proto string RandomByteGeneratorInterface::__wakeup(void)                \
        Prevents use of a RandomByteGeneratorInterface instance that has been unserialized */ \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup) {                    \
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, "You cannot serialize or unserialize " #classname " instances"); \
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \

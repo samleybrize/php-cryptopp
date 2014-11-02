@@ -64,7 +64,7 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
 
     // verify that size > 0
     if (size <= 0) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, "Size must be a positive integer, %ld given", size);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Size must be a positive integer, %ld given", size);
         RETURN_FALSE;
     }
 
