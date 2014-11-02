@@ -20,7 +20,7 @@ static zend_function_entry cryptopp_methods_RandomByteGenerator[] = {
 CRYPTOPP_RBG_INIT_CLASS(RandomByteGenerator, cryptopp_ce_RandomByteGenerator, cryptopp_methods_RandomByteGenerator)
 /* }}} */
 
-/* {{{ proto __construct(void) */
+/* {{{ proto RandomByteGenerator::__construct(void) */
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_RandomByteGenerator, __construct) {
     CryptoPP::AutoSeededRandomPool *rbg;
     rbg = new CryptoPP::AutoSeededRandomPool();

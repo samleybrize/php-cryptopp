@@ -54,7 +54,7 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);            \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart);
 
-/* php hash classes common methods body */
+/* php hash classes common methods bodies */
 #define CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)        \
     /* {{{ proto string HashInterface::__sleep(void)                                \
        Prevents serialization of a HashInterface instance */                        \
@@ -102,7 +102,7 @@
        Discard the current incremental hash */                                      \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart) {                     \
         HashInterface_restart(INTERNAL_FUNCTION_PARAM_PASSTHRU);                    \
-    }
+    }                                                                               \
     /* }}} */
 
 /* {{{ php hash classes methods arg info */

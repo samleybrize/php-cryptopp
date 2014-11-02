@@ -42,7 +42,7 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup); \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate);
 
-/* php rbg classes common methods body */
+/* php rbg classes common methods bodies */
 #define CRYPTOPP_RBG_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
     /* {{{ proto string RandomByteGeneratorInterface::__sleep(void)                 \
        Prevents serialization of a RandomByteGeneratorInterface instance */         \
@@ -62,8 +62,8 @@
        generate random byte sequence */                                             \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate) {                    \
         RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAM_PASSTHRU);    \
-    }
-    /* }}} */                                                                       \
+    }                                                                               \
+    /* }}} */
 
 /* {{{ php rbg classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_RandomByteGeneratorInterface___sleep, 0)
