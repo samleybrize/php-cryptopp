@@ -6,6 +6,6 @@ def config(cryptoppDir):
     config["enabled"]               = True
     config["srcFileList"]           = ["exception/php_exception.cpp"]
     config["headerFileList"]        = ["exception/php_exception.h"]
-    config["phpMinitStatements"]    = ["init_class_CryptoPPException(TSRMLS_C);"]
+    config["phpMinitStatements"]    = ["init_class_CryptoppException(TSRMLS_C);"]
 
     return config
