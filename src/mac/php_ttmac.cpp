@@ -6,7 +6,6 @@
 // TODO key
 // TODO = key in constructor (optional)
 // TODO = setKey() method (check key length)
-// TODO calculateDigest() and update() check if key is defined
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacTwoTrackMac_construct, 0)
@@ -29,8 +28,6 @@ CRYPTOPP_MAC_INIT_CLASS(MacTwoTrackMac, cryptopp_ce_MacTwoTrackMac, cryptopp_met
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, __construct) {
     CryptoPP::TTMAC *mac;
     mac = new CryptoPP::TTMAC();
-    byte key[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // TODO
-    mac->SetKey(key, 20); // TODO
     CRYPTOPP_MAC_SET_NATIVE_PTR(MacTwoTrackMac, mac)
 }
 /* }}} */

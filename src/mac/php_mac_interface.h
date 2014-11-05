@@ -16,6 +16,8 @@
         MacInterface_object_handlers.clone_obj = NULL;                                      \
                                                                                             \
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_MacInterface);    \
+                                                                                            \
+        zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PROTECTED TSRMLS_CC);  \
     }
 
 /* header of the function that init a php Mac class */
@@ -36,6 +38,7 @@
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_MacInterface___wakeup, ZEND_ACC_PUBLIC)  \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName, arginfo_MacInterface_getName, ZEND_ACC_PUBLIC)    \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize, arginfo_MacInterface_getDigestSize, ZEND_ACC_PUBLIC)  \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC)      \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC)  \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC)      \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC)        \
@@ -47,6 +50,7 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup); \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getName);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize);  \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, setKey);   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update);   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);    \
@@ -72,6 +76,13 @@
        Returns the digest size */                                                   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
         RETURN_LONG(nativeClassname::DIGESTSIZE);                                   \
+    }                                                                               \
+    /* }}} */                                                                       \
+                                                                                    \
+    /* {{{ proto string MacInterface::setKey(string key)                            \
+       Sets the key */                                                              \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, setKey) {                      \
+        MacInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU, cryptopp_ce_ ## classname);  \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
@@ -116,6 +127,10 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_getDigestSize, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_setKey, 0)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_calculateDigest, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
@@ -149,6 +164,7 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ Mac common methods */
+void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
 void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS);

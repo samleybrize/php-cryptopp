@@ -56,6 +56,27 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
 }
 /* }}} */
 
+/* common implementation of MacInterface::setKey() */
+void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce) {
+    char *key   = NULL;
+    int keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &keySize)) {
+        return;
+    }
+
+    CryptoPP::MessageAuthenticationCode *mac;
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+
+    if (!mac->IsValidKeyLength(keySize)) {
+        // TODO exception
+    }
+
+    mac->SetKey((byte*) key, keySize);
+    mac->Restart();
+    zend_update_property_string(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key TSRMLS_CC);
+}
+
 /* common implementation of MacInterface::calculateDigest() */
 void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
@@ -64,6 +85,14 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) {
         return;
     }
+
+    // TODO check if key is set
+    // TODO = zend_read_property
+    // TODO = zend_get_class_entry
+    zend_class_entry *ce;
+    zval *key;
+    ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+    key = zend_read_property(ce, getThis(), "key", 3, 1 TSRMLS_CC);
 
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
@@ -83,6 +112,8 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
         return;
     }
 
+    // TODO check if key is set
+
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
 
@@ -91,6 +122,8 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
 
 /* common implementation of MacInterface::final() */
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
+    // TODO check if key is set
+
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
 
