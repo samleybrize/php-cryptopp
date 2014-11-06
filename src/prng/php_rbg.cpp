@@ -24,7 +24,7 @@ CRYPTOPP_RBG_INIT_CLASS(RandomByteGenerator, cryptopp_ce_RandomByteGenerator, cr
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_RandomByteGenerator, __construct) {
     CryptoPP::AutoSeededRandomPool *rbg;
     rbg = new CryptoPP::AutoSeededRandomPool();
-    CRYPTOPP_RBG_SET_NATIVE_PTR(RandomByteGenerator, rbg)
+    CRYPTOPP_RBG_SET_NATIVE_PTR(rbg)
 }
 /* }}} */
 

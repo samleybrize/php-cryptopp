@@ -67,7 +67,7 @@ void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     }
 
     CryptoPP::HashTransformation *hash;
-    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
     byte digest[hash->DigestSize()];
     hash->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
@@ -85,7 +85,7 @@ void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     }
 
     CryptoPP::HashTransformation *hash;
-    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
     hash->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
@@ -93,7 +93,7 @@ void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
 /* common implementation of HashInterface::final() */
 void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
-    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
     byte digest[hash->DigestSize()];
     hash->Final(digest);
@@ -104,7 +104,7 @@ void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
 /* common implementation of HashInterface::restart() */
 void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
-    hash = CRYPTOPP_HASH_GET_NATIVE_PTR(classname);
+    hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
     hash->Restart();
 }

@@ -24,7 +24,7 @@ CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, cryptopp_ce_HashSha1, cryptopp_method
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha1, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 /* }}} */
 

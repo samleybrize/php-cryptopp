@@ -24,7 +24,7 @@ CRYPTOPP_HASH_INIT_CLASS("md5", HashMd5, cryptopp_ce_HashMd5, cryptopp_methods_H
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashMd5, __construct) {
     CryptoPP::Weak::MD5 *hash;
     hash = new CryptoPP::Weak::MD5();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashMd5, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 /* }}} */
 

@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "php_mac_interface.h"
+#include <zend_exceptions.h>
 
 /* {{{ PHP interface declaration */
 zend_class_entry *cryptopp_ce_MacInterface;
@@ -57,7 +58,7 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
 /* }}} */
 
 /* common implementation of MacInterface::setKey() */
-void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce) {
+void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     char *key   = NULL;
     int keySize = 0;
 
@@ -66,10 +67,13 @@ void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce) {
     }
 
     CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     if (!mac->IsValidKeyLength(keySize)) {
-        // TODO exception
+        zend_class_entry *ce;
+        ce = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+        return;
     }
 
     mac->SetKey(reinterpret_cast<byte*>(key), keySize);
@@ -95,7 +99,7 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     key = zend_read_property(ce, getThis(), "key", 3, 1 TSRMLS_CC);
 
     CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     byte digest[mac->DigestSize()];
     mac->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
@@ -115,7 +119,7 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     // TODO check if key is set
 
     CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     mac->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
@@ -125,7 +129,7 @@ void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     // TODO check if key is set
 
     CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     byte digest[mac->DigestSize()];
     mac->Final(digest);
@@ -136,7 +140,7 @@ void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
 /* common implementation of MacInterface::restart() */
 void MacInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_GET_NATIVE_PTR(classname);
+    mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     mac->Restart();
 }

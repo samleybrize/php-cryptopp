@@ -28,7 +28,7 @@ CRYPTOPP_MAC_INIT_CLASS(MacTwoTrackMac, cryptopp_ce_MacTwoTrackMac, cryptopp_met
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, __construct) {
     CryptoPP::TTMAC *mac;
     mac = new CryptoPP::TTMAC();
-    CRYPTOPP_MAC_SET_NATIVE_PTR(MacTwoTrackMac, mac)
+    CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
 }
 /* }}} */
 

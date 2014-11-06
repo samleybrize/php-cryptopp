@@ -70,7 +70,7 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
 
     // generate random bytes
     CryptoPP::RandomNumberGenerator *rbg;
-    rbg = CRYPTOPP_RBG_GET_NATIVE_PTR(classname);
+    rbg = CRYPTOPP_RBG_GET_NATIVE_PTR();
 
     byte block[size];
     rbg->GenerateBlock(block, size);

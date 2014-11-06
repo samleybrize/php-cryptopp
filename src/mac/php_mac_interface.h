@@ -27,10 +27,10 @@
 #define CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 /* get the pointer to the native Mac object of a php Mac class */
-#define CRYPTOPP_MAC_GET_NATIVE_PTR(classname) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac
+#define CRYPTOPP_MAC_GET_NATIVE_PTR() static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac
 
 /* set the pointer to the native Mac object of a php Mac class */
-#define CRYPTOPP_MAC_SET_NATIVE_PTR(classname, nativeMacPtr) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
+#define CRYPTOPP_MAC_SET_NATIVE_PTR(nativeMacPtr) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
 
 /* php Mac classes required methods declarations */
 #define CRYPTOPP_MAC_REQUIRED_METHODS(classname)                                                            \
@@ -82,7 +82,7 @@
     /* {{{ proto string MacInterface::setKey(string key)                            \
        Sets the key */                                                              \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, setKey) {                      \
-        MacInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU, cryptopp_ce_ ## classname);  \
+        MacInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
@@ -164,7 +164,7 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ Mac common methods */
-void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS, zend_class_entry *ce);
+void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS);

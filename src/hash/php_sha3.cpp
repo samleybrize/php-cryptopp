@@ -65,25 +65,25 @@ void init_classes_HashSha3(TSRMLS_D)
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, __construct) {
     CryptoPP::SHA3_224 *hash;
     hash = new CryptoPP::SHA3_224();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha3_224, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct) {
     CryptoPP::SHA3_256 *hash;
     hash = new CryptoPP::SHA3_256();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha3_256, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_384, __construct) {
     CryptoPP::SHA3_384 *hash;
     hash = new CryptoPP::SHA3_384();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha3_384, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
 PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, __construct) {
     CryptoPP::SHA3_512 *hash;
     hash = new CryptoPP::SHA3_512();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(HashSha3_512, hash)
+    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 /* }}} */
 
