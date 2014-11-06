@@ -27,10 +27,10 @@
 #define CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 /* get the pointer to the native Mac object of a php Mac class */
-#define CRYPTOPP_MAC_GET_NATIVE_PTR(classname) ((MacInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->mac
+#define CRYPTOPP_MAC_GET_NATIVE_PTR(classname) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac
 
 /* set the pointer to the native Mac object of a php Mac class */
-#define CRYPTOPP_MAC_SET_NATIVE_PTR(classname, nativeMacPtr) ((MacInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
+#define CRYPTOPP_MAC_SET_NATIVE_PTR(classname, nativeMacPtr) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
 
 /* php Mac classes required methods declarations */
 #define CRYPTOPP_MAC_REQUIRED_METHODS(classname)                                                            \

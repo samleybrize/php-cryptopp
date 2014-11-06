@@ -25,10 +25,10 @@
 #define CRYPTOPP_RBG_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 /* get the pointer to the native rbg object of a php rbg class */
-#define CRYPTOPP_RBG_GET_NATIVE_PTR(classname) ((RandomByteGeneratorInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->rbg
+#define CRYPTOPP_RBG_GET_NATIVE_PTR(classname) static_cast<RandomByteGeneratorInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg
 
 /* set the pointer to the native rbg object of a php rbg class */
-#define CRYPTOPP_RBG_SET_NATIVE_PTR(classname, nativeRandomByteGeneratorPtr) ((RandomByteGeneratorInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->rbg = nativeRandomByteGeneratorPtr;
+#define CRYPTOPP_RBG_SET_NATIVE_PTR(classname, nativeRandomByteGeneratorPtr) static_cast<RandomByteGeneratorInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg = nativeRandomByteGeneratorPtr;
 
 /* php rbg classes required methods declarations */
 #define CRYPTOPP_RBG_REQUIRED_METHODS(classname)                                                                           \

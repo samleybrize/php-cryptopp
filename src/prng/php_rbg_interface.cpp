@@ -23,7 +23,7 @@ void init_interface_RandomByteGeneratorInterface(TSRMLS_D) {
 zend_object_handlers RandomByteGeneratorInterface_object_handlers;
 
 void RandomByteGeneratorInterface_free_storage(void *object TSRMLS_DC) {
-    RandomByteGeneratorInterfaceContainer *obj = (RandomByteGeneratorInterfaceContainer *) object;
+    RandomByteGeneratorInterfaceContainer *obj = static_cast<RandomByteGeneratorInterfaceContainer *>(object);
     delete obj->rbg;
     zend_hash_destroy(obj->std.properties);
     FREE_HASHTABLE(obj->std.properties);
@@ -34,7 +34,7 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
     zval *tmp;
     zend_object_value retval;
 
-    RandomByteGeneratorInterfaceContainer *obj = (RandomByteGeneratorInterfaceContainer *) emalloc(sizeof(RandomByteGeneratorInterfaceContainer));
+    RandomByteGeneratorInterfaceContainer *obj = static_cast<RandomByteGeneratorInterfaceContainer *>(emalloc(sizeof(RandomByteGeneratorInterfaceContainer)));
     memset(obj, 0, sizeof(RandomByteGeneratorInterfaceContainer));
     obj->std.ce = type;
 
@@ -44,7 +44,7 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
     #if PHP_VERSION_ID < 50399
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
     #else
-        object_properties_init((zend_object*) &(obj->std), type);
+        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
     #endif
 
     retval.handle   = zend_objects_store_put(obj, NULL, RandomByteGeneratorInterface_free_storage, NULL TSRMLS_CC);
@@ -75,5 +75,5 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
     byte block[size];
     rbg->GenerateBlock(block, size);
 
-    RETVAL_STRINGL((char*) block, size, 1);
+    RETVAL_STRINGL(reinterpret_cast<char*>(block), size, 1);
 }

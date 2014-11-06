@@ -27,10 +27,10 @@
 #define CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(classname) init_class_ ## classname(TSRMLS_C);
 
 /* get the pointer to the native hash object of a php hash class */
-#define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) ((HashInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash
+#define CRYPTOPP_HASH_GET_NATIVE_PTR(classname) static_cast<HashInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->hash
 
 /* set the pointer to the native hash object of a php hash class */
-#define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) ((HashInterfaceContainer *)zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
+#define CRYPTOPP_HASH_SET_NATIVE_PTR(classname, nativeHashPtr) static_cast<HashInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
 /* php hash classes required methods declarations */
 #define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                                           \
