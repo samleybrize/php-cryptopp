@@ -28,21 +28,17 @@ zend_object_handlers HashInterface_object_handlers;
 void HashInterface_free_storage(void *object TSRMLS_DC) {
     HashInterfaceContainer *obj = static_cast<HashInterfaceContainer *>(object);
     delete obj->hash;
-    zend_hash_destroy(obj->std.properties);
-    FREE_HASHTABLE(obj->std.properties);
+    zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
 
 zend_object_value HashInterface_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zval *tmp;
     zend_object_value retval;
 
     HashInterfaceContainer *obj = static_cast<HashInterfaceContainer *>(emalloc(sizeof(HashInterfaceContainer)));
     memset(obj, 0, sizeof(HashInterfaceContainer));
-    obj->std.ce = type;
 
-    ALLOC_HASHTABLE(obj->std.properties);
-    zend_hash_init(obj->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
+    zend_object_std_init(&obj->std, type TSRMLS_CC);
 
     #if PHP_VERSION_ID < 50399
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));

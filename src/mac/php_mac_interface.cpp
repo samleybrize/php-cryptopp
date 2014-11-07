@@ -28,26 +28,22 @@ zend_object_handlers MacInterface_object_handlers;
 void MacInterface_free_storage(void *object TSRMLS_DC) {
     MacInterfaceContainer *obj = static_cast<MacInterfaceContainer *>(object);
     delete obj->mac;
-    zend_hash_destroy(obj->std.properties);
-    FREE_HASHTABLE(obj->std.properties);
+    zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
 
 zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zval *tmp;
     zend_object_value retval;
 
-    MacInterfaceContainer *obj = static_cast<MacInterfaceContainer *>(emalloc(sizeof(MacInterfaceContainer)));
+    MacInterfaceContainer *obj = static_cast<MacInterfaceContainer*>(emalloc(sizeof(MacInterfaceContainer)));
     memset(obj, 0, sizeof(MacInterfaceContainer));
-    obj->std.ce = type;
 
-    ALLOC_HASHTABLE(obj->std.properties);
-    zend_hash_init(obj->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
+    zend_object_std_init(&obj->std, type TSRMLS_CC);
 
     #if PHP_VERSION_ID < 50399
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
     #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
+        object_properties_init(&obj->std, type);
     #endif
 
     retval.handle   = zend_objects_store_put(obj, NULL, MacInterface_free_storage, NULL TSRMLS_CC);
