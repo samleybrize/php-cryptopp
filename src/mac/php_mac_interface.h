@@ -42,7 +42,8 @@
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC)  \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC)      \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC)        \
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC)
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC)    \
+    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC)
 
 /* php Mac classes required methods declarations to include in the headers */
 #define CRYPTOPP_MAC_REQUIRED_METHODS_HEADER(classname)         \
@@ -54,32 +55,33 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, calculateDigest);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update);   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);    \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart);
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart);  \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify);
 
 /* php Mac classes common methods bodies */
 #define CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
-    /* {{{ proto string MacInterface::__sleep(void)                                 \
+    /* {{{ proto void MacInterface::__sleep(void)                                   \
        Prevents serialization of a MacInterface instance */                         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string MacInterface::__wakeup(void)                                \
+    /* {{{ proto void MacInterface::__wakeup(void)                                  \
        Prevents use of a MacInterface instance that has been unserialized */        \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup) {                    \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string MacInterface::getDigestSize(void)                           \
+    /* {{{ proto int MacInterface::getDigestSize(void)                              \
        Returns the digest size */                                                   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
         RETURN_LONG(nativeClassname::DIGESTSIZE);                                   \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string MacInterface::setKey(string key)                            \
+    /* {{{ proto void MacInterface::setKey(string key)                              \
        Sets the key */                                                              \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, setKey) {                      \
         MacInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
@@ -93,7 +95,7 @@
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string MacInterface::update(string data)                           \
+    /* {{{ proto void MacInterface::update(string data)                             \
        Adds data to the current incremental MAC */                                  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update) {                      \
         MacInterface_update(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
@@ -107,10 +109,17 @@
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string MacInterface::restart(void)                                 \
+    /* {{{ proto void MacInterface::restart(void)                                   \
        Discard the current incremental MAC */                                       \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart) {                     \
         MacInterface_restart(INTERNAL_FUNCTION_PARAM_PASSTHRU);                     \
+    }                                                                               \
+    /* }}} */                                                                       \
+                                                                                    \
+    /* {{{ proto boolean MacInterface::verify(string a, string b)                   \
+       Verify that a MAC digest match another one */                                \
+    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify) {                      \
+        MacInterface_verify(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
     }                                                                               \
     /* }}} */
 
@@ -144,6 +153,11 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_restart, 0)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_verify, 0)
+    ZEND_ARG_INFO(0, a)
+    ZEND_ARG_INFO(0, b)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* pointer to the MacInterface zend class entry */
@@ -169,6 +183,7 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS);
 void MacInterface_restart(INTERNAL_FUNCTION_PARAMETERS);
+void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_MAC_INTERFACE_H */

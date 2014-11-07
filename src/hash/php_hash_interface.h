@@ -56,14 +56,14 @@
 
 /* php hash classes common methods bodies */
 #define CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)        \
-    /* {{{ proto string HashInterface::__sleep(void)                                \
+    /* {{{ proto void HashInterface::__sleep(void)                                  \
        Prevents serialization of a HashInterface instance */                        \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string HashInterface::__wakeup(void)                               \
+    /* {{{ proto void HashInterface::__wakeup(void)                                 \
        Prevents use of a HashInterface instance that has been unserialized */       \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup) {                    \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
@@ -84,7 +84,7 @@
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string HashInterface::update(string data)                          \
+    /* {{{ proto void HashInterface::update(string data)                            \
        Adds data to the current incremental hash */                                 \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update) {                      \
         HashInterface_update(INTERNAL_FUNCTION_PARAM_PASSTHRU);                     \
@@ -98,7 +98,7 @@
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
-    /* {{{ proto string HashInterface::restart(void)                                \
+    /* {{{ proto void HashInterface::restart(void)                                  \
        Discard the current incremental hash */                                      \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart) {                     \
         HashInterface_restart(INTERNAL_FUNCTION_PARAM_PASSTHRU);                    \

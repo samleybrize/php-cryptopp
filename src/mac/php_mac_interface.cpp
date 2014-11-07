@@ -53,6 +53,9 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
 }
 /* }}} */
 
+static zval *getKey(zval *object);
+static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *mac, zval *object);
+
 /* common implementation of MacInterface::setKey() */
 void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     char *key   = NULL;
@@ -65,13 +68,12 @@ void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
-    if (!mac->IsValidKeyLength(keySize)) {
-        zend_class_entry *ce;
-        ce = zend_get_class_entry(getThis() TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+    // ensure that the key is valid
+    if (!ensureKeyIsValid(keySize, mac, getThis())) {
         return;
     }
 
+    // set the key on both the php object and the native cryptopp object
     mac->SetKey(reinterpret_cast<byte*>(key), keySize);
     mac->Restart();
     zend_update_property_string(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key TSRMLS_CC);
@@ -86,17 +88,17 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
         return;
     }
 
-    // TODO check if key is set
-    // TODO = zend_read_property
-    // TODO = zend_get_class_entry
-    zend_class_entry *ce;
-    zval *key;
-    ce  = zend_get_class_entry(getThis() TSRMLS_CC);
-    key = zend_read_property(ce, getThis(), "key", 3, 1 TSRMLS_CC);
-
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
+    // ensure that the key is valid
+    zval *key = getKey(getThis());
+
+    if (!ensureKeyIsValid(Z_STRLEN_P(key), mac, getThis())) {
+        return;
+    }
+
+    // calculate the digest
     byte digest[mac->DigestSize()];
     mac->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
 
@@ -112,21 +114,33 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
         return;
     }
 
-    // TODO check if key is set
-
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
+    // ensure that the key is valid
+    zval *key = getKey(getThis());
+
+    if (!ensureKeyIsValid(Z_STRLEN_P(key), mac, getThis())) {
+        return;
+    }
+
+    // perform the update
     mac->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
 
 /* common implementation of MacInterface::final() */
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
-    // TODO check if key is set
-
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
+    // ensure that the key is valid
+    zval *key = getKey(getThis());
+
+    if (!ensureKeyIsValid(Z_STRLEN_P(key), mac, getThis())) {
+        return;
+    }
+
+    // calculate the digest
     byte digest[mac->DigestSize()];
     mac->Final(digest);
 
@@ -139,4 +153,56 @@ void MacInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     mac->Restart();
+}
+
+/* common implémentation of MacInterface::verify() */
+void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS) {
+    char *digest1   = NULL;
+    char *digest2   = NULL;
+    int digest1Size = 0;
+    int digest2Size = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &digest1, &digest1Size, &digest2, &digest2Size)) {
+        return;
+    }
+
+    // if one of the two digests is empty, or if their sizes does not match, return false
+    if (0 == digest1Size || 0 == digest2Size || digest1Size != digest2Size) {
+        RETURN_FALSE
+    }
+
+    // compare the digests
+    int status = 0;
+
+    for (int i = 0; i < digest1Size; i++) {
+        status |= digest1[i] ^ digest2[i];
+    }
+
+    if (0 == status) {
+        RETURN_TRUE
+    } else {
+        RETURN_FALSE
+    }
+}
+
+/* return the key of a MacInterface instance */
+static zval *getKey(zval *object) {
+    zend_class_entry *ce;
+    zval *key;
+    ce  = zend_get_class_entry(object TSRMLS_CC);
+    key = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
+
+    return key;
+}
+
+/* ensure that a key size is valid for a MacInterface instance */
+static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *mac, zval *object) {
+    if (!mac->IsValidKeyLength(keySize)) {
+        zend_class_entry *ce;
+        ce = zend_get_class_entry(object TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+        return false;
+    }
+
+    return true;
 }

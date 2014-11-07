@@ -3,9 +3,7 @@
 #include "php_ttmac.h"
 #include <ttmac.h>
 
-// TODO key
-// TODO = key in constructor (optional)
-// TODO = setKey() method (check key length)
+// TODO key in constructor (optional)
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacTwoTrackMac_construct, 0)
