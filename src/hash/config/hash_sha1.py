@@ -13,4 +13,7 @@ def config(cryptoppDir):
     config["headerFileList"]        = ["hash/php_sha1.h"]
     config["phpMinitStatements"]    = ["CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha1)"]
 
+    config["hashAssoc"]             = {}
+    config["hashAssoc"]["sha1"]     = "CryptoPP::SHA1";
+
     return config

@@ -3,8 +3,6 @@
 #include "php_ttmac.h"
 #include <ttmac.h>
 
-// TODO key in constructor (optional)
-
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacTwoTrackMac_construct, 0)
 ZEND_END_ARG_INFO()
@@ -38,4 +36,4 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, getName) {
 /* }}} */
 
 /* include common hash methods definitions */
-CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(MacTwoTrackMac, CryptoPP::TTMAC)
+CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(MacTwoTrackMac)

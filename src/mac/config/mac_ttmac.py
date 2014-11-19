@@ -3,7 +3,7 @@ import os
 def config(cryptoppDir):
     config = {}
 
-    # check if md5 is supported by installed crypto++
+    # check if ttmac is supported by installed crypto++
     if not os.path.isfile(cryptoppDir + "/ttmac.h"):
         config["enabled"] = False
         return config

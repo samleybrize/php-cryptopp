@@ -41,12 +41,14 @@ configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
 
 configFileList.append("src/mac/config/mac_interface.py")
+configFileList.append("src/mac/config/mac_hmac.py")
 configFileList.append("src/mac/config/mac_ttmac.py")
 
 # process all config scripts
 phpMinitStatements  = []
 srcFileList         = ["php_cryptopp.cpp"]
 headerFileList      = []
+hashAssoc           = {}
 
 for configFile in configFileList:
     # verify that config file exists
@@ -70,7 +72,10 @@ for configFile in configFileList:
     if "phpMinitStatements" in config:
         phpMinitStatements.extend(config["phpMinitStatements"])
 
-# build includes for header file
+    if "hashAssoc" in config:
+        hashAssoc = dict(hashAssoc.items() + config["hashAssoc"].items())
+
+# build includes for main header file
 headerFileIncludes = "";
 
 for i in headerFileList:
@@ -83,6 +88,10 @@ mainHeaderContent   = mainHeaderContent.replace("//%configure_inclusion%", confi
 mainHeaderContent   = mainHeaderContent.replace("%ext_version%", EXTENSION_VERSION)
 
 open("src/php_cryptopp.h", "w").write(mainHeaderContent)
+
+# configure HMAC
+hmac = loadModuleFromFile("src/mac/config/mac_hmac.py")
+hmac.configure(hashAssoc)
 
 # print the list of source files to add
 for key, srcFile in enumerate(srcFileList):

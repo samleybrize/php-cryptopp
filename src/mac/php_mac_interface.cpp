@@ -76,7 +76,7 @@ void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     // set the key on both the php object and the native cryptopp object
     mac->SetKey(reinterpret_cast<byte*>(key), keySize);
     mac->Restart();
-    zend_update_property_string(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key TSRMLS_CC);
+    zend_update_property_stringl(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key, keySize TSRMLS_CC);
 }
 
 /* common implementation of MacInterface::calculateDigest() */

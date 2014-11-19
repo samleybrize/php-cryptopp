@@ -59,7 +59,7 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify);
 
 /* php Mac classes common methods bodies */
-#define CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
+#define CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(classname)                          \
     /* {{{ proto void MacInterface::__sleep(void)                                   \
        Prevents serialization of a MacInterface instance */                         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
@@ -77,7 +77,9 @@
     /* {{{ proto int MacInterface::getDigestSize(void)                              \
        Returns the digest size */                                                   \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, getDigestSize) {               \
-        RETURN_LONG(nativeClassname::DIGESTSIZE);                                   \
+        CryptoPP::MessageAuthenticationCode *mac;                                   \
+        mac = CRYPTOPP_MAC_GET_NATIVE_PTR();                                        \
+        RETURN_LONG(mac->DigestSize());                                             \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
