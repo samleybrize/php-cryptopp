@@ -40,6 +40,7 @@ configFileList.append("src/hash/config/hash_sha3.py")
 configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
 
+configFileList.append("src/mac/config/mac.py")
 configFileList.append("src/mac/config/mac_interface.py")
 configFileList.append("src/mac/config/mac_hmac.py")
 configFileList.append("src/mac/config/mac_ttmac.py")

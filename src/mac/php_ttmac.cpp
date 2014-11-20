@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_MacTwoTrackMac[] = {
     PHP_FE_END
 };
 
-CRYPTOPP_MAC_INIT_CLASS(MacTwoTrackMac, cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac)
+CRYPTOPP_MAC_INIT_CLASS("two_track_mac", MacTwoTrackMac, cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac)
 /* }}} */
 
 /* {{{ proto MacTwoTrackMac::__construct(void) */

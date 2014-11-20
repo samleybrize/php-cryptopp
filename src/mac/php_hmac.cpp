@@ -21,7 +21,7 @@ static zend_function_entry cryptopp_methods_MacHmac[] = {
     PHP_FE_END
 };
 
-CRYPTOPP_MAC_INIT_CLASS(MacHmac, cryptopp_ce_MacHmac, cryptopp_methods_MacHmac)
+CRYPTOPP_MAC_INIT_CLASS("hmac", MacHmac, cryptopp_ce_MacHmac, cryptopp_methods_MacHmac)
 
 void init_class_MacHmac_(TSRMLS_D) {
     CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(MacHmac)

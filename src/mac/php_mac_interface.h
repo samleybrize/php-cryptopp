@@ -5,7 +5,7 @@
 #include <zend_exceptions.h>
 
 /* {{{ inits a php Mac class */
-#define CRYPTOPP_MAC_INIT_CLASS(classname, classEntryPtrName, classMethodsVarName)          \
+#define CRYPTOPP_MAC_INIT_CLASS(algoName, classname, classEntryPtrName, classMethodsVarName) \
     CRYPTOPP_MAC_INIT_CLASS_FUNC_HEADER(classname) {                                        \
         zend_class_entry ce;                                                                \
         INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, #classname, classMethodsVarName);   \
@@ -16,6 +16,8 @@
         MacInterface_object_handlers.clone_obj = NULL;                                      \
                                                                                             \
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_MacInterface);    \
+                                                                                            \
+        addMacAlgo(algoName, PHP_CRYPTOPP_NAMESPACE "\\" #classname);                       \
                                                                                             \
         zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PROTECTED TSRMLS_CC);  \
     }
