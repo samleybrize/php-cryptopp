@@ -56,7 +56,7 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
 static zval *getKey(zval *object);
 static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *mac, zval *object);
 
-/* common implementation of MacInterface::setKey() */
+/* {{{ common implementation of MacInterface::setKey() */
 void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     char *key   = NULL;
     int keySize = 0;
@@ -78,8 +78,9 @@ void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     mac->Restart();
     zend_update_property_stringl(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key, keySize TSRMLS_CC);
 }
+/* }}} */
 
-/* common implementation of MacInterface::calculateDigest() */
+/* {{{ common implementation of MacInterface::calculateDigest() */
 void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
     int msgSize = 0;
@@ -104,8 +105,9 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), mac->DigestSize(), 1);
 }
+/* }}} */
 
-/* common implementation of MacInterface::update() */
+/* {{{ common implementation of MacInterface::update() */
 void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
     int msgSize = 0;
@@ -127,8 +129,9 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     // perform the update
     mac->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
+/* }}} */
 
-/* common implementation of MacInterface::final() */
+/* {{{ common implementation of MacInterface::final() */
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
@@ -146,16 +149,18 @@ void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), mac->DigestSize(), 1);
 }
+/* }}} */
 
-/* common implementation of MacInterface::restart() */
+/* {{{ common implementation of MacInterface::restart() */
 void MacInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
     mac->Restart();
 }
+/* }}} */
 
-/* common implémentation of MacInterface::verify() */
+/* {{{ common implémentation of MacInterface::verify() */
 void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS) {
     char *digest1   = NULL;
     char *digest2   = NULL;
@@ -184,8 +189,9 @@ void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS) {
         RETURN_FALSE
     }
 }
+/* }}} */
 
-/* return the key of a MacInterface instance */
+/* {{{ return the key of a MacInterface instance */
 static zval *getKey(zval *object) {
     zend_class_entry *ce;
     zval *key;
@@ -194,8 +200,9 @@ static zval *getKey(zval *object) {
 
     return key;
 }
+/* }}} */
 
-/* ensure that a key size is valid for a MacInterface instance */
+/* {{{ ensure that a key size is valid for a MacInterface instance */
 static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *mac, zval *object) {
     if (!mac->IsValidKeyLength(keySize)) {
         zend_class_entry *ce;
@@ -206,3 +213,13 @@ static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *m
 
     return true;
 }
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

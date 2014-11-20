@@ -50,7 +50,7 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
 }
 /* }}} */
 
-/* common implementation of RandomByteGeneratorInterface::generate() */
+/* {{{ common implementation of RandomByteGeneratorInterface::generate() */
 void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
     long size = 0;
 
@@ -73,3 +73,13 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL(reinterpret_cast<char*>(block), size, 1);
 }
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

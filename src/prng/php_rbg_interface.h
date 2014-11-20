@@ -4,7 +4,7 @@
 #include "../php_cryptopp.h"
 #include <zend_exceptions.h>
 
-/* inits a php rbg class */
+/* {{{ inits a php rbg class */
 #define CRYPTOPP_RBG_INIT_CLASS(classname, classEntryPtrName, classMethodsVarName)          \
     CRYPTOPP_RBG_INIT_CLASS_FUNC_HEADER(classname) {                                        \
         zend_class_entry ce;                                                                \
@@ -17,6 +17,7 @@
                                                                                             \
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_RandomByteGeneratorInterface);   \
     }
+/* }}} */
 
 /* header of the function that init a php rbg class */
 #define CRYPTOPP_RBG_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
@@ -30,19 +31,21 @@
 /* set the pointer to the native rbg object of a php rbg class */
 #define CRYPTOPP_RBG_SET_NATIVE_PTR(nativeRandomByteGeneratorPtr) static_cast<RandomByteGeneratorInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg = nativeRandomByteGeneratorPtr;
 
-/* php rbg classes required methods declarations */
+/* {{{ php rbg classes required methods declarations */
 #define CRYPTOPP_RBG_REQUIRED_METHODS(classname)                                                                           \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep, arginfo_RandomByteGeneratorInterface___sleep, ZEND_ACC_PUBLIC)   \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_RandomByteGeneratorInterface___wakeup, ZEND_ACC_PUBLIC) \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate, arginfo_RandomByteGeneratorInterface_generate, ZEND_ACC_PUBLIC)
+/* }}} */
 
-/* php rbg classes required methods declarations to include in the headers */
+/* {{{ php rbg classes required methods declarations to include in the headers */
 #define CRYPTOPP_RBG_REQUIRED_METHODS_HEADER(classname)         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup); \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate);
+/* }}} */
 
-/* php rbg classes common methods bodies */
+/* {{{ php rbg classes common methods bodies */
 #define CRYPTOPP_RBG_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
     /* {{{ proto string RandomByteGeneratorInterface::__sleep(void)                 \
        Prevents serialization of a RandomByteGeneratorInterface instance */         \
@@ -64,6 +67,7 @@
         RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAM_PASSTHRU);    \
     }                                                                               \
     /* }}} */
+/* }}} */
 
 /* {{{ php rbg classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_RandomByteGeneratorInterface___sleep, 0)
@@ -99,3 +103,12 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_RBG_INTERFACE_H */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

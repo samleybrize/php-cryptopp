@@ -4,7 +4,7 @@
 #include "../php_cryptopp.h"
 #include "php_hash.h"
 
-/* inits a php hash class */
+/* {{{ inits a php hash class */
 #define CRYPTOPP_HASH_INIT_CLASS(algoName, classname, classEntryPtrName, classMethodsVarName) \
     CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(classname) {                                       \
         zend_class_entry ce;                                                                \
@@ -19,6 +19,7 @@
                                                                                             \
         addHashAlgo(algoName, PHP_CRYPTOPP_NAMESPACE "\\" #classname);                      \
     }
+/* }}} */
 
 /* header of the function that init a php hash class */
 #define CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
@@ -32,7 +33,7 @@
 /* set the pointer to the native hash object of a php hash class */
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(nativeHashPtr) static_cast<HashInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
-/* php hash classes required methods declarations */
+/* {{{ php hash classes required methods declarations */
 #define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                                           \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep, arginfo_HashInterface___sleep, ZEND_ACC_PUBLIC)                   \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_HashInterface___wakeup, ZEND_ACC_PUBLIC)                 \
@@ -42,8 +43,9 @@
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC)                     \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, final, arginfo_HashInterface_final, ZEND_ACC_PUBLIC)                       \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart, arginfo_HashInterface_restart, ZEND_ACC_PUBLIC)
+/* }}} */
 
-/* php hash classes required methods declarations to include in the headers */
+/* {{{ php hash classes required methods declarations to include in the headers */
 #define CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(classname)                \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup);         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep);          \
@@ -53,8 +55,9 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, update);           \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);            \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart);
+/* }}} */
 
-/* php hash classes common methods bodies */
+/* {{{ php hash classes common methods bodies */
 #define CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)        \
     /* {{{ proto void HashInterface::__sleep(void)                                  \
        Prevents serialization of a HashInterface instance */                        \
@@ -104,6 +107,7 @@
         HashInterface_restart(INTERNAL_FUNCTION_PARAM_PASSTHRU);                    \
     }                                                                               \
     /* }}} */
+/* }}} */
 
 /* {{{ php hash classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_HashInterface___wakeup, 0)
@@ -158,3 +162,12 @@ void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_HASH_INTERFACE_H */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

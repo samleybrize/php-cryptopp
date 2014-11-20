@@ -111,3 +111,12 @@ CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha3_224, CryptoPP::SHA3_224)
 CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha3_256, CryptoPP::SHA3_256)
 CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha3_384, CryptoPP::SHA3_384)
 CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha3_512, CryptoPP::SHA3_512)
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

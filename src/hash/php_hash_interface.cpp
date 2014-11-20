@@ -53,7 +53,7 @@ zend_object_value HashInterface_create_handler(zend_class_entry *type TSRMLS_DC)
 }
 /* }}} */
 
-/* common implementation of HashInterface::calculateDigest() */
+/* {{{ common implementation of HashInterface::calculateDigest() */
 void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
     int msgSize = 0;
@@ -70,8 +70,9 @@ void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), hash->DigestSize(), 1);
 }
+/* }}} */
 
-/* common implementation of HashInterface::update() */
+/* {{{ common implementation of HashInterface::update() */
 void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
     int msgSize = 0;
@@ -85,8 +86,9 @@ void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
 
     hash->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
+/* }}} */
 
-/* common implementation of HashInterface::final() */
+/* {{{ common implementation of HashInterface::final() */
 void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
@@ -96,11 +98,22 @@ void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), hash->DigestSize(), 1);
 }
+/* }}} */
 
-/* common implementation of HashInterface::restart() */
+/* {{{ common implementation of HashInterface::restart() */
 void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
     hash->Restart();
 }
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

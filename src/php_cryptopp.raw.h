@@ -26,3 +26,12 @@ extern zend_module_entry cryptopp_module_entry;
 //%configure_inclusion%
 
 #endif /* PHP_CRYPTOPP_H */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

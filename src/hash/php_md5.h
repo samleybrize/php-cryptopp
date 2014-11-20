@@ -8,3 +8,12 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashMd5, __construct);
 CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(HashMd5)
 
 #endif /* PHP_HASH_MD5_H */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

@@ -74,3 +74,12 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, getName) {
 
 /* include common hash methods definitions */
 CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(MacHmac)
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

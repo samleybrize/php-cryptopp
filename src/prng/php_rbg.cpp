@@ -30,3 +30,12 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_RandomByteGenerator, __construct) {
 
 /* include common rbg methods definitions */
 CRYPTOPP_RBG_COMMON_METHODS_DEFINITIONS(RandomByteGenerator, CryptoPP::AutoSeededRandomPool)
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */

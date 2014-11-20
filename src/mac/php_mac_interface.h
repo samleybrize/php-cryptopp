@@ -4,7 +4,7 @@
 #include "../php_cryptopp.h"
 #include <zend_exceptions.h>
 
-/* inits a php Mac class */
+/* {{{ inits a php Mac class */
 #define CRYPTOPP_MAC_INIT_CLASS(classname, classEntryPtrName, classMethodsVarName)          \
     CRYPTOPP_MAC_INIT_CLASS_FUNC_HEADER(classname) {                                        \
         zend_class_entry ce;                                                                \
@@ -19,6 +19,7 @@
                                                                                             \
         zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PROTECTED TSRMLS_CC);  \
     }
+/* }}} */
 
 /* header of the function that init a php Mac class */
 #define CRYPTOPP_MAC_INIT_CLASS_FUNC_HEADER(classname) void init_class_ ## classname(TSRMLS_D)
@@ -32,7 +33,7 @@
 /* set the pointer to the native Mac object of a php Mac class */
 #define CRYPTOPP_MAC_SET_NATIVE_PTR(nativeMacPtr) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
 
-/* php Mac classes required methods declarations */
+/* {{{ php Mac classes required methods declarations */
 #define CRYPTOPP_MAC_REQUIRED_METHODS(classname)                                                            \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep, arginfo_MacInterface___sleep, ZEND_ACC_PUBLIC)    \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_MacInterface___wakeup, ZEND_ACC_PUBLIC)  \
@@ -44,8 +45,9 @@
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC)        \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC)    \
     PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC)
+/* }}} */
 
-/* php Mac classes required methods declarations to include in the headers */
+/* {{{ php Mac classes required methods declarations to include in the headers */
 #define CRYPTOPP_MAC_REQUIRED_METHODS_HEADER(classname)         \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup); \
@@ -57,8 +59,9 @@
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, final);    \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, restart);  \
     PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, verify);
+/* }}} */
 
-/* php Mac classes common methods bodies */
+/* {{{ php Mac classes common methods bodies */
 #define CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(classname)                          \
     /* {{{ proto void MacInterface::__sleep(void)                                   \
        Prevents serialization of a MacInterface instance */                         \
@@ -124,6 +127,7 @@
         MacInterface_verify(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
     }                                                                               \
     /* }}} */
+/* }}} */
 
 /* {{{ php Mac classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface___sleep, 0)
@@ -189,3 +193,12 @@ void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_MAC_INTERFACE_H */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */
