@@ -59,7 +59,7 @@ for configFile in configFileList:
 
     # retrieve config
     module = loadModuleFromFile(configFile)
-    config = module.config(cryptoppDir)
+    config = module.getConfig(cryptoppDir)
 
     if False == config["enabled"]:
         continue

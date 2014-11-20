@@ -1,6 +1,6 @@
 import os
 
-def config(cryptoppDir):
+def getConfig(cryptoppDir):
     config = {}
 
     config["enabled"]               = True
