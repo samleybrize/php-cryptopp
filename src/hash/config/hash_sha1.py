@@ -8,12 +8,13 @@ def config(cryptoppDir):
         config["enabled"] = False
         return config
 
-    config["enabled"]               = True
-    config["srcFileList"]           = ["hash/php_sha1.cpp"]
-    config["headerFileList"]        = ["hash/php_sha1.h"]
-    config["phpMinitStatements"]    = ["CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha1)"]
+    config["enabled"]                   = True
+    config["srcFileList"]               = ["hash/php_sha1.cpp"]
+    config["headerFileList"]            = ["hash/php_sha1.h"]
+    config["phpMinitStatements"]        = ["CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha1)"]
+    config["hashCryptoppHeaders"]       = ["sha.h"]
 
-    config["hashAssoc"]             = {}
-    config["hashAssoc"]["sha1"]     = "CryptoPP::SHA1";
+    config["hashNativeAssoc"]           = {}
+    config["hashNativeAssoc"]["sha1"]   = "CryptoPP::SHA1";
 
     return config

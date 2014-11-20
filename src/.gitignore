@@ -3,3 +3,4 @@
 *.lo
 *.pyc
 php_cryptopp.h
+mac/php_hmac_d.h

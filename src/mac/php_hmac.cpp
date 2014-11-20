@@ -1,12 +1,10 @@
 #include "../php_cryptopp.h"
 #include "php_mac_interface.h"
 #include "php_hmac.h"
+#include "php_hmac_d.h"
 #include <hmac.h>
 #include <string>
 #include <zend_exceptions.h>
-
-// TODO
-#include <sha.h>
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacHmac_construct, 0)
@@ -40,13 +38,12 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, __construct) {
         return;
     }
 
-    // TODO pick the right HMAC implementation
+    // pick the right HMAC implementation
     std::string algoName(hashAlgo, hashAlgoSize);
     CryptoPP::MessageAuthenticationCode *mac;
 
-    if (0 == algoName.compare("sha1")) {
-        mac = new CryptoPP::HMAC<CryptoPP::SHA1>();
-    } else {
+    CRYPTOPP_MAC_HMAC_CONDITIONAL_CREATION(algoName, mac)
+    else {
         // not a valid hash algo name
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : unknown hash algorithm %s", cryptopp_ce_MacHmac->name, algoName.c_str());
         RETURN_NULL();
@@ -54,6 +51,10 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, __construct) {
 
     CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
     zend_update_property_stringl(cryptopp_ce_MacHmac, getThis(), "hashAlgo", 8, hashAlgo, hashAlgoSize TSRMLS_CC);
+
+    // set a default empty key
+    byte defaultKey[0];
+    mac->SetKey(defaultKey, 0);
 }
 /* }}} */
 
