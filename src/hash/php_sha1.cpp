@@ -12,7 +12,7 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_HashSha1;
 
 static zend_function_entry cryptopp_methods_HashSha1[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct, arginfo_HashSha1_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashSha1, __construct, arginfo_HashSha1_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha1)
     PHP_FE_END
 };
@@ -21,7 +21,7 @@ CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, cryptopp_ce_HashSha1, cryptopp_method
 /* }}} */
 
 /* {{{ proto HashSha1::__construct(void) */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct) {
+PHP_METHOD(Cryptopp_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
@@ -30,7 +30,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, __construct) {
 
 /* {{{ proto string HashSha1::getName(void)
    Return algorithm name */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha1, getName) {
+PHP_METHOD(Cryptopp_HashSha1, getName) {
     RETURN_STRING("sha1", 1);
 }
 /* }}} */

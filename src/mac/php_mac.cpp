@@ -49,14 +49,14 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_Mac;
 
 static zend_function_entry cryptopp_methods_Mac[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Mac, getAlgos, arginfo_Mac_getAlgos, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Mac, getClassname, arginfo_Mac_getClassname, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Cryptopp_Mac, getAlgos, arginfo_Mac_getAlgos, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Cryptopp_Mac, getClassname, arginfo_Mac_getClassname, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
 void init_class_Mac(TSRMLS_D) {
     zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, "Mac", cryptopp_methods_Mac);
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "Mac", cryptopp_methods_Mac);
     cryptopp_ce_Mac             = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_Mac->ce_flags  |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 }
@@ -64,7 +64,7 @@ void init_class_Mac(TSRMLS_D) {
 
 /* {{{ proto array Mac::getAlgos(void)
    Get the list of supported mac algorithms */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Mac, getAlgos) {
+PHP_METHOD(Cryptopp_Mac, getAlgos) {
     array_init(return_value);
     vector<string> _algos = getMacAlgoList();
 
@@ -76,7 +76,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Mac, getAlgos) {
 
 /* {{{ proto array Mac::getClassname(string algoName)
    Get the the name of the class that implements a mac algorithm */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Mac, getClassname) {
+PHP_METHOD(Cryptopp_Mac, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;
 

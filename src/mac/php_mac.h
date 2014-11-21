@@ -9,8 +9,8 @@ void addMacAlgo(const std::string algoName, const std::string macClassname);
 std::vector<std::string> getMacAlgoList();
 
 void init_class_Mac(TSRMLS_D);
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Mac, getAlgos);
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Mac, getClassname);
+PHP_METHOD(Cryptopp_Mac, getAlgos);
+PHP_METHOD(Cryptopp_Mac, getClassname);
 
 #endif /* PHP_MAC_H */
 

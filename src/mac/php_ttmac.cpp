@@ -12,7 +12,7 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_MacTwoTrackMac;
 
 static zend_function_entry cryptopp_methods_MacTwoTrackMac[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, __construct, arginfo_MacTwoTrackMac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_MacTwoTrackMac, __construct, arginfo_MacTwoTrackMac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_MAC_REQUIRED_METHODS(MacTwoTrackMac)
     PHP_FE_END
 };
@@ -21,7 +21,7 @@ CRYPTOPP_MAC_INIT_CLASS("two_track_mac", MacTwoTrackMac, cryptopp_ce_MacTwoTrack
 /* }}} */
 
 /* {{{ proto MacTwoTrackMac::__construct(void) */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, __construct) {
+PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct) {
     CryptoPP::TTMAC *mac;
     mac = new CryptoPP::TTMAC();
     CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
@@ -30,7 +30,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, __construct) {
 
 /* {{{ proto string MacTwoTrackMac::getName(void)
    Return algorithm name */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacTwoTrackMac, getName) {
+PHP_METHOD(Cryptopp_MacTwoTrackMac, getName) {
     RETURN_STRING("two_track_mac", 1);
 }
 /* }}} */

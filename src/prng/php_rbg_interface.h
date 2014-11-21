@@ -8,7 +8,7 @@
 #define CRYPTOPP_RBG_INIT_CLASS(classname, classEntryPtrName, classMethodsVarName)          \
     CRYPTOPP_RBG_INIT_CLASS_FUNC_HEADER(classname) {                                        \
         zend_class_entry ce;                                                                \
-        INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, #classname, classMethodsVarName);   \
+        INIT_NS_CLASS_ENTRY(ce, "Cryptopp", #classname, classMethodsVarName);   \
         classEntryPtrName = zend_register_internal_class(&ce TSRMLS_CC);                    \
                                                                                             \
         classEntryPtrName->create_object = RandomByteGeneratorInterface_create_handler;     \
@@ -33,37 +33,37 @@
 
 /* {{{ php rbg classes required methods declarations */
 #define CRYPTOPP_RBG_REQUIRED_METHODS(classname)                                                                           \
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep, arginfo_RandomByteGeneratorInterface___sleep, ZEND_ACC_PUBLIC)   \
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup, arginfo_RandomByteGeneratorInterface___wakeup, ZEND_ACC_PUBLIC) \
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate, arginfo_RandomByteGeneratorInterface_generate, ZEND_ACC_PUBLIC)
+    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_RandomByteGeneratorInterface___sleep, ZEND_ACC_PUBLIC)   \
+    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_RandomByteGeneratorInterface___wakeup, ZEND_ACC_PUBLIC) \
+    PHP_ME(Cryptopp_ ## classname, generate, arginfo_RandomByteGeneratorInterface_generate, ZEND_ACC_PUBLIC)
 /* }}} */
 
 /* {{{ php rbg classes required methods declarations to include in the headers */
 #define CRYPTOPP_RBG_REQUIRED_METHODS_HEADER(classname)         \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep);  \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup); \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate);
+    PHP_METHOD(Cryptopp_ ## classname, __sleep);  \
+    PHP_METHOD(Cryptopp_ ## classname, __wakeup); \
+    PHP_METHOD(Cryptopp_ ## classname, generate);
 /* }}} */
 
 /* {{{ php rbg classes common methods bodies */
 #define CRYPTOPP_RBG_COMMON_METHODS_DEFINITIONS(classname, nativeClassname)         \
     /* {{{ proto string RandomByteGeneratorInterface::__sleep(void)                 \
        Prevents serialization of a RandomByteGeneratorInterface instance */         \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __sleep) {                     \
+    PHP_METHOD(Cryptopp_ ## classname, __sleep) {                     \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
     /* {{{ proto string RandomByteGeneratorInterface::__wakeup(void)                \
        Prevents use of a RandomByteGeneratorInterface instance that has been unserialized */ \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, __wakeup) {                    \
+    PHP_METHOD(Cryptopp_ ## classname, __wakeup) {                    \
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                               \
     /* }}} */                                                                       \
                                                                                     \
     /* {{{ proto string RandomByteGeneratorInterface::generate(int size)            \
        generate random byte sequence */                                             \
-    PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_ ## classname, generate) {                    \
+    PHP_METHOD(Cryptopp_ ## classname, generate) {                    \
         RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAM_PASSTHRU);    \
     }                                                                               \
     /* }}} */

@@ -24,25 +24,25 @@ zend_class_entry *cryptopp_ce_HashSha3_384;
 zend_class_entry *cryptopp_ce_HashSha3_512;
 
 static zend_function_entry cryptopp_methods_HashSha3_224[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, __construct, arginfo_HashSha3_224_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashSha3_224, __construct, arginfo_HashSha3_224_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_224)
     PHP_FE_END
 };
 
 static zend_function_entry cryptopp_methods_HashSha3_256[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct, arginfo_HashSha3_256_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashSha3_256, __construct, arginfo_HashSha3_256_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_256)
     PHP_FE_END
 };
 
 static zend_function_entry cryptopp_methods_HashSha3_384[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_384, __construct, arginfo_HashSha3_384_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashSha3_384, __construct, arginfo_HashSha3_384_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_384)
     PHP_FE_END
 };
 
 static zend_function_entry cryptopp_methods_HashSha3_512[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, __construct, arginfo_HashSha3_512_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashSha3_512, __construct, arginfo_HashSha3_512_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashSha3_512)
     PHP_FE_END
 };
@@ -62,25 +62,25 @@ void init_classes_HashSha3(TSRMLS_D)
 /* }}} */
 
 /* {{{ proto HashSha3_*::__construct(void) */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, __construct) {
+PHP_METHOD(Cryptopp_HashSha3_224, __construct) {
     CryptoPP::SHA3_224 *hash;
     hash = new CryptoPP::SHA3_224();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, __construct) {
+PHP_METHOD(Cryptopp_HashSha3_256, __construct) {
     CryptoPP::SHA3_256 *hash;
     hash = new CryptoPP::SHA3_256();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_384, __construct) {
+PHP_METHOD(Cryptopp_HashSha3_384, __construct) {
     CryptoPP::SHA3_384 *hash;
     hash = new CryptoPP::SHA3_384();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, __construct) {
+PHP_METHOD(Cryptopp_HashSha3_512, __construct) {
     CryptoPP::SHA3_512 *hash;
     hash = new CryptoPP::SHA3_512();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
@@ -89,19 +89,19 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, __construct) {
 
 /* {{{ proto string HashSha3_*::getName(void)
    Return algorithm name */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_224, getName) {
+PHP_METHOD(Cryptopp_HashSha3_224, getName) {
     RETURN_STRING("sha3_224", 1);
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_256, getName) {
+PHP_METHOD(Cryptopp_HashSha3_256, getName) {
     RETURN_STRING("sha3_256", 1);
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_384, getName) {
+PHP_METHOD(Cryptopp_HashSha3_384, getName) {
     RETURN_STRING("sha3_384", 1);
 }
 
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashSha3_512, getName) {
+PHP_METHOD(Cryptopp_HashSha3_512, getName) {
     RETURN_STRING("sha3_512", 1);
 }
 /* }}} */

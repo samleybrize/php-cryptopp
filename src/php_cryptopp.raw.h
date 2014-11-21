@@ -3,7 +3,6 @@
 
 #define PHP_CRYPTOPP_EXTNAME "crypto++"
 #define PHP_CRYPTOPP_VERSION "%ext_version%"
-#define PHP_CRYPTOPP_NAMESPACE "Cryptopp"
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

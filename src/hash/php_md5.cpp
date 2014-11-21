@@ -12,7 +12,7 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_HashMd5;
 
 static zend_function_entry cryptopp_methods_HashMd5[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_HashMd5, __construct, arginfo_HashMd5_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_HashMd5, __construct, arginfo_HashMd5_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_HASH_REQUIRED_METHODS(HashMd5)
     PHP_FE_END
 };
@@ -21,7 +21,7 @@ CRYPTOPP_HASH_INIT_CLASS("md5", HashMd5, cryptopp_ce_HashMd5, cryptopp_methods_H
 /* }}} */
 
 /* {{{ proto HashMd5::__construct(void) */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashMd5, __construct) {
+PHP_METHOD(Cryptopp_HashMd5, __construct) {
     CryptoPP::Weak::MD5 *hash;
     hash = new CryptoPP::Weak::MD5();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
@@ -30,7 +30,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashMd5, __construct) {
 
 /* {{{ proto string HashMd5::getName(void)
    Return algorithm name */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_HashMd5, getName) {
+PHP_METHOD(Cryptopp_HashMd5, getName) {
     RETURN_STRING("md5", 1);
 }
 /* }}} */

@@ -8,13 +8,13 @@
 zend_class_entry *cryptopp_ce_RandomByteGeneratorInterface;
 
 static zend_function_entry cryptopp_methods_RandomByteGeneratorInterface[] = {
-    PHP_ABSTRACT_ME(PHP_CRYPTOPP_NAMESPACE_RandomByteGeneratorInterface, generate, arginfo_RandomByteGeneratorInterface_generate)
+    PHP_ABSTRACT_ME(Cryptopp_RandomByteGeneratorInterface, generate, arginfo_RandomByteGeneratorInterface_generate)
     PHP_FE_END
 };
 
 void init_interface_RandomByteGeneratorInterface(TSRMLS_D) {
     zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, "RandomByteGeneratorInterface", cryptopp_methods_RandomByteGeneratorInterface);
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "RandomByteGeneratorInterface", cryptopp_methods_RandomByteGeneratorInterface);
     cryptopp_ce_RandomByteGeneratorInterface = zend_register_internal_interface(&ce TSRMLS_CC);
 }
 /* }}} */

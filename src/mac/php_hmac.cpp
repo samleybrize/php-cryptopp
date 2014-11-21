@@ -17,7 +17,7 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_MacHmac;
 
 static zend_function_entry cryptopp_methods_MacHmac[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_MacHmac, __construct, arginfo_MacHmac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_MacHmac, __construct, arginfo_MacHmac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     CRYPTOPP_MAC_REQUIRED_METHODS(MacHmac)
     PHP_FE_END
 };
@@ -31,7 +31,7 @@ void init_class_MacHmac_(TSRMLS_D) {
 /* }}} */
 
 /* {{{ proto MacHmac::__construct(HashInterface hashAlgo) */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, __construct) {
+PHP_METHOD(Cryptopp_MacHmac, __construct) {
     zval *hashObject;
     zend_class_entry *ce_HashInterface;
     ce_HashInterface = getCryptoppHashInterface();
@@ -72,7 +72,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, __construct) {
 
 /* {{{ proto string MacHmac::getName(void)
    Return algorithm name */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_MacHmac, getName) {
+PHP_METHOD(Cryptopp_MacHmac, getName) {
     zval *hashAlgo;
     hashAlgo = zend_read_property(cryptopp_ce_MacHmac, getThis(), "hashAlgo", 8, 0 TSRMLS_CC);
 

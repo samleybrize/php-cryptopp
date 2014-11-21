@@ -49,14 +49,14 @@ ZEND_END_ARG_INFO()
 zend_class_entry *cryptopp_ce_Hash;
 
 static zend_function_entry cryptopp_methods_Hash[] = {
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos, arginfo_Hash_getAlgos, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
-    PHP_ME(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname, arginfo_Hash_getClassname, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Cryptopp_Hash, getAlgos, arginfo_Hash_getAlgos, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
+    PHP_ME(Cryptopp_Hash, getClassname, arginfo_Hash_getClassname, ZEND_ACC_PUBLIC | ZEND_ACC_STATIC)
     PHP_FE_END
 };
 
 void init_class_Hash(TSRMLS_D) {
     zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, PHP_CRYPTOPP_NAMESPACE, "Hash", cryptopp_methods_Hash);
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "Hash", cryptopp_methods_Hash);
     cryptopp_ce_Hash            = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_Hash->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 }
@@ -64,7 +64,7 @@ void init_class_Hash(TSRMLS_D) {
 
 /* {{{ proto array Hash::getAlgos(void)
    Get the list of supported hash algorithms */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
+PHP_METHOD(Cryptopp_Hash, getAlgos) {
     array_init(return_value);
     vector<string> _algos = getHashAlgoList();
 
@@ -76,7 +76,7 @@ PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getAlgos) {
 
 /* {{{ proto array Hash::getClassname(string algoName)
    Get the the name of the class that implements a hash algorithm */
-PHP_METHOD(PHP_CRYPTOPP_NAMESPACE_Hash, getClassname) {
+PHP_METHOD(Cryptopp_Hash, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;
 
