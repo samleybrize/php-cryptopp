@@ -19,7 +19,7 @@
                                                                                             \
         addMacAlgo(algoName, PHP_CRYPTOPP_NAMESPACE "\\" #classname);                       \
                                                                                             \
-        zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PROTECTED TSRMLS_CC);  \
+        zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);  \
     }
 /* }}} */
 

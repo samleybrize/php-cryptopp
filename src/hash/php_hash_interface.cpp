@@ -53,6 +53,12 @@ zend_object_value HashInterface_create_handler(zend_class_entry *type TSRMLS_DC)
 }
 /* }}} */
 
+/* {{{ return a pointer to the HashInterface class entry */
+zend_class_entry *getCryptoppHashInterface() {
+    return cryptopp_ce_HashInterface;
+}
+/* }}} */
+
 /* {{{ common implementation of HashInterface::calculateDigest() */
 void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;

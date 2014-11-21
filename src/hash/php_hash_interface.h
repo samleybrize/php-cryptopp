@@ -143,6 +143,9 @@ extern zend_class_entry *cryptopp_ce_HashInterface;
 /* inits the HashInterface php interface */
 void init_interface_HashInterface(TSRMLS_D);
 
+/* return a pointer to the HashInterface class entry */
+zend_class_entry *getCryptoppHashInterface();
+
 /* {{{ object creation related stuff */
 struct HashInterfaceContainer {
     zend_object std;
