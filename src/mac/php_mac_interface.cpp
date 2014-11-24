@@ -56,6 +56,17 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
 static zval *getKey(zval *object);
 static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *mac, zval *object);
 
+/* {{{ verify that the constructor has been called */
+static bool checkIfConstructorCalled(CryptoPP::MessageAuthenticationCode *mac) {
+    if (NULL == mac) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        return false;
+    }
+
+    return true;
+}
+/* }}} */
+
 /* {{{ common implementation of MacInterface::setKey() */
 void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
     char *key   = NULL;
@@ -67,6 +78,10 @@ void MacInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
 
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(mac)) {
+        RETURN_FALSE;
+    }
 
     // ensure that the key is valid
     if (!ensureKeyIsValid(keySize, mac, getThis())) {
@@ -91,6 +106,10 @@ void MacInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
 
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(mac)) {
+        RETURN_FALSE;
+    }
 
     // ensure that the key is valid
     zval *key = getKey(getThis());
@@ -119,6 +138,10 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
+    if (false == checkIfConstructorCalled(mac)) {
+        RETURN_FALSE;
+    }
+
     // ensure that the key is valid
     zval *key = getKey(getThis());
 
@@ -135,6 +158,10 @@ void MacInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
 void MacInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(mac)) {
+        RETURN_FALSE;
+    }
 
     // ensure that the key is valid
     zval *key = getKey(getThis());
@@ -156,11 +183,15 @@ void MacInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_GET_NATIVE_PTR();
 
+    if (false == checkIfConstructorCalled(mac)) {
+        RETURN_FALSE;
+    }
+
     mac->Restart();
 }
 /* }}} */
 
-/* {{{ common implémentation of MacInterface::verify() */
+/* {{{ common implementation of MacInterface::verify() */
 void MacInterface_verify(INTERNAL_FUNCTION_PARAMETERS) {
     char *digest1   = NULL;
     char *digest2   = NULL;

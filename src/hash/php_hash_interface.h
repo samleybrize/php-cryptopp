@@ -34,15 +34,15 @@
 #define CRYPTOPP_HASH_SET_NATIVE_PTR(nativeHashPtr) static_cast<HashInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->hash = nativeHashPtr;
 
 /* {{{ php hash classes required methods declarations */
-#define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                                           \
-    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_HashInterface___sleep, ZEND_ACC_PUBLIC)                   \
-    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_HashInterface___wakeup, ZEND_ACC_PUBLIC)                 \
-    PHP_ME(Cryptopp_ ## classname, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC)                   \
-    PHP_ME(Cryptopp_ ## classname, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC)       \
-    PHP_ME(Cryptopp_ ## classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC)   \
-    PHP_ME(Cryptopp_ ## classname, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC)                     \
-    PHP_ME(Cryptopp_ ## classname, final, arginfo_HashInterface_final, ZEND_ACC_PUBLIC)                       \
-    PHP_ME(Cryptopp_ ## classname, restart, arginfo_HashInterface_restart, ZEND_ACC_PUBLIC)
+#define CRYPTOPP_HASH_REQUIRED_METHODS(classname)                                                               \
+    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_HashInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)    \
+    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_HashInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)  \
+    PHP_ME(Cryptopp_ ## classname, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)                \
+    PHP_ME(Cryptopp_ ## classname, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)    \
+    PHP_ME(Cryptopp_ ## classname, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL) \
+    PHP_ME(Cryptopp_ ## classname, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)      \
+    PHP_ME(Cryptopp_ ## classname, final, arginfo_HashInterface_final, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)        \
+    PHP_ME(Cryptopp_ ## classname, restart, arginfo_HashInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 /* }}} */
 
 /* {{{ php hash classes required methods declarations to include in the headers */

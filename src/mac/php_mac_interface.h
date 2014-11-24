@@ -36,17 +36,17 @@
 #define CRYPTOPP_MAC_SET_NATIVE_PTR(nativeMacPtr) static_cast<MacInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->mac = nativeMacPtr;
 
 /* {{{ php Mac classes required methods declarations */
-#define CRYPTOPP_MAC_REQUIRED_METHODS(classname)                                                            \
-    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_MacInterface___sleep, ZEND_ACC_PUBLIC)    \
-    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_MacInterface___wakeup, ZEND_ACC_PUBLIC)  \
-    PHP_ME(Cryptopp_ ## classname, getName, arginfo_MacInterface_getName, ZEND_ACC_PUBLIC)    \
-    PHP_ME(Cryptopp_ ## classname, getDigestSize, arginfo_MacInterface_getDigestSize, ZEND_ACC_PUBLIC)  \
-    PHP_ME(Cryptopp_ ## classname, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC)      \
-    PHP_ME(Cryptopp_ ## classname, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC)  \
-    PHP_ME(Cryptopp_ ## classname, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC)      \
-    PHP_ME(Cryptopp_ ## classname, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC)        \
-    PHP_ME(Cryptopp_ ## classname, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC)    \
-    PHP_ME(Cryptopp_ ## classname, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC)
+#define CRYPTOPP_MAC_REQUIRED_METHODS(classname)                                                                \
+    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_MacInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
+    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_MacInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)   \
+    PHP_ME(Cryptopp_ ## classname, getName, arginfo_MacInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
+    PHP_ME(Cryptopp_ ## classname, getDigestSize, arginfo_MacInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)  \
+    PHP_ME(Cryptopp_ ## classname, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)       \
+    PHP_ME(Cryptopp_ ## classname, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)  \
+    PHP_ME(Cryptopp_ ## classname, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)       \
+    PHP_ME(Cryptopp_ ## classname, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)         \
+    PHP_ME(Cryptopp_ ## classname, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
+    PHP_ME(Cryptopp_ ## classname, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 /* }}} */
 
 /* {{{ php Mac classes required methods declarations to include in the headers */

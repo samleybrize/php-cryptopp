@@ -59,6 +59,17 @@ zend_class_entry *getCryptoppHashInterface() {
 }
 /* }}} */
 
+/* {{{ verify that the constructor has been called */
+static bool checkIfConstructorCalled(CryptoPP::HashTransformation *hash) {
+    if (NULL == hash) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        return false;
+    }
+
+    return true;
+}
+/* }}} */
+
 /* {{{ common implementation of HashInterface::calculateDigest() */
 void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
     char *msg   = NULL;
@@ -70,6 +81,10 @@ void HashInterface_calculateDigest(INTERNAL_FUNCTION_PARAMETERS) {
 
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(hash)) {
+        RETURN_FALSE;
+    }
 
     byte digest[hash->DigestSize()];
     hash->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
@@ -90,6 +105,10 @@ void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
 
+    if (false == checkIfConstructorCalled(hash)) {
+        RETURN_FALSE;
+    }
+
     hash->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
 /* }}} */
@@ -98,6 +117,10 @@ void HashInterface_update(INTERNAL_FUNCTION_PARAMETERS) {
 void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(hash)) {
+        RETURN_FALSE;
+    }
 
     byte digest[hash->DigestSize()];
     hash->Final(digest);
@@ -110,6 +133,10 @@ void HashInterface_final(INTERNAL_FUNCTION_PARAMETERS) {
 void HashInterface_restart(INTERNAL_FUNCTION_PARAMETERS) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(hash)) {
+        RETURN_FALSE;
+    }
 
     hash->Restart();
 }

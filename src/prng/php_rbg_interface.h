@@ -32,10 +32,10 @@
 #define CRYPTOPP_RBG_SET_NATIVE_PTR(nativeRandomByteGeneratorPtr) static_cast<RandomByteGeneratorInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg = nativeRandomByteGeneratorPtr;
 
 /* {{{ php rbg classes required methods declarations */
-#define CRYPTOPP_RBG_REQUIRED_METHODS(classname)                                                                           \
-    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_RandomByteGeneratorInterface___sleep, ZEND_ACC_PUBLIC)   \
-    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_RandomByteGeneratorInterface___wakeup, ZEND_ACC_PUBLIC) \
-    PHP_ME(Cryptopp_ ## classname, generate, arginfo_RandomByteGeneratorInterface_generate, ZEND_ACC_PUBLIC)
+#define CRYPTOPP_RBG_REQUIRED_METHODS(classname)                                                                                \
+    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_RandomByteGeneratorInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
+    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_RandomByteGeneratorInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)   \
+    PHP_ME(Cryptopp_ ## classname, generate, arginfo_RandomByteGeneratorInterface_generate, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 /* }}} */
 
 /* {{{ php rbg classes required methods declarations to include in the headers */

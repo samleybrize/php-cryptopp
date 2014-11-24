@@ -50,6 +50,17 @@ zend_object_value RandomByteGeneratorInterface_create_handler(zend_class_entry *
 }
 /* }}} */
 
+/* {{{ verify that the constructor has been called */
+static bool checkIfConstructorCalled(CryptoPP::RandomNumberGenerator *rbg) {
+    if (NULL == rbg) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        return false;
+    }
+
+    return true;
+}
+/* }}} */
+
 /* {{{ common implementation of RandomByteGeneratorInterface::generate() */
 void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
     long size = 0;
@@ -67,6 +78,10 @@ void RandomByteGeneratorInterface_generate(INTERNAL_FUNCTION_PARAMETERS) {
     // generate random bytes
     CryptoPP::RandomNumberGenerator *rbg;
     rbg = CRYPTOPP_RBG_GET_NATIVE_PTR();
+
+    if (false == checkIfConstructorCalled(rbg)) {
+        RETURN_FALSE;
+    }
 
     byte block[size];
     rbg->GenerateBlock(block, size);
