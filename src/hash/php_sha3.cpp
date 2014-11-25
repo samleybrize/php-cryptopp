@@ -66,24 +66,32 @@ PHP_METHOD(Cryptopp_HashSha3_224, __construct) {
     CryptoPP::SHA3_224 *hash;
     hash = new CryptoPP::SHA3_224();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashSha3_224, getThis(), "name", 4, "sha3_224", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_256, __construct) {
     CryptoPP::SHA3_256 *hash;
     hash = new CryptoPP::SHA3_256();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashSha3_256, getThis(), "name", 4, "sha3_256", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_384, __construct) {
     CryptoPP::SHA3_384 *hash;
     hash = new CryptoPP::SHA3_384();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashSha3_384, getThis(), "name", 4, "sha3_384", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_512, __construct) {
     CryptoPP::SHA3_512 *hash;
     hash = new CryptoPP::SHA3_512();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashSha3_512, getThis(), "name", 4, "sha3_512", 8 TSRMLS_CC);
 }
 /* }}} */
 

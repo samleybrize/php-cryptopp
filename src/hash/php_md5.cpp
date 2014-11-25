@@ -25,6 +25,8 @@ PHP_METHOD(Cryptopp_HashMd5, __construct) {
     CryptoPP::Weak::MD5 *hash;
     hash = new CryptoPP::Weak::MD5();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashMd5, getThis(), "name", 4, "md5", 3 TSRMLS_CC);
 }
 /* }}} */
 

@@ -19,6 +19,8 @@
         zend_class_implements(classEntryPtrName TSRMLS_CC, 1, cryptopp_ce_HashInternalInterface); \
                                                                                             \
         addHashAlgo(algoName, "Cryptopp\\" #classname);                                     \
+                                                                                            \
+        zend_declare_property_string(classEntryPtrName, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);  \
     }
 /* }}} */
 

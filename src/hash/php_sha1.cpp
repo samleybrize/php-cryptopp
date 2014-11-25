@@ -25,6 +25,8 @@ PHP_METHOD(Cryptopp_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
     CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+
+    zend_update_property_stringl(cryptopp_ce_HashSha1, getThis(), "name", 4, "sha1", 4 TSRMLS_CC);
 }
 /* }}} */
 
