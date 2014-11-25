@@ -1,26 +1,7 @@
 #include "../php_cryptopp.h"
 #include "php_hash_interface.h"
+#include <zend_exceptions.h>
 #include <string>
-
-/* {{{ PHP interface declaration */
-zend_class_entry *cryptopp_ce_HashInterface;
-
-static zend_function_entry cryptopp_methods_HashInterface[] = {
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, getName, arginfo_HashInterface_getName)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, getDigestSize, arginfo_HashInterface_getDigestSize)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, calculateDigest, arginfo_HashInterface_calculateDigest)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, update, arginfo_HashInterface_update)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, final, arginfo_HashInterface_final)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, restart, arginfo_HashInterface_restart)
-    PHP_FE_END
-};
-
-void init_interface_HashInterface(TSRMLS_D) {
-    zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "HashInterface", cryptopp_methods_HashInterface);
-    cryptopp_ce_HashInterface = zend_register_internal_interface(&ce TSRMLS_CC);
-}
-/* }}} */
 
 /* {{{ custom object create/free handler */
 zend_object_handlers HashInterface_object_handlers;
@@ -51,11 +32,60 @@ zend_object_value HashInterface_create_handler(zend_class_entry *type TSRMLS_DC)
 
     return retval;
 }
+
+static int HashInternalInterface_implement_handler(zend_class_entry *interface, zend_class_entry *implementor TSRMLS_DC) {
+    // HashInternalInterface cannot be implemented by a user class unless it extends an internal Hash class
+    do {
+        if (ZEND_INTERNAL_CLASS == implementor->type) {
+            return SUCCESS;
+        }
+
+        implementor = implementor->parent;
+    } while (NULL != implementor);
+
+    zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"HashInternalInterface cannot be implemented by user classes");
+}
+/* }}} */
+
+/* {{{ PHP interface declaration */
+zend_class_entry *cryptopp_ce_HashInterface;
+zend_class_entry *cryptopp_ce_HashInternalInterface;
+
+static zend_function_entry cryptopp_methods_HashInterface[] = {
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, getName, arginfo_HashInterface_getName)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, getDigestSize, arginfo_HashInterface_getDigestSize)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, calculateDigest, arginfo_HashInterface_calculateDigest)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, update, arginfo_HashInterface_update)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, final, arginfo_HashInterface_final)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, restart, arginfo_HashInterface_restart)
+    PHP_FE_END
+};
+
+static zend_function_entry cryptopp_methods_HashInternalInterface[] = {
+    PHP_FE_END
+};
+
+void init_interface_HashInterface(TSRMLS_D) {
+    zend_class_entry ce;
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "HashInterface", cryptopp_methods_HashInterface);
+    cryptopp_ce_HashInterface = zend_register_internal_interface(&ce TSRMLS_CC);
+
+    zend_class_entry ceInternal;
+    INIT_NS_CLASS_ENTRY(ceInternal, "Cryptopp", "HashInternalInterface", cryptopp_methods_HashInternalInterface);
+    cryptopp_ce_HashInternalInterface                               = zend_register_internal_interface(&ceInternal TSRMLS_CC);
+    cryptopp_ce_HashInternalInterface->interface_gets_implemented   = HashInternalInterface_implement_handler;
+}
 /* }}} */
 
 /* {{{ return a pointer to the HashInterface class entry */
 zend_class_entry *getCryptoppHashInterface() {
     return cryptopp_ce_HashInterface;
+}
+/* }}} */
+
+/* {{{ return a pointer to the HashInternalInterface class entry */
+zend_class_entry *getCryptoppHashInternalInterface() {
+    return cryptopp_ce_HashInternalInterface;
 }
 /* }}} */
 

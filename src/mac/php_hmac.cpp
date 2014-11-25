@@ -9,7 +9,7 @@
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacHmac_construct, 0)
-    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashInternalInterface, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -33,10 +33,10 @@ void init_class_MacHmac_(TSRMLS_D) {
 /* {{{ proto MacHmac::__construct(HashInterface hashAlgo) */
 PHP_METHOD(Cryptopp_MacHmac, __construct) {
     zval *hashObject;
-    zend_class_entry *ce_HashInterface;
-    ce_HashInterface = getCryptoppHashInterface();
+    zend_class_entry *ce_HashInternalInterface;
+    ce_HashInternalInterface = getCryptoppHashInternalInterface();
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, ce_HashInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, ce_HashInternalInterface)) {
         return;
     }
 
