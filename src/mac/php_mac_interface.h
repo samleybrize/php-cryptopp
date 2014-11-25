@@ -20,6 +20,7 @@
                                                                                             \
         addMacAlgo(algoName, "Cryptopp\\" #classname);                                      \
                                                                                             \
+        zend_declare_property_string(classEntryPtrName, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC); \
         zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);  \
     }
 /* }}} */

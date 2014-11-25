@@ -23,11 +23,6 @@ static zend_function_entry cryptopp_methods_MacHmac[] = {
 };
 
 CRYPTOPP_MAC_INIT_CLASS("hmac", MacHmac, cryptopp_ce_MacHmac, cryptopp_methods_MacHmac)
-
-void init_class_MacHmac_(TSRMLS_D) {
-    CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(MacHmac)
-    zend_declare_property_string(cryptopp_ce_MacHmac, "hashAlgo", 8, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
-}
 /* }}} */
 
 /* {{{ proto MacHmac::__construct(HashInterface hashAlgo) */
@@ -62,7 +57,11 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     }
 
     CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
-    zend_update_property_stringl(cryptopp_ce_MacHmac, getThis(), "hashAlgo", 8, algoName.c_str(), algoName.length() TSRMLS_CC);
+
+    std::string name("hmac(");
+    name.append(algoName);
+    name.append(")");
+    zend_update_property_stringl(cryptopp_ce_MacHmac, getThis(), "name", 4, name.c_str(), name.length() TSRMLS_CC);
 
     // set a default empty key
     byte defaultKey[0];
@@ -73,14 +72,9 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
 /* {{{ proto string MacHmac::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_MacHmac, getName) {
-    zval *hashAlgo;
-    hashAlgo = zend_read_property(cryptopp_ce_MacHmac, getThis(), "hashAlgo", 8, 0 TSRMLS_CC);
-
-    std::string name("hmac(");
-    name.append(Z_STRVAL_P(hashAlgo), Z_STRLEN_P(hashAlgo));
-    name.append(")");
-
-    RETURN_STRING(name.c_str(), 1);
+    zval *name;
+    name = zend_read_property(cryptopp_ce_MacHmac, getThis(), "name", 4, 0 TSRMLS_CC);
+    RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
 

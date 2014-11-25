@@ -25,6 +25,8 @@ PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct) {
     CryptoPP::TTMAC *mac;
     mac = new CryptoPP::TTMAC();
     CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
+
+    zend_update_property_stringl(cryptopp_ce_MacTwoTrackMac, getThis(), "name", 4, "two_track_mac", 13 TSRMLS_CC);
 }
 /* }}} */
 

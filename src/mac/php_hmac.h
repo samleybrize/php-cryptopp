@@ -3,7 +3,7 @@
 
 #include "php_mac_interface.h"
 
-void init_class_MacHmac_(TSRMLS_D);
+CRYPTOPP_MAC_INIT_CLASS_FUNC_HEADER(MacHmac);
 PHP_METHOD(Cryptopp_MacHmac, __construct);
 CRYPTOPP_MAC_REQUIRED_METHODS_HEADER(MacHmac)
 
