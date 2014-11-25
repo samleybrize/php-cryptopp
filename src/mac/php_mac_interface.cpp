@@ -2,26 +2,6 @@
 #include "php_mac_interface.h"
 #include <zend_exceptions.h>
 
-/* {{{ PHP interface declaration */
-zend_class_entry *cryptopp_ce_MacInterface;
-
-static zend_function_entry cryptopp_methods_MacInterface[] = {
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, getName, arginfo_MacInterface_getName)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, getDigestSize, arginfo_MacInterface_getDigestSize)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, calculateDigest, arginfo_MacInterface_calculateDigest)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, update, arginfo_MacInterface_update)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, final, arginfo_MacInterface_final)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, restart, arginfo_MacInterface_restart)
-    PHP_FE_END
-};
-
-void init_interface_MacInterface(TSRMLS_D) {
-    zend_class_entry ce;
-    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "MacInterface", cryptopp_methods_MacInterface);
-    cryptopp_ce_MacInterface = zend_register_internal_interface(&ce TSRMLS_CC);
-}
-/* }}} */
-
 /* {{{ custom object create/free handler */
 zend_object_handlers MacInterface_object_handlers;
 
@@ -50,6 +30,49 @@ zend_object_value MacInterface_create_handler(zend_class_entry *type TSRMLS_DC) 
     retval.handlers = &MacInterface_object_handlers;
 
     return retval;
+}
+
+static int MacInternalInterface_implement_handler(zend_class_entry *interface, zend_class_entry *implementor TSRMLS_DC) {
+    // MacInternalInterface cannot be implemented by a user class unless it extends an internal Hash class
+    do {
+        if (ZEND_INTERNAL_CLASS == implementor->type) {
+            return SUCCESS;
+        }
+
+        implementor = implementor->parent;
+    } while (NULL != implementor);
+
+    zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"MacInternalInterface cannot be implemented by user classes");
+}
+/* }}} */
+
+/* {{{ PHP interface declaration */
+zend_class_entry *cryptopp_ce_MacInterface;
+zend_class_entry *cryptopp_ce_MacInternalInterface;
+
+static zend_function_entry cryptopp_methods_MacInterface[] = {
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, getName, arginfo_MacInterface_getName)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, getDigestSize, arginfo_MacInterface_getDigestSize)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, calculateDigest, arginfo_MacInterface_calculateDigest)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, update, arginfo_MacInterface_update)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, final, arginfo_MacInterface_final)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, restart, arginfo_MacInterface_restart)
+    PHP_FE_END
+};
+
+static zend_function_entry cryptopp_methods_MacInternalInterface[] = {
+    PHP_FE_END
+};
+
+void init_interface_MacInterface(TSRMLS_D) {
+    zend_class_entry ce;
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "MacInterface", cryptopp_methods_MacInterface);
+    cryptopp_ce_MacInterface = zend_register_internal_interface(&ce TSRMLS_CC);
+
+    zend_class_entry ceInternal;
+    INIT_NS_CLASS_ENTRY(ceInternal, "Cryptopp", "MacInternalInterface", cryptopp_methods_MacInternalInterface);
+    cryptopp_ce_MacInternalInterface                                = zend_register_internal_interface(&ceInternal TSRMLS_CC);
+    cryptopp_ce_MacInternalInterface->interface_gets_implemented    = MacInternalInterface_implement_handler;
 }
 /* }}} */
 
