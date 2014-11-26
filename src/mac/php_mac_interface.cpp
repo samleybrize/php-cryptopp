@@ -261,7 +261,12 @@ static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *m
     if (!mac->IsValidKeyLength(keySize)) {
         zend_class_entry *ce;
         ce = zend_get_class_entry(object TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+
+        if (0 == keySize) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
+        } else {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+        }
         return false;
     }
 
