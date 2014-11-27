@@ -54,6 +54,7 @@ zend_class_entry *cryptopp_ce_SymmetricModeInternalInterface;
 
 static zend_function_entry cryptopp_methods_SymmetricModeInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_SymmetricModeInterface, getName, arginfo_SymmetricModeInterface_getName)
+    PHP_ABSTRACT_ME(Cryptopp_SymmetricModeInterface, setKey, arginfo_SymmetricModeInterface_setKey)
     PHP_FE_END
 };
 
@@ -119,6 +120,65 @@ bool cryptoppSymmetricModeGetCipherElements(
     zval_dtor(funcName);
 
     return true;
+}
+/* }}} */
+
+/* {{{ verify that the constructor has been called */
+static bool checkIfConstructorCalled(CryptoPP::CipherModeBase *mac) {
+    if (NULL == mac) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Parent constructor was not called");
+        return false;
+    }
+
+    return true;
+}
+/* }}} */
+
+/* {{{ ensure that a key size is valid for a SymmetricModeInterface instance */
+static bool ensureKeyIsValid(int keySize, CryptoPP::CipherModeBase *mode, zval *object) {
+    if (!mode->IsValidKeyLength(keySize)) {
+        zend_class_entry *ce;
+        ce = zend_get_class_entry(object TSRMLS_CC);
+
+        if (0 == keySize) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
+        } else {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize); // TODO indicates required key length
+        }
+        return false;
+    }
+
+    return true;
+}
+/* }}} */
+
+/* {{{ common implementation of SymmetricModeInterface::setKey() */
+void SymmetricModeInterface_setKey(INTERNAL_FUNCTION_PARAMETERS) {
+    char *key   = NULL;
+    int keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &key, &keySize)) {
+        return;
+    }
+
+    CryptoPP::CipherModeBase *encryptor;
+    CryptoPP::CipherModeBase *decryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_GET_ENCRYPTOR_PTR();
+    decryptor = CRYPTOPP_SYMMETRIC_MODE_GET_DECRYPTOR_PTR();
+
+    if (false == checkIfConstructorCalled(encryptor)) {
+        RETURN_FALSE;
+    }
+
+    // ensure that the key is valid
+    if (!ensureKeyIsValid(keySize, encryptor, getThis())) {
+        return;
+    }
+
+    // set the key on both the php object and the native cryptopp objects
+    encryptor->SetKey(reinterpret_cast<byte*>(key), keySize);
+    decryptor->SetKey(reinterpret_cast<byte*>(key), keySize);
+    zend_update_property_stringl(zend_get_class_entry(getThis() TSRMLS_CC), getThis(), "key", 3, key, keySize TSRMLS_CC);
 }
 /* }}} */
 

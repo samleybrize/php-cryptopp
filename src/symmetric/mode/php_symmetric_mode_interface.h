@@ -21,8 +21,9 @@
                                                                                             \
         addSymmetricMode(algoName, "Cryptopp\\" #classname);                                \
                                                                                             \
-        zend_declare_property_string(classEntryPtrName, "cipher", 6, "",  ZEND_ACC_PRIVATE TSRMLS_CC); \
-        zend_declare_property_string(classEntryPtrName, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC); \
+        zend_declare_property_string(classEntryPtrName, "cipher", 6, "",  ZEND_ACC_PRIVATE TSRMLS_CC);  \
+        zend_declare_property_string(classEntryPtrName, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);    \
+        zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);     \
     }
 /* }}} */
 
@@ -41,17 +42,19 @@
 #define CRYPTOPP_SYMMETRIC_MODE_SET_DECRYPTOR_PTR(nativeModePtr) static_cast<SymmetricModeInterfaceContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->decryptor = nativeModePtr;
 
 /* {{{ php symmetric mode classes required methods declarations */
-#define CRYPTOPP_SYMMETRIC_MODE_REQUIRED_METHODS(classname)                                                               \
-    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_SymmetricModeInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
-    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_SymmetricModeInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)   \
-    PHP_ME(Cryptopp_ ## classname, getName, arginfo_SymmetricModeInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+#define CRYPTOPP_SYMMETRIC_MODE_REQUIRED_METHODS(classname)                                                                 \
+    PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_SymmetricModeInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)       \
+    PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_SymmetricModeInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
+    PHP_ME(Cryptopp_ ## classname, getName, arginfo_SymmetricModeInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)       \
+    PHP_ME(Cryptopp_ ## classname, setKey, arginfo_SymmetricModeInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)         \
 /* }}} */
 
 /* {{{ php symmetric mode classes required methods declarations to include in the headers */
 #define CRYPTOPP_SYMMETRIC_MODE_REQUIRED_METHODS_HEADER(classname)  \
     PHP_METHOD(Cryptopp_ ## classname, __wakeup);       \
     PHP_METHOD(Cryptopp_ ## classname, __sleep);        \
-    PHP_METHOD(Cryptopp_ ## classname, getName);
+    PHP_METHOD(Cryptopp_ ## classname, getName);        \
+    PHP_METHOD(Cryptopp_ ## classname, setKey);         \
 /* }}} */
 
 /* {{{ php symmetric mode classes common methods bodies */
@@ -69,6 +72,13 @@
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                                           \
     /* }}} */                                                                                   \
+                                                                                                \
+    /* {{{ proto void SymmetricModeInterface::setKey(string key)                                \
+       Sets the key */                                                                          \
+    PHP_METHOD(Cryptopp_ ## classname, setKey) {                                                \
+        SymmetricModeInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU);                        \
+    }                                                                                           \
+    /* }}} */
 /* }}} */
 
 /* {{{ php symmetric mode classes methods arg info */
@@ -79,6 +89,10 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeInterface___sleep, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeInterface_getName, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeInterface_setKey, 0)
+    ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -113,6 +127,10 @@ bool cryptoppSymmetricModeGetCipherElements(
     CryptoPP::BlockCipher **cipherDecryptor,
     std::string **cipherName
 );
+/* }}} */
+
+/* {{{ Modes common methods */
+void SymmetricModeInterface_setKey(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_SYMMETRIC_MODE_INTERFACE_H */
