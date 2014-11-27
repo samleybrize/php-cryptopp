@@ -21,7 +21,6 @@
         addSymmetricCipherAlgo(algoName, "Cryptopp\\" #classname);                          \
                                                                                             \
         zend_declare_property_string(classEntryPtrName, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC); \
-        zend_declare_property_string(classEntryPtrName, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);  \
     }
 /* }}} */
 
@@ -43,20 +42,14 @@
 #define CRYPTOPP_SYMMETRIC_CIPHER_REQUIRED_METHODS(classname)                                                               \
     PHP_ME(Cryptopp_ ## classname, __sleep, arginfo_SymmetricCipherInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
     PHP_ME(Cryptopp_ ## classname, __wakeup, arginfo_SymmetricCipherInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)   \
-    PHP_ME(Cryptopp_ ## classname, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
-    PHP_ME(Cryptopp_ ## classname, setKey, arginfo_SymmetricCipherInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)      \
-    PHP_ME(Cryptopp_ ## classname, encrypt, arginfo_SymmetricCipherInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)     \
-    PHP_ME(Cryptopp_ ## classname, decrypt, arginfo_SymmetricCipherInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_ ## classname, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
 /* }}} */
 
 /* {{{ php symmetric cipher classes required methods declarations to include in the headers */
 #define CRYPTOPP_SYMMETRIC_CIPHER_REQUIRED_METHODS_HEADER(classname)  \
     PHP_METHOD(Cryptopp_ ## classname, __wakeup);       \
     PHP_METHOD(Cryptopp_ ## classname, __sleep);        \
-    PHP_METHOD(Cryptopp_ ## classname, getName);        \
-    PHP_METHOD(Cryptopp_ ## classname, setKey);         \
-    PHP_METHOD(Cryptopp_ ## classname, encrypt);        \
-    PHP_METHOD(Cryptopp_ ## classname, decrypt);
+    PHP_METHOD(Cryptopp_ ## classname, getName);
 /* }}} */
 
 /* {{{ php symmetric cipher classes common methods bodies */
@@ -74,25 +67,6 @@
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize " #classname " instances"); \
     }                                                                                           \
     /* }}} */                                                                                   \
-                                                                                                \
-    /* {{{ proto string SymmetricCipherInterface::setKey(string key)                            \
-       Encrypts data */                                                                         \
-    PHP_METHOD(Cryptopp_ ## classname, setKey) {                                                \
-        SymmetricCipherInterface_setKey(INTERNAL_FUNCTION_PARAM_PASSTHRU);                      \
-    }                                                                                           \
-                                                                                                \
-    /* {{{ proto string SymmetricCipherInterface::encrypt(string data)                          \
-       Encrypts data */                                                                         \
-    PHP_METHOD(Cryptopp_ ## classname, encrypt) {                                               \
-        SymmetricCipherInterface_encrypt(INTERNAL_FUNCTION_PARAM_PASSTHRU);                     \
-    }                                                                                           \
-                                                                                                \
-    /* {{{ proto string SymmetricCipherInterface::decrypt(string ciphertext)                    \
-       Decrypts data */                                                                         \
-    PHP_METHOD(Cryptopp_ ## classname, decrypt) {                                               \
-        SymmetricCipherInterface_decrypt(INTERNAL_FUNCTION_PARAM_PASSTHRU);                     \
-    }                                                                                           \
-    /* }}} */
 /* }}} */
 
 /* {{{ php symmetric cipher classes methods arg info */
@@ -103,18 +77,6 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface___sleep, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getName, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_setKey, 0)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_encrypt, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_decrypt, 0)
-    ZEND_ARG_INFO(0, ciphertext)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -139,12 +101,6 @@ struct SymmetricCipherInterfaceContainer {
 extern zend_object_handlers SymmetricCipherInterface_object_handlers;
 void SymmetricCipherInterface_free_storage(void *object TSRMLS_DC);
 zend_object_value SymmetricCipherInterface_create_handler(zend_class_entry *type TSRMLS_DC);
-/* }}} */
-
-/* {{{ symmetric cipher common methods */
-void SymmetricCipherInterface_setKey(INTERNAL_FUNCTION_PARAMETERS);
-void SymmetricCipherInterface_encrypt(INTERNAL_FUNCTION_PARAMETERS);
-void SymmetricCipherInterface_decrypt(INTERNAL_FUNCTION_PARAMETERS);
 /* }}} */
 
 #endif /* PHP_SYMMETRIC_CIPHER_INTERFACE_H */
