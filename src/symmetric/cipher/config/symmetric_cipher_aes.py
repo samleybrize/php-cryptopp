@@ -3,7 +3,7 @@ import os
 def getConfig(cryptoppDir):
     config = {}
 
-    # check if md5 is supported by installed crypto++
+    # check if aes is supported by installed crypto++
     if not os.path.isfile(cryptoppDir + "/aes.h"):
         config["enabled"] = False
         return config

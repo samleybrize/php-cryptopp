@@ -82,7 +82,7 @@ static bool ensureKeyIsValid(int keySize, CryptoPP::MessageAuthenticationCode *m
 /* {{{ verify that the constructor has been called */
 static bool checkIfConstructorCalled(CryptoPP::MessageAuthenticationCode *mac) {
     if (NULL == mac) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Parent constructor was not called");
         return false;
     }
 

@@ -44,6 +44,10 @@ configFileList.append("src/symmetric/cipher/config/symmetric_cipher.py")
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_aes.py")
 
+configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
+
 configFileList.append("src/mac/config/mac.py")
 configFileList.append("src/mac/config/mac_interface.py")
 configFileList.append("src/mac/config/mac_hmac.py")

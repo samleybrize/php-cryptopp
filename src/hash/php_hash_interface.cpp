@@ -92,7 +92,7 @@ zend_class_entry *getCryptoppHashInternalInterface() {
 /* {{{ verify that the constructor has been called */
 static bool checkIfConstructorCalled(CryptoPP::HashTransformation *hash) {
     if (NULL == hash) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Parent constructor was not called");
         return false;
     }
 
