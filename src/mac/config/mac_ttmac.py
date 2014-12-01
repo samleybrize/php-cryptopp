@@ -11,6 +11,6 @@ def getConfig(cryptoppDir):
     config["enabled"]               = True
     config["srcFileList"]           = ["mac/php_ttmac.cpp"]
     config["headerFileList"]        = ["mac/php_ttmac.h"]
-    config["phpMinitStatements"]    = ["CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(MacTwoTrackMac)"]
+    config["phpMinitStatements"]    = ["init_class_MacTwoTrackMac(TSRMLS_C);"]
 
     return config

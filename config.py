@@ -51,6 +51,7 @@ configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
 
 configFileList.append("src/mac/config/mac.py")
 configFileList.append("src/mac/config/mac_interface.py")
+configFileList.append("src/mac/config/mac_abstract.py")
 configFileList.append("src/mac/config/mac_hmac.py")
 configFileList.append("src/mac/config/mac_ttmac.py")
 

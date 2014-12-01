@@ -1,5 +1,5 @@
 #include "../php_cryptopp.h"
-#include "php_mac_interface.h"
+#include "php_mac_abstract.h"
 #include "php_ttmac.h"
 #include <ttmac.h>
 
@@ -13,32 +13,23 @@ zend_class_entry *cryptopp_ce_MacTwoTrackMac;
 
 static zend_function_entry cryptopp_methods_MacTwoTrackMac[] = {
     PHP_ME(Cryptopp_MacTwoTrackMac, __construct, arginfo_MacTwoTrackMac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-    CRYPTOPP_MAC_REQUIRED_METHODS(MacTwoTrackMac)
     PHP_FE_END
 };
 
-CRYPTOPP_MAC_INIT_CLASS("two_track_mac", MacTwoTrackMac, cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac)
+void init_class_MacTwoTrackMac(TSRMLS_D) {
+    init_class_MacAbstractChild("two_track_mac", "MacTwoTrackMac", cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac TSRMLS_CC);
+}
 /* }}} */
 
 /* {{{ proto MacTwoTrackMac::__construct(void) */
 PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct) {
     CryptoPP::TTMAC *mac;
     mac = new CryptoPP::TTMAC();
-    CRYPTOPP_MAC_SET_NATIVE_PTR(mac)
+    setCryptoppMacNativePtr(getThis(), mac);
 
-    zend_update_property_stringl(cryptopp_ce_MacTwoTrackMac, getThis(), "name", 4, "two_track_mac", 13 TSRMLS_CC);
+    zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "name", 4, "two_track_mac", 13 TSRMLS_CC);
 }
 /* }}} */
-
-/* {{{ proto string MacTwoTrackMac::getName(void)
-   Return algorithm name */
-PHP_METHOD(Cryptopp_MacTwoTrackMac, getName) {
-    RETURN_STRING("two_track_mac", 1);
-}
-/* }}} */
-
-/* include common hash methods definitions */
-CRYPTOPP_MAC_COMMON_METHODS_DEFINITIONS(MacTwoTrackMac)
 
 /*
  * Local variables:

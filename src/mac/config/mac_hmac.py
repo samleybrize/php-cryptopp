@@ -11,7 +11,7 @@ def getConfig(cryptoppDir):
     config["enabled"]               = True
     config["srcFileList"]           = ["mac/php_hmac.cpp"]
     config["headerFileList"]        = ["mac/php_hmac.h"]
-    config["phpMinitStatements"]    = ["CRYPTOPP_MAC_INIT_CLASS_FUNC_CALL(MacHmac)"]
+    config["phpMinitStatements"]    = ["init_class_MacHmac(TSRMLS_C);"]
 
     return config
 
