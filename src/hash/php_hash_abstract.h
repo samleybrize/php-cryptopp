@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_HashAbstract;
 void init_class_HashAbstract(TSRMLS_D);
-void init_class_HashAbstractChild(const char* className TSRMLS_DC);
+void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
 CryptoPP::HashTransformation * getCryptoppHashNativePtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppHashNativePtr(zval *this_ptr, CryptoPP::HashTransformation *nativePtr TSRMLS_DC);
@@ -39,6 +39,14 @@ PHP_METHOD(Cryptopp_HashAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_HashAbstract, update);
 PHP_METHOD(Cryptopp_HashAbstract, final);
 PHP_METHOD(Cryptopp_HashAbstract, restart);
+/* }}} */
+
+/* {{{ php hash classes methods arg info */
+ZEND_BEGIN_ARG_INFO(arginfo_HashAbstract___wakeup, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_HashAbstract___sleep, 0)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 #endif /* PHP_HASH_ABSTRACT_H */

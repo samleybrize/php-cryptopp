@@ -40,8 +40,8 @@ zend_object_value HashAbstract_create_handler(zend_class_entry *type TSRMLS_DC) 
 zend_class_entry *cryptopp_ce_HashAbstract;
 
 static zend_function_entry cryptopp_methods_HashAbstract[] = {
-    PHP_ME(Cryptopp_HashAbstract, __sleep, arginfo_HashInterface___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, __wakeup, arginfo_HashInterface___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, __sleep, arginfo_HashAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, __wakeup, arginfo_HashAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -73,7 +73,7 @@ void init_class_HashAbstractChild(const char *algoName, const char* className, z
     namespacedClassName.append(className);
 
     zend_class_entry ce;
-    INIT_CLASS_ENTRY(ce, namespacedClassName.c_str(), classMethods);
+    INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_HashAbstract, NULL TSRMLS_CC);
 
     addHashAlgo(algoName, namespacedClassName.c_str());
@@ -127,7 +127,12 @@ PHP_METHOD(Cryptopp_HashAbstract, getDigestSize) {
 /* {{{ proto string HashAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_HashAbstract, getName) {
-    // TODO
+    CryptoPP::HashTransformation *hash;
+    hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+
+    zval *name;
+    name = zend_read_property(cryptopp_ce_HashAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
 

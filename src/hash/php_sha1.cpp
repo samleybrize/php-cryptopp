@@ -13,32 +13,23 @@ zend_class_entry *cryptopp_ce_HashSha1;
 
 static zend_function_entry cryptopp_methods_HashSha1[] = {
     PHP_ME(Cryptopp_HashSha1, __construct, arginfo_HashSha1_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-    CRYPTOPP_HASH_REQUIRED_METHODS(HashSha1)
     PHP_FE_END
 };
 
-CRYPTOPP_HASH_INIT_CLASS("sha1", HashSha1, cryptopp_ce_HashSha1, cryptopp_methods_HashSha1)
+void init_class_HashSha1(TSRMLS_D) {
+    init_class_HashAbstractChild("sha1", "HashSha1", cryptopp_ce_HashSha1, cryptopp_methods_HashSha1 TSRMLS_CC);
+}
 /* }}} */
 
 /* {{{ proto HashSha1::__construct(void) */
 PHP_METHOD(Cryptopp_HashSha1, __construct) {
     CryptoPP::SHA1 *hash;
     hash = new CryptoPP::SHA1();
-    CRYPTOPP_HASH_SET_NATIVE_PTR(hash)
+    setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
-    zend_update_property_stringl(cryptopp_ce_HashSha1, getThis(), "name", 4, "sha1", 4 TSRMLS_CC);
+    zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha1", 4 TSRMLS_CC);
 }
 /* }}} */
-
-/* {{{ proto string HashSha1::getName(void)
-   Return algorithm name */
-PHP_METHOD(Cryptopp_HashSha1, getName) {
-    RETURN_STRING("sha1", 1);
-}
-/* }}} */
-
-/* include common hash methods definitions */
-CRYPTOPP_HASH_COMMON_METHODS_DEFINITIONS(HashSha1, CryptoPP::SHA1)
 
 /*
  * Local variables:

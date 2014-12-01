@@ -1,11 +1,8 @@
 #ifndef PHP_HASH_MD5_H
 #define PHP_HASH_MD5_H
 
-#include "php_hash_interface.h"
-
-CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(HashMd5);
+void init_class_HashMd5(TSRMLS_D);
 PHP_METHOD(Cryptopp_HashMd5, __construct);
-CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(HashMd5)
 
 #endif /* PHP_HASH_MD5_H */
 

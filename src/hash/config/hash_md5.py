@@ -11,7 +11,7 @@ def getConfig(cryptoppDir):
     config["enabled"]                   = True
     config["srcFileList"]               = ["hash/php_md5.cpp"]
     config["headerFileList"]            = ["hash/php_md5.h"]
-    config["phpMinitStatements"]        = ["CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashMd5)"]
+    config["phpMinitStatements"]        = ["init_class_HashMd5(TSRMLS_C);"]
     config["hashCryptoppHeaders"]       = ["md5.h"]
 
     config["hashNativeAssoc"]           = {}

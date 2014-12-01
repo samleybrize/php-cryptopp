@@ -1,11 +1,8 @@
 #ifndef PHP_HASH_SHA1_H
 #define PHP_HASH_SHA1_H
 
-#include "php_hash_interface.h"
-
-CRYPTOPP_HASH_INIT_CLASS_FUNC_HEADER(HashSha1);
+void init_class_HashSha1(TSRMLS_D);
 PHP_METHOD(Cryptopp_HashSha1, __construct);
-CRYPTOPP_HASH_REQUIRED_METHODS_HEADER(HashSha1)
 
 #endif /* PHP_HASH_SHA1_H */
 

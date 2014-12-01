@@ -11,7 +11,7 @@ def getConfig(cryptoppDir):
     config["enabled"]                   = True
     config["srcFileList"]               = ["hash/php_sha1.cpp"]
     config["headerFileList"]            = ["hash/php_sha1.h"]
-    config["phpMinitStatements"]        = ["CRYPTOPP_HASH_INIT_CLASS_FUNC_CALL(HashSha1)"]
+    config["phpMinitStatements"]        = ["init_class_HashSha1(TSRMLS_C);"]
     config["hashCryptoppHeaders"]       = ["sha.h"]
 
     config["hashNativeAssoc"]           = {}

@@ -2,14 +2,14 @@
 #include "php_mac_interface.h"
 #include "php_hmac.h"
 #include "php_hmac_d.h"
-#include "../hash/php_hash_interface.h"
+#include "../hash/php_hash_abstract.h"
 #include <hmac.h>
 #include <string>
 #include <zend_exceptions.h>
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacHmac_construct, 0)
-    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashInternalInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashAbstract, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -28,10 +28,8 @@ CRYPTOPP_MAC_INIT_CLASS("hmac", MacHmac, cryptopp_ce_MacHmac, cryptopp_methods_M
 /* {{{ proto MacHmac::__construct(HashInterface hashAlgo) */
 PHP_METHOD(Cryptopp_MacHmac, __construct) {
     zval *hashObject;
-    zend_class_entry *ce_HashInternalInterface;
-    ce_HashInternalInterface = getCryptoppHashInternalInterface();
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, ce_HashInternalInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, cryptopp_ce_HashAbstract)) {
         return;
     }
 
