@@ -1,6 +1,8 @@
 #ifndef PHP_MAC_HMAC_H
 #define PHP_MAC_HMAC_H
 
+#include "../php_cryptopp.h"
+
 void init_class_MacHmac(TSRMLS_D);
 PHP_METHOD(Cryptopp_MacHmac, __construct);
 

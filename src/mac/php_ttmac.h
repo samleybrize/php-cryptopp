@@ -1,6 +1,8 @@
 #ifndef PHP_MAC_TTMAC_H
 #define PHP_MAC_TTMAC_H
 
+#include "../php_cryptopp.h"
+
 void init_class_MacTwoTrackMac(TSRMLS_D);
 PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct);
 

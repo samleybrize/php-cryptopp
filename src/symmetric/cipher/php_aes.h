@@ -1,6 +1,8 @@
 #ifndef PHP_SYMMETRIC_CIPHER_AES_H
 #define PHP_SYMMETRIC_CIPHER_AES_H
 
+#include "../../php_cryptopp.h"
+
 void init_class_SymmetricCipherAes(TSRMLS_D);
 PHP_METHOD(Cryptopp_SymmetricCipherAes, __construct);
 

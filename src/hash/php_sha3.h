@@ -1,6 +1,8 @@
 #ifndef PHP_HASH_SHA3_H
 #define PHP_HASH_SHA3_H
 
+#include "../php_cryptopp.h"
+
 void init_classes_HashSha3(TSRMLS_D);
 PHP_METHOD(Cryptopp_HashSha3_224, __construct);
 PHP_METHOD(Cryptopp_HashSha3_256, __construct);

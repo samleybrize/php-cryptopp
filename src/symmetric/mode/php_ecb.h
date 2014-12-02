@@ -1,6 +1,8 @@
 #ifndef PHP_SYMMETRIC_MODE_ECB_H
 #define PHP_SYMMETRIC_MODE_ECB_H
 
+#include "../../php_cryptopp.h"
+
 void init_class_SymmetricModeEcb(TSRMLS_D);
 PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct);
 
