@@ -11,6 +11,6 @@ def getConfig(cryptoppDir):
     config["enabled"]               = True
     config["srcFileList"]           = ["prng/php_rbg.cpp"]
     config["headerFileList"]        = ["prng/php_rbg.h"]
-    config["phpMinitStatements"]    = ["CRYPTOPP_RBG_INIT_CLASS_FUNC_CALL(RandomByteGenerator)"]
+    config["phpMinitStatements"]    = ["init_class_RandomByteGenerator(TSRMLS_C);"]
 
     return config

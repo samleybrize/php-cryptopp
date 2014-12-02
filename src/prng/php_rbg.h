@@ -1,11 +1,18 @@
 #ifndef PHP_RBG_H
 #define PHP_RBG_H
 
-#include "php_rbg_interface.h"
-
-CRYPTOPP_RBG_INIT_CLASS_FUNC_HEADER(RandomByteGenerator);
+void init_class_RandomByteGenerator(TSRMLS_D);
 PHP_METHOD(Cryptopp_RandomByteGenerator, __construct);
-CRYPTOPP_RBG_REQUIRED_METHODS_HEADER(RandomByteGenerator)
+PHP_METHOD(Cryptopp_RandomByteGenerator, __sleep);
+PHP_METHOD(Cryptopp_RandomByteGenerator, __wakeup);
+PHP_METHOD(Cryptopp_RandomByteGenerator, generate);
+
+/* {{{ object creation related stuff */
+struct RandomByteGeneratorContainer {
+    zend_object std;
+    CryptoPP::RandomNumberGenerator *rbg;
+};
+/* }}} */
 
 #endif /* PHP_RBG_H */
 

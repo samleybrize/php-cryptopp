@@ -3,6 +3,7 @@
 
 #include "../../php_cryptopp.h"
 #include "php_symmetric_cipher.h"
+#include <zend_exceptions.h>
 
 /* {{{ inits a php symmetric cipher class */
 #define CRYPTOPP_SYMMETRIC_CIPHER_INIT_CLASS(algoName, classname, classEntryPtrName, classMethodsVarName) \
