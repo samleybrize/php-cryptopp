@@ -46,6 +46,7 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, __wakeup, arginfo_SymmetricModeAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, getName, arginfo_SymmetricModeInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricModeInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricModeInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -64,6 +65,7 @@ void init_class_SymmetricModeAbstract(TSRMLS_D) {
     zend_declare_property_null(cryptopp_ce_SymmetricModeAbstract, "cipher", 6, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_string(cryptopp_ce_SymmetricModeAbstract, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_string(cryptopp_ce_SymmetricModeAbstract, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_string(cryptopp_ce_SymmetricModeAbstract, "iv", 2, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
@@ -155,7 +157,7 @@ bool cryptoppSymmetricModeGetCipherElements(
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a MacInterface instance */
+/* {{{ verify that a key size is valid for a SymmetricModeAbstract instance */
 static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode, int keySize) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
@@ -181,6 +183,67 @@ static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode) {
     int keySize = Z_STRLEN_P(key);
 
     return isKeyValid(object, mode, keySize);
+}
+/* }}} */
+
+/* {{{ verify that an iv size is valid for a SymmetricModeAbstract instance */
+static bool isIvValid(zval *object, CryptoPP::CipherModeBase *mode, int ivSize) {
+    zend_class_entry *ce;
+    ce = zend_get_class_entry(object TSRMLS_CC);
+
+    if (mode->IsResynchronizable() && mode->IVSize() != ivSize) {
+        if (0 == ivSize) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
+        } else {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid initialization vector length", ce->name, ivSize); // TODO indicates required iv length
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+static bool isIvValid(zval *object, CryptoPP::CipherModeBase *mode) {
+    zend_class_entry *ce;
+    zval *iv;
+    ce          = zend_get_class_entry(object TSRMLS_CC);
+    iv          = zend_read_property(ce, object, "iv", 2, 1 TSRMLS_CC);
+    int ivSize  = Z_STRLEN_P(iv);
+
+    return isIvValid(object, mode, ivSize);
+}
+/* }}} */
+
+/* {{{ sets the key and the iv (if applicable) of the native mode objects of a mode php object */
+static void setKeyWithIv(zval *object, CryptoPP::CipherModeBase *encryptor, CryptoPP::CipherModeBase *decryptor) {
+    // get key and iv of the php object
+    zend_class_entry *ce;
+    zval *zKey;
+    zval *zIv;
+    ce          = zend_get_class_entry(object TSRMLS_CC);
+    zKey        = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
+    zIv         = zend_read_property(ce, object, "iv", 2, 1 TSRMLS_CC);
+    int keySize = Z_STRLEN_P(zKey);
+    int ivSize  = Z_STRLEN_P(zIv);
+
+    // set the key and the iv (if applicable) of native mode objects
+    if (keySize > 0 && !encryptor->IsResynchronizable()) {
+        // an iv is not required
+        // set key
+        byte *key;
+        key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
+        encryptor->SetKey(key, keySize);
+        decryptor->SetKey(key, keySize);
+    } else if (keySize > 0 && ivSize > 0 && encryptor->IsResynchronizable()) {
+        // set key and iv
+        byte *key;
+        byte *iv;
+        key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
+        iv  = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
+        encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
+        decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
+    }
 }
 /* }}} */
 
@@ -230,9 +293,37 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
     }
 
     // set the key on both the php object and the native cryptopp object
-    encryptor->SetKey(reinterpret_cast<byte*>(key), keySize);
-    decryptor->SetKey(reinterpret_cast<byte*>(key), keySize);
     zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
+    setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto string SymmetricModeAbstract::setIv(string iv)
+   Sets the initialization vector */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
+    char *iv    = NULL;
+    int ivSize  = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &iv, &ivSize)) {
+        return;
+    }
+
+    CryptoPP::CipherModeBase *encryptor;
+    CryptoPP::CipherModeBase *decryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+
+    if (!encryptor->IsResynchronizable()) {
+        // an initialization vector is not required
+        return;
+    } else if (!isIvValid(getThis(), encryptor, ivSize)) {
+        // invalid iv
+        RETURN_FALSE;
+    }
+
+    // set the iv on both the php object and the native cryptopp object
+    zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
+    setKeyWithIv(getThis(), encryptor, decryptor);
 }
 /* }}} */
 

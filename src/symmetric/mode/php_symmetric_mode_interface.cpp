@@ -7,6 +7,7 @@ zend_class_entry *cryptopp_ce_SymmetricModeInterface;
 static zend_function_entry cryptopp_methods_SymmetricModeInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_SymmetricModeInterface, getName, arginfo_SymmetricModeInterface_getName)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricModeInterface, setKey, arginfo_SymmetricModeInterface_setKey)
+    PHP_ABSTRACT_ME(Cryptopp_SymmetricModeInterface, setIv, arginfo_SymmetricModeInterface_setIv)
     PHP_FE_END
 };
 

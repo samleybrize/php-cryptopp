@@ -84,7 +84,7 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a MacInterface instance */
+/* {{{ verify that a key size is valid for a MacAbstract instance */
 static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac, int keySize) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
