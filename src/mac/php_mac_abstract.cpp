@@ -85,12 +85,9 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 /* }}} */
 
 /* {{{ verify that a key size is valid for a MacInterface instance */
-static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac) {
+static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac, int keySize) {
     zend_class_entry *ce;
-    zval *key;
-    ce          = zend_get_class_entry(object TSRMLS_CC);
-    key         = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
-    int keySize = Z_STRLEN_P(key);
+    ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!mac->IsValidKeyLength(keySize)) {
         if (0 == keySize) {
@@ -103,6 +100,16 @@ static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac) {
     }
 
     return true;
+}
+
+static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac) {
+    zend_class_entry *ce;
+    zval *key;
+    ce          = zend_get_class_entry(object TSRMLS_CC);
+    key         = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
+    int keySize = Z_STRLEN_P(key);
+
+    return isKeyValid(object, mac, keySize);
 }
 /* }}} */
 
@@ -175,7 +182,7 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac);
 
-    if (!isKeyValid(getThis(), mac)) {
+    if (!isKeyValid(getThis(), mac, keySize)) {
         RETURN_FALSE;
     }
 

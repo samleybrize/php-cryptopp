@@ -156,12 +156,9 @@ bool cryptoppSymmetricModeGetCipherElements(
 /* }}} */
 
 /* {{{ verify that a key size is valid for a MacInterface instance */
-static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode) {
+static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode, int keySize) {
     zend_class_entry *ce;
-    zval *key;
-    ce          = zend_get_class_entry(object TSRMLS_CC);
-    key         = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
-    int keySize = Z_STRLEN_P(key);
+    ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!mode->IsValidKeyLength(keySize)) {
         if (0 == keySize) {
@@ -174,6 +171,16 @@ static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode) {
     }
 
     return true;
+}
+
+static bool isKeyValid(zval *object, CryptoPP::CipherModeBase *mode) {
+    zend_class_entry *ce;
+    zval *key;
+    ce          = zend_get_class_entry(object TSRMLS_CC);
+    key         = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
+    int keySize = Z_STRLEN_P(key);
+
+    return isKeyValid(object, mode, keySize);
 }
 /* }}} */
 
@@ -218,7 +225,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isKeyValid(getThis(), encryptor)) {
+    if (!isKeyValid(getThis(), encryptor, keySize)) {
         RETURN_FALSE;
     }
 
