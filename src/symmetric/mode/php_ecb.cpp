@@ -1,5 +1,5 @@
 #include "../../php_cryptopp.h"
-#include "../cipher/php_symmetric_cipher_interface.h"
+#include "../cipher/php_symmetric_cipher_abstract.h"
 #include "php_symmetric_mode_interface.h"
 #include "php_ecb.h"
 #include <modes.h>
@@ -24,10 +24,8 @@ CRYPTOPP_SYMMETRIC_MODE_INIT_CLASS("ecb", SymmetricModeEcb, cryptopp_ce_Symmetri
 /* {{{ proto SymmetricModeEcb::__construct(void) */
 PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     zval *cipherObject;
-    zend_class_entry *ce_SymmetricCipherInternalInterface;
-    ce_SymmetricCipherInternalInterface = getCryptoppSymmetricCipherInternalInterface();
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &cipherObject, ce_SymmetricCipherInternalInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &cipherObject, cryptopp_ce_SymmetricCipherAbstract)) {
         return;
     }
 

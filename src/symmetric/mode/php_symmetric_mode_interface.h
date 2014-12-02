@@ -4,6 +4,7 @@
 #include "../../php_cryptopp.h"
 #include "php_symmetric_mode.h"
 #include <modes.h>
+#include <zend_exceptions.h>
 
 /* {{{ inits a php symmetric mode class */
 #define CRYPTOPP_SYMMETRIC_MODE_INIT_CLASS(algoName, classname, classEntryPtrName, classMethodsVarName) \

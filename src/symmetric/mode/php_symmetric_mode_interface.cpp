@@ -95,8 +95,8 @@ bool cryptoppSymmetricModeGetCipherElements(
     std::string **cipherName
 ) {
     // get cipher encryptor/decryptor ptr
-    *cipherEncryptor = static_cast<SymmetricCipherInterfaceContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
-    *cipherDecryptor = static_cast<SymmetricCipherInterfaceContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
+    *cipherEncryptor = static_cast<SymmetricCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
+    *cipherDecryptor = static_cast<SymmetricCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
 
     // verify that cipher encryptor/decryptor ptr are not null
     if (NULL == cipherEncryptor || NULL == cipherDecryptor) {
