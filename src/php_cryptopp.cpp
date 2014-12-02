@@ -33,11 +33,41 @@ static PHP_MINFO_FUNCTION(cryptopp) {
         supportedHashList.append(" ");
     }
 
+    /* supported MAC algos */
+    vector<string> macAlgoList = getMacAlgoList();
+    string supportedMacList;
+
+    for (vector<string>::iterator it = macAlgoList.begin(); it != macAlgoList.end(); ++it) {
+        supportedMacList.append(it->c_str());
+        supportedMacList.append(" ");
+    }
+
+    /* supported block ciphers */
+    vector<string> blockCipherAlgoList = getSymmetricCipherAlgoList();
+    string supportedBlockCipherList;
+
+    for (vector<string>::iterator it = blockCipherAlgoList.begin(); it != blockCipherAlgoList.end(); ++it) {
+        supportedBlockCipherList.append(it->c_str());
+        supportedBlockCipherList.append(" ");
+    }
+
+    /* supported cipher modes */
+    vector<string> modeAlgoList = getSymmetricModeList();
+    string supportedModeList;
+
+    for (vector<string>::iterator it = modeAlgoList.begin(); it != modeAlgoList.end(); ++it) {
+        supportedModeList.append(it->c_str());
+        supportedModeList.append(" ");
+    }
+
     php_info_print_table_start();
     php_info_print_table_header(2, "Crypto++ support", "enabled");
     php_info_print_table_row(2, "Crypto++ module version", PHP_CRYPTOPP_VERSION);
     php_info_print_table_row(2, "Crypto++ library version", cryptopp_version_dotted);
-    php_info_print_table_row(2, "Supported hash algos", supportedHashList.c_str());
+    php_info_print_table_row(2, "Supported hash algorithms", supportedHashList.c_str());
+    php_info_print_table_row(2, "Supported MAC algorithms", supportedMacList.c_str());
+    php_info_print_table_row(2, "Supported block ciphers", supportedBlockCipherList.c_str());
+    php_info_print_table_row(2, "Supported cipher modes", supportedModeList.c_str());
     php_info_print_table_end();
 }
 /* }}} */
