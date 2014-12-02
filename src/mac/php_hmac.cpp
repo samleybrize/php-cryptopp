@@ -55,7 +55,7 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
         RETURN_NULL();
     }
 
-    setCryptoppMacNativePtr(getThis(), mac);
+    setCryptoppMacNativePtr(getThis(), mac  TSRMLS_CC);
 
     std::string name("hmac(");
     name.append(algoName);

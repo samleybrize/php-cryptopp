@@ -48,6 +48,7 @@ configFileList.append("src/symmetric/cipher/config/symmetric_cipher_aes.py")
 
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_abstract.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
 
 configFileList.append("src/mac/config/mac.py")

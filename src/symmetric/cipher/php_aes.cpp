@@ -27,8 +27,8 @@ PHP_METHOD(Cryptopp_SymmetricCipherAes, __construct) {
     CryptoPP::AES::Decryption *decryptor;
     encryptor = new CryptoPP::AES::Encryption();
     decryptor = new CryptoPP::AES::Decryption();
-    setCryptoppSymmetricCipherEncryptorPtr(getThis(), encryptor);
-    setCryptoppSymmetricCipherDecryptorPtr(getThis(), decryptor);
+    setCryptoppSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
+    setCryptoppSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_SymmetricCipherAbstract, getThis(), "name", 4, "aes", 3 TSRMLS_CC);
 }

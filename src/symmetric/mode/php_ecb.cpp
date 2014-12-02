@@ -1,6 +1,6 @@
 #include "../../php_cryptopp.h"
 #include "../cipher/php_symmetric_cipher_abstract.h"
-#include "php_symmetric_mode_interface.h"
+#include "php_symmetric_mode_abstract.h"
 #include "php_ecb.h"
 #include <modes.h>
 
@@ -14,11 +14,12 @@ zend_class_entry *cryptopp_ce_SymmetricModeEcb;
 
 static zend_function_entry cryptopp_methods_SymmetricModeEcb[] = {
     PHP_ME(Cryptopp_SymmetricModeEcb, __construct, arginfo_SymmetricModeEcb_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-    CRYPTOPP_SYMMETRIC_MODE_REQUIRED_METHODS(SymmetricModeEcb)
     PHP_FE_END
 };
 
-CRYPTOPP_SYMMETRIC_MODE_INIT_CLASS("ecb", SymmetricModeEcb, cryptopp_ce_SymmetricModeEcb, cryptopp_methods_SymmetricModeEcb)
+void init_class_SymmetricModeEcb(TSRMLS_D) {
+    init_class_SymmetricModeAbstractChild("ecb", "SymmetricModeEcb", cryptopp_ce_SymmetricModeEcb, cryptopp_methods_SymmetricModeEcb TSRMLS_CC);
+}
 /* }}} */
 
 /* {{{ proto SymmetricModeEcb::__construct(void) */
@@ -43,30 +44,18 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     CryptoPP::ECB_Mode_ExternalCipher::Decryption *decryptor;
     encryptor = new CryptoPP::ECB_Mode_ExternalCipher::Encryption(*cipherEncryptor);
     decryptor = new CryptoPP::ECB_Mode_ExternalCipher::Decryption(*cipherDecryptor);
-    CRYPTOPP_SYMMETRIC_MODE_SET_ENCRYPTOR_PTR(encryptor)
-    CRYPTOPP_SYMMETRIC_MODE_SET_DECRYPTOR_PTR(decryptor)
+    setCryptoppSymmetricModeEncryptorPtr(getThis(), encryptor TSRMLS_CC);
+    setCryptoppSymmetricModeDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
     std::string name("ecb(");
     name.append(*cipherName);
     name.append(")");
-    zend_update_property_stringl(cryptopp_ce_SymmetricModeEcb, getThis(), "name", 4, name.c_str(), name.size() TSRMLS_CC);
+    zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, name.c_str(), name.size() TSRMLS_CC);
 
     // hold the cipher object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
-    zend_update_property(cryptopp_ce_SymmetricModeEcb, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
+    zend_update_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
 }
 /* }}} */
-
-/* {{{ proto string SymmetricModeEcb::getName(void)
-   Return algorithm name */
-PHP_METHOD(Cryptopp_SymmetricModeEcb, getName) {
-    zval *name;
-    name = zend_read_property(cryptopp_ce_SymmetricModeEcb, getThis(), "name", 4, 0 TSRMLS_CC);
-    RETURN_ZVAL(name, 1, 0);
-}
-/* }}} */
-
-/* include common hash methods definitions */
-CRYPTOPP_SYMMETRIC_MODE_COMMON_METHODS_DEFINITIONS(SymmetricModeEcb, CryptoPP::Weak::MD5)
 
 /*
  * Local variables:

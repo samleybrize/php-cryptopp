@@ -4,12 +4,6 @@
 #include "../../php_cryptopp.h"
 
 /* {{{ php symmetric cipher classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface___wakeup, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface___sleep, 0)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getName, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
