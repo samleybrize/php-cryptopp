@@ -57,6 +57,8 @@ configFileList.append("src/mac/config/mac_abstract.py")
 configFileList.append("src/mac/config/mac_hmac.py")
 configFileList.append("src/mac/config/mac_ttmac.py")
 
+configFileList.append("src/filter/config/stream_transformation_filter.py")
+
 # process all config scripts
 phpMinitStatements  = []
 srcFileList         = ["php_cryptopp.cpp"]

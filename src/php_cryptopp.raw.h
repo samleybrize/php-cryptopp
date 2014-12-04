@@ -14,7 +14,7 @@ extern "C" {
 
 /* {{{ include crypto++ */
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
-#include "cryptlib.h"
+#include <cryptlib.h>
 /* }}} */
 
 /* {{{ declare module entry */

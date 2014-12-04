@@ -69,6 +69,12 @@ bool cryptoppSymmetricModeGetCipherElements(
 );
 /* }}} */
 
+/* verify that a key size is valid for a SymmetricModeAbstract instance */
+bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBase *mode);
+
+/* verify that an iv size is valid for a SymmetricModeAbstract instance */
+bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBase *mode);
+
 #endif /* PHP_SYMMETRIC_MODE_ABSTRACT_H */
 
 /*

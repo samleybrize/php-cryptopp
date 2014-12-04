@@ -26,7 +26,7 @@ void init_class_MacHmac(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ proto MacHmac::__construct(HashAbstract hashAlgo) */
+/* {{{ proto MacHmac::__construct(Cryptopp\HashAbstract hashAlgo) */
 PHP_METHOD(Cryptopp_MacHmac, __construct) {
     zval *hashObject;
 

@@ -6,6 +6,7 @@
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeEcb_construct, 0)
+    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\SymmetricCipherAbstract, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -22,7 +23,7 @@ void init_class_SymmetricModeEcb(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ proto SymmetricModeEcb::__construct(void) */
+/* {{{ proto SymmetricModeEcb::__construct(Cryptopp\SymmetricCipherAbstract cipher) */
 PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     zval *cipherObject;
 
