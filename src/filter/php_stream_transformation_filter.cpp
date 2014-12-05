@@ -4,6 +4,7 @@
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "../exception/php_exception.h"
 #include "../padding/php_padding_interface.h"
+#include "../padding/php_pkcs7.h"
 #include <filters.h>
 #include <zend_exceptions.h>
 
@@ -196,9 +197,9 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
         return;
     }
 
-    // TODO if no padding object, pick the default one
+    // if no padding object, pick the default one
     if (NULL == paddingObject) {
-        php_printf("null object\n"); // TODO
+        object_init_ex(paddingObject, cryptopp_ce_PaddingPkcs7);
     }
 
     // create native stream transformation filter
