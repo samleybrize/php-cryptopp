@@ -22,7 +22,52 @@ StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransform
 
 void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
 {
-    // TODO
+    unsigned int blockSize = m_cipher.MandatoryBlockSize();
+
+    if (m_cipher.IsForwardTransformation()) {
+        // pad
+        byte *padded = NULL;
+
+        zval *zPadded;
+        zval *funcName;
+        MAKE_STD_ZVAL(zPadded);
+        MAKE_STD_ZVAL(funcName);
+        ZVAL_STRING(funcName, "pad", 1);
+
+        zval *zData;
+        zval *zBlockSize;
+        MAKE_STD_ZVAL(zData);
+        MAKE_STD_ZVAL(zBlockSize);
+        ZVAL_STRINGL(zData, reinterpret_cast<const char*>(inString), length, 1);
+        ZVAL_LONG(zBlockSize, blockSize);
+        zval *params[] = {zData, zBlockSize};
+
+        call_user_function(NULL, &m_paddingObject, funcName, zPadded, 2, params TSRMLS_CC);
+
+        if (IS_BOOL == Z_TYPE_P(zPadded)) {
+            // TODO exception
+            php_printf("false\n"); // TODO
+        }
+        // TODO verif zPadded length multiple of block size
+
+        if (Z_STRLEN_P(zPadded) > 0) {
+            padded = reinterpret_cast<byte*>(Z_STRVAL_P(zPadded));
+            m_cipher.ProcessData(padded, padded, Z_STRLEN_P(zPadded));
+            AttachedTransformation()->Put(padded, Z_STRLEN_P(zPadded));
+        }
+
+        // TODO try/catch to free zvals whatever happen
+        zval_dtor(zPadded);
+        zval_dtor(funcName);
+        zval_dtor(zData);
+        zval_dtor(zBlockSize);
+    } else {
+        // unpad
+        php_printf("unpad\n"); // TODO
+//        byte *unpadded = NULL;
+        // TODO call unpad
+//        AttachedTransformation()->Put(unpadded, blockSize);
+    }
 }
 
 /* {{{ arg info */
