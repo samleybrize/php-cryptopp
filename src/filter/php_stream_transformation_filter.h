@@ -42,6 +42,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __sleep);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, getCipherMode);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString);
+PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString);
 /* }}} */
 
 #endif /* PHP_STREAM_TRANSFORMATION_FILTER_H */

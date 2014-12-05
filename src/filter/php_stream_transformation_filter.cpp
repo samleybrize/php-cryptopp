@@ -23,6 +23,10 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter_encryptString, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter_decryptString, 0)
+    ZEND_ARG_INFO(0, ciphertext)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ custom object create/free handler */
@@ -66,6 +70,7 @@ static zend_function_entry cryptopp_methods_StreamTransformationFilter[] = {
     PHP_ME(Cryptopp_StreamTransformationFilter, __wakeup, arginfo_StreamTransformationFilter___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamTransformationFilter, getCipherMode, arginfo_StreamTransformationFilter_getCipherMode, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamTransformationFilter, encryptString, arginfo_StreamTransformationFilter_encryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamTransformationFilter, decryptString, arginfo_StreamTransformationFilter_decryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -120,6 +125,36 @@ static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, Cr
 }
 /* }}} */
 
+/* {{{ returns the mode encryptor */
+static CryptoPP::CipherModeBase *getModeEncryptor(zval *modeObject) {
+    return static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->encryptor;
+}
+/* }}} */
+
+/* {{{ returns the mode decryptor */
+static CryptoPP::CipherModeBase *getModeDecryptor(zval *modeObject) {
+    return static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->decryptor;
+}
+/* }}} */
+
+/* {{{ indicates if the native mode object holded by a stf object is valid */
+static bool isNativeModeObjectValid(zval *stfObject) {
+    zval *modeObject;
+    modeObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "cipherMode", 10, 0 TSRMLS_CC);
+
+    if (instanceof_function(Z_OBJCE_P(modeObject), cryptopp_ce_SymmetricModeAbstract)) {
+        CryptoPP::CipherModeBase *modeEncryptor;
+        modeEncryptor = getModeEncryptor(modeObject);
+
+        if (!isCryptoppSymmetricModeKeyValid(modeObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(modeObject, modeEncryptor)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+/* }}} */
+
 /* {{{ proto void StreamTransformationFilter::__sleep(void)
    Prevents serialization of a StreamTransformationFilter instance */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __sleep) {
@@ -151,10 +186,10 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
         // retrieve native objects
         CryptoPP::CipherModeBase *modeEncryptor;
         CryptoPP::CipherModeBase *modeDecryptor;
-        modeEncryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->encryptor; // TODO function or macro
-        modeDecryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->decryptor; // TODO function or macro
-        stfEncryptor = new CryptoPP::StreamTransformationFilter(*modeEncryptor); // TODO proxy sink
-        stfDecryptor = new CryptoPP::StreamTransformationFilter(*modeDecryptor); // TODO proxy sink
+        modeEncryptor = getModeEncryptor(modeObject);
+        modeDecryptor = getModeDecryptor(modeObject);
+        stfEncryptor = new CryptoPP::StreamTransformationFilter(*modeEncryptor);
+        stfDecryptor = new CryptoPP::StreamTransformationFilter(*modeDecryptor);
     } else {
         // TODO use the proxy
     }
@@ -190,21 +225,14 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    zval *modeObject;
-    modeObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, getThis(), "cipherMode", 10, 0 TSRMLS_CC);
-
-    if (instanceof_function(Z_OBJCE_P(modeObject), cryptopp_ce_SymmetricModeAbstract)) {
-        CryptoPP::CipherModeBase *modeEncryptor;
-        modeEncryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->encryptor; // TODO function or macro
-
-        if (!isCryptoppSymmetricModeKeyValid(modeObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(modeObject, modeEncryptor)) {
-            RETURN_FALSE
-        }
+    if (!isNativeModeObjectValid(getThis())) {
+        RETURN_FALSE
     }
 
     // encrypt
     CryptoPP::StreamTransformationFilter *stfEncryptor;
     stfEncryptor    = CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(stfEncryptor)
+    stfEncryptor->GetNextMessage();
     size_t written  = stfEncryptor->Put(reinterpret_cast<byte*>(data), dataSize);
     stfEncryptor->MessageEnd();
 
@@ -215,6 +243,42 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
         byte ciphertext[retrievable];
         stfEncryptor->Get(ciphertext, retrievable);
         RETURN_STRINGL(reinterpret_cast<char*>(ciphertext), retrievable, 1)
+    } else {
+        // something goes wrong
+        RETURN_FALSE
+    }
+}
+/* }}} */
+
+/* {{{ proto bool|string StreamTransformationFilter::decryptString(string ciphertext)
+       Decrypts a string */
+PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString) {
+    char *ciphertext    = NULL;
+    int ciphertextSize  = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &ciphertext, &ciphertextSize)) {
+        return;
+    }
+
+    // if the mode object is a native object, ensure that the key/iv is valid
+    if (!isNativeModeObjectValid(getThis())) {
+        RETURN_FALSE
+    }
+
+    // decrypt
+    CryptoPP::StreamTransformationFilter *stfDecryptor;
+    stfDecryptor    = CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
+    stfDecryptor->GetNextMessage();
+    size_t written  = stfDecryptor->Put(reinterpret_cast<byte*>(ciphertext), ciphertextSize);
+    stfDecryptor->MessageEnd();
+
+    CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
+
+    if (retrievable > 0 && retrievable <= ciphertextSize) {
+        // return plain text
+        byte plaintext[retrievable];
+        stfDecryptor->Get(plaintext, retrievable);
+        RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1)
     } else {
         // something goes wrong
         RETURN_FALSE
