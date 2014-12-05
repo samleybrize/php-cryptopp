@@ -6,6 +6,17 @@
 
 void init_class_StreamTransformationFilter(TSRMLS_D);
 
+// TODO
+class StreamTransformationFilter : public CryptoPP::StreamTransformationFilter
+{
+public:
+    StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject);
+
+protected:
+    void LastPut(const byte *inString, size_t length);
+    zval *m_paddingObject;
+};
+
 /* {{{ get the pointer to the native stf encryptor object of the php class */
 #define CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(ptrName)    \
     ptrName = getCryptoppStreamTransformationFilterEncryptorPtr(getThis() TSRMLS_CC); \
@@ -27,8 +38,8 @@ void init_class_StreamTransformationFilter(TSRMLS_D);
 /* {{{ object creation related stuff */
 struct StreamTransformationFilterContainer {
     zend_object std;
-    CryptoPP::StreamTransformationFilter *stfEncryptor;
-    CryptoPP::StreamTransformationFilter *stfDecryptor;
+    StreamTransformationFilter *stfEncryptor;
+    StreamTransformationFilter *stfDecryptor;
 };
 
 extern zend_object_handlers StreamTransformationFilter_object_handlers;

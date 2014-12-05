@@ -6,6 +6,19 @@
 #include <filters.h>
 #include <zend_exceptions.h>
 
+// TODO
+StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject)
+    : CryptoPP::StreamTransformationFilter(c, NULL, CryptoPP::StreamTransformationFilter::NO_PADDING)
+{
+    // TODO check paddingObject
+    m_paddingObject = paddingObject;
+}
+
+void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
+{
+    // TODO
+}
+
 /* {{{ arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___construct, 0)
     ZEND_ARG_OBJ_INFO(0, cipherMode, Cryptopp\\SymmetricModeInterface, 0)
@@ -89,7 +102,7 @@ void init_class_StreamTransformationFilter(TSRMLS_D) {
 
 /* {{{ get the pointer to the native stf encryptor object of the php class */
 static CryptoPP::StreamTransformationFilter *getCryptoppStreamTransformationFilterEncryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::StreamTransformationFilter *stf;
+    StreamTransformationFilter *stf;
     stf = static_cast<StreamTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor;
 
     if (NULL == stf) {
@@ -101,8 +114,8 @@ static CryptoPP::StreamTransformationFilter *getCryptoppStreamTransformationFilt
 /* }}} */
 
 /* {{{ get the pointer to the native stf decryptor object of the php class */
-static CryptoPP::StreamTransformationFilter *getCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::StreamTransformationFilter *stf;
+static StreamTransformationFilter *getCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr TSRMLS_DC) {
+    StreamTransformationFilter *stf;
     stf = static_cast<StreamTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor;
 
     if (NULL == stf) {
@@ -114,13 +127,13 @@ static CryptoPP::StreamTransformationFilter *getCryptoppStreamTransformationFilt
 /* }}} */
 
 /* {{{ set the pointer to the native stf encryptor object of the php class */
-static void setCryptoppStreamTransformationFilterEncryptorPtr(zval *this_ptr, CryptoPP::StreamTransformationFilter *nativePtr TSRMLS_DC) {
+static void setCryptoppStreamTransformationFilterEncryptorPtr(zval *this_ptr, StreamTransformationFilter *nativePtr TSRMLS_DC) {
     static_cast<StreamTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor = nativePtr;
 }
 /* }}} */
 
 /* {{{ set the pointer to the native stf decryptor object of the php class */
-static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, CryptoPP::StreamTransformationFilter *nativePtr TSRMLS_DC) {
+static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, StreamTransformationFilter *nativePtr TSRMLS_DC) {
     static_cast<StreamTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor = nativePtr;
 }
 /* }}} */
@@ -172,6 +185,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup) {
 /* {{{ proto StreamTransformationFilter::__construct(Cryptopp\SymmetricModeInterface cipherMode) */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     // TODO padding?
+    // TODO if no padding object, pick the default one
     zval *modeObject;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &modeObject, cryptopp_ce_SymmetricModeInterface)) {
@@ -179,8 +193,8 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     }
 
     // create native stream transformation filter
-    CryptoPP::StreamTransformationFilter *stfEncryptor;
-    CryptoPP::StreamTransformationFilter *stfDecryptor;
+    StreamTransformationFilter *stfEncryptor;
+    StreamTransformationFilter *stfDecryptor;
 
     if (instanceof_function(Z_OBJCE_P(modeObject), cryptopp_ce_SymmetricModeAbstract)) {
         // retrieve native objects
@@ -188,8 +202,8 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
         CryptoPP::CipherModeBase *modeDecryptor;
         modeEncryptor = getModeEncryptor(modeObject);
         modeDecryptor = getModeDecryptor(modeObject);
-        stfEncryptor = new CryptoPP::StreamTransformationFilter(*modeEncryptor);
-        stfDecryptor = new CryptoPP::StreamTransformationFilter(*modeDecryptor);
+        stfEncryptor = new StreamTransformationFilter(*modeEncryptor, NULL);
+        stfDecryptor = new StreamTransformationFilter(*modeDecryptor, NULL);
     } else {
         // TODO use the proxy
     }
@@ -212,7 +226,6 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, getCipherMode) {
 /* }}} */
 
 // TODO method encrypt/decrypt: accept an input and output object (return boolean)
-// TODO method encrypt/decrypt: accept a string (return string or false)
 
 /* {{{ proto bool|string StreamTransformationFilter::encryptString(string data)
        Encrypts a string */
