@@ -57,6 +57,9 @@ configFileList.append("src/mac/config/mac_abstract.py")
 configFileList.append("src/mac/config/mac_hmac.py")
 configFileList.append("src/mac/config/mac_ttmac.py")
 
+configFileList.append("src/padding/config/padding_interface.py")
+configFileList.append("src/padding/config/padding_no_padding.py")
+
 configFileList.append("src/filter/config/stream_transformation_filter.py")
 
 # process all config scripts

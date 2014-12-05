@@ -3,6 +3,7 @@
 #include "../symmetric/mode/php_symmetric_mode_interface.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "../exception/php_exception.h"
+#include "../padding/php_padding_interface.h"
 #include <filters.h>
 #include <zend_exceptions.h>
 
@@ -10,7 +11,11 @@
 StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject)
     : CryptoPP::StreamTransformationFilter(c, NULL, CryptoPP::StreamTransformationFilter::NO_PADDING)
 {
-    // TODO check paddingObject
+    // check paddingObject
+    if (NULL == paddingObject || !instanceof_function(Z_OBJCE_P(paddingObject), cryptopp_ce_PaddingInterface)) {
+        // TODO
+    }
+
     m_paddingObject = paddingObject;
 }
 
@@ -184,12 +189,16 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup) {
 
 /* {{{ proto StreamTransformationFilter::__construct(Cryptopp\SymmetricModeInterface cipherMode) */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
-    // TODO padding?
-    // TODO if no padding object, pick the default one
     zval *modeObject;
+    zval *paddingObject = NULL;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &modeObject, cryptopp_ce_SymmetricModeInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &modeObject, cryptopp_ce_SymmetricModeInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
         return;
+    }
+
+    // TODO if no padding object, pick the default one
+    if (NULL == paddingObject) {
+        php_printf("null object\n"); // TODO
     }
 
     // create native stream transformation filter
@@ -202,8 +211,8 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
         CryptoPP::CipherModeBase *modeDecryptor;
         modeEncryptor = getModeEncryptor(modeObject);
         modeDecryptor = getModeDecryptor(modeObject);
-        stfEncryptor = new StreamTransformationFilter(*modeEncryptor, NULL);
-        stfDecryptor = new StreamTransformationFilter(*modeDecryptor, NULL);
+        stfEncryptor = new StreamTransformationFilter(*modeEncryptor, paddingObject);
+        stfDecryptor = new StreamTransformationFilter(*modeDecryptor, paddingObject);
     } else {
         // TODO use the proxy
     }
