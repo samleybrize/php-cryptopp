@@ -13,6 +13,12 @@ ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_unpad, 0)
     ZEND_ARG_INFO(0, data)
     ZEND_ARG_INFO(0, blockSize)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_canPad, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_canUnpad, 0)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* inits the PaddingInterface php interface */

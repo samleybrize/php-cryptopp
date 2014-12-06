@@ -9,6 +9,8 @@ void init_class_PaddingNoPadding(TSRMLS_D);
 /* {{{ methods declarations */
 PHP_METHOD(Cryptopp_PaddingNoPadding, pad);
 PHP_METHOD(Cryptopp_PaddingNoPadding, unpad);
+PHP_METHOD(Cryptopp_PaddingNoPadding, canPad);
+PHP_METHOD(Cryptopp_PaddingNoPadding, canUnpad);
 /* }}} */
 
 #endif /* PHP_PADDING_NO_PADDING_H */

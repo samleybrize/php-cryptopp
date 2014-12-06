@@ -8,6 +8,8 @@ zend_class_entry *cryptopp_ce_PaddingNoPadding;
 static zend_function_entry cryptopp_methods_PaddingNoPadding[] = {
     PHP_ME(Cryptopp_PaddingNoPadding, pad, arginfo_PaddingInterface_pad, ZEND_ACC_PUBLIC)
     PHP_ME(Cryptopp_PaddingNoPadding, unpad, arginfo_PaddingInterface_unpad, ZEND_ACC_PUBLIC)
+    PHP_ME(Cryptopp_PaddingNoPadding, canPad, arginfo_PaddingInterface_canPad, ZEND_ACC_PUBLIC)
+    PHP_ME(Cryptopp_PaddingNoPadding, canUnpad, arginfo_PaddingInterface_canUnpad, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -30,7 +32,7 @@ PHP_METHOD(Cryptopp_PaddingNoPadding, pad) {
         RETURN_FALSE;
     }
 
-    data->refcount__gc++;
+    Z_ADDREF_P(data);
     RETURN_ZVAL(data, 0, 0)
 }
 /* }}} */
@@ -45,8 +47,22 @@ PHP_METHOD(Cryptopp_PaddingNoPadding, unpad) {
         RETURN_FALSE;
     }
 
-    data->refcount__gc++;
+    Z_ADDREF_P(data);
     RETURN_ZVAL(data, 0, 0)
+}
+/* }}} */
+
+/* {{{ proto boolean PaddingNoPadding::canPad(void)
+   Indicates if this padding scheme can pad data */
+PHP_METHOD(Cryptopp_PaddingNoPadding, canPad) {
+    RETURN_FALSE
+}
+/* }}} */
+
+/* {{{ proto boolean PaddingNoPadding::canUnpad(void)
+   Indicates if this padding scheme can unpad data */
+PHP_METHOD(Cryptopp_PaddingNoPadding, canUnpad) {
+    RETURN_FALSE
 }
 /* }}} */
 

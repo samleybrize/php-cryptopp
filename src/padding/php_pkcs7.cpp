@@ -12,6 +12,8 @@ zend_class_entry *cryptopp_ce_PaddingPkcs7;
 static zend_function_entry cryptopp_methods_PaddingPkcs7[] = {
     PHP_ME(Cryptopp_PaddingPkcs7, pad, arginfo_PaddingInterface_pad, ZEND_ACC_PUBLIC)
     PHP_ME(Cryptopp_PaddingPkcs7, unpad, arginfo_PaddingInterface_unpad, ZEND_ACC_PUBLIC)
+    PHP_ME(Cryptopp_PaddingPkcs7, canPad, arginfo_PaddingInterface_canPad, ZEND_ACC_PUBLIC)
+    PHP_ME(Cryptopp_PaddingPkcs7, canUnpad, arginfo_PaddingInterface_canUnpad, ZEND_ACC_PUBLIC)
     PHP_FE_END
 };
 
@@ -104,6 +106,20 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
     char *plain;
     plain = reinterpret_cast<char*>(padded);
     RETURN_STRINGL(plain, length, 1)
+}
+/* }}} */
+
+/* {{{ proto boolean PaddingPkcs7::canPad(void)
+   Indicates if this padding scheme can pad data */
+PHP_METHOD(Cryptopp_PaddingPkcs7, canPad) {
+    RETURN_TRUE
+}
+/* }}} */
+
+/* {{{ proto boolean PaddingPkcs7::canUnpad(void)
+   Indicates if this padding scheme can unpad data */
+PHP_METHOD(Cryptopp_PaddingPkcs7, canUnpad) {
+    RETURN_TRUE
 }
 /* }}} */
 

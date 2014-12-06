@@ -3,19 +3,30 @@
 
 #include "../php_cryptopp.h"
 #include <filters.h>
+#include <string>
 
 void init_class_StreamTransformationFilter(TSRMLS_D);
 
-// TODO
-class StreamTransformationFilter : public CryptoPP::StreamTransformationFilter
+/* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
+class StreamTransformationFilter : public CryptoPP::FilterWithBufferedInput, public CryptoPP::BlockPaddingSchemeDef, private CryptoPP::FilterPutSpaceHelper
 {
 public:
     StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject);
+    std::string AlgorithmName() const {return m_cipher.AlgorithmName();}
 
 protected:
+    bool PaddingObjectCanUnpad();
+    void InitializeDerivedAndReturnNewSizes(const CryptoPP::NameValuePairs &parameters, size_t &firstSize, size_t &blockSize, size_t &lastSize);
+    void FirstPut(const byte *inString);
+    void NextPutMultiple(const byte *inString, size_t length);
+    void NextPutModifiable(byte *inString, size_t length);
     void LastPut(const byte *inString, size_t length);
+
+    CryptoPP::StreamTransformation &m_cipher;
+    unsigned int m_optimalBufferSize;
     zval *m_paddingObject;
 };
+/* }}} */
 
 /* {{{ get the pointer to the native stf encryptor object of the php class */
 #define CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(ptrName)    \

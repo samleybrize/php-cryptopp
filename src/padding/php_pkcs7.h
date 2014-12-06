@@ -9,6 +9,8 @@ void init_class_PaddingPkcs7(TSRMLS_D);
 /* {{{ methods declarations */
 PHP_METHOD(Cryptopp_PaddingPkcs7, pad);
 PHP_METHOD(Cryptopp_PaddingPkcs7, unpad);
+PHP_METHOD(Cryptopp_PaddingPkcs7, canPad);
+PHP_METHOD(Cryptopp_PaddingPkcs7, canUnpad);
 /* }}} */
 
 #endif /* PHP_PADDING_PKCS7_H */

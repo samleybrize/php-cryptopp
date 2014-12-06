@@ -7,6 +7,8 @@ zend_class_entry *cryptopp_ce_PaddingInterface;
 static zend_function_entry cryptopp_methods_PaddingInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_PaddingInterface, pad, arginfo_PaddingInterface_pad)
     PHP_ABSTRACT_ME(Cryptopp_PaddingInterface, unpad, arginfo_PaddingInterface_unpad)
+    PHP_ABSTRACT_ME(Cryptopp_PaddingInterface, canPad, arginfo_PaddingInterface_canPad)
+    PHP_ABSTRACT_ME(Cryptopp_PaddingInterface, canUnpad, arginfo_PaddingInterface_canUnpad)
     PHP_FE_END
 };
 
