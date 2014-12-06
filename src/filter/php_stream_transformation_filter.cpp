@@ -10,8 +10,6 @@
 #include <misc.h>
 #include <zend_exceptions.h>
 
-// TODO free pointers !!!!!!!
-
 /* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
 StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject)
     : CryptoPP::FilterWithBufferedInput(NULL)
@@ -143,7 +141,7 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
                 AttachedTransformation()->Put(output, outputLength);
             }
         }
-    } catch (std::exception &e) {
+    } catch (const std::exception &e) {
         // free zvals whatever happen
         zval_dtor(funcName);
         zval_dtor(zInput);
@@ -151,6 +149,12 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
         zval_dtor(zBlockSize);
         throw e;
     }
+
+    // free zvals
+    zval_dtor(funcName);
+    zval_dtor(zInput);
+    zval_dtor(zOutput);
+    zval_dtor(zBlockSize);
 }
 /* }}} */
 

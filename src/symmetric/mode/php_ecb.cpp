@@ -52,6 +52,7 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     name.append(*cipherName);
     name.append(")");
     zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, name.c_str(), name.size() TSRMLS_CC);
+    delete cipherName;
 
     // hold the cipher object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
     zend_update_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
