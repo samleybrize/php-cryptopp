@@ -48,6 +48,9 @@ configFileList.append("src/symmetric/cipher/block/config/block_cipher_interface.
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_aes.py")
 
+configFileList.append("src/symmetric/cipher/stream/config/stream_cipher.py")
+configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_interface.py")
+
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_abstract.py")
