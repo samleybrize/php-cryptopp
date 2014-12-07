@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_AES_H
 #define PHP_BLOCK_CIPHER_AES_H
 
-#include "../../php_cryptopp.h"
+#include "../../../php_cryptopp.h"
 
 void init_class_BlockCipherAes(TSRMLS_D);
 PHP_METHOD(Cryptopp_BlockCipherAes, __construct);

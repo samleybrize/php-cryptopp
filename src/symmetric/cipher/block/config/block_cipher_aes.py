@@ -9,8 +9,8 @@ def getConfig(cryptoppDir):
         return config
 
     config["enabled"]                   = True
-    config["srcFileList"]               = ["symmetric/cipher/php_aes.cpp"]
-    config["headerFileList"]            = ["symmetric/cipher/php_aes.h"]
+    config["srcFileList"]               = ["symmetric/cipher/block/php_aes.cpp"]
+    config["headerFileList"]            = ["symmetric/cipher/block/php_aes.h"]
     config["phpMinitStatements"]        = ["init_class_BlockCipherAes(TSRMLS_C);"]
     config["hashCryptoppHeaders"]       = ["aes.h"]
 

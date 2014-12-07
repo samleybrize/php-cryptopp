@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_H
 #define PHP_BLOCK_CIPHER_H
 
-#include "../../php_cryptopp.h"
+#include "../../../php_cryptopp.h"
 #include <string>
 #include <vector>
 

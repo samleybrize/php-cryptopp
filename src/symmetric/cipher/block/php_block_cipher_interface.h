@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_INTERFACE_H
 #define PHP_BLOCK_CIPHER_INTERFACE_H
 
-#include "../../php_cryptopp.h"
+#include "../../../php_cryptopp.h"
 
 /* inits the BlockCipherInterface php interface */
 extern zend_class_entry *cryptopp_ce_BlockCipherInterface;

@@ -2,7 +2,7 @@
 #include "php_symmetric_mode_abstract.h"
 #include "php_symmetric_mode_interface.h"
 #include "php_symmetric_mode.h"
-#include "../cipher/php_block_cipher_abstract.h"
+#include "../cipher/block/php_block_cipher_abstract.h"
 #include "../../exception/php_exception.h"
 #include <zend_exceptions.h>
 #include <string>
