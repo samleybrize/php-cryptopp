@@ -41,10 +41,10 @@ configFileList.append("src/hash/config/hash_sha3.py")
 configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
 
-configFileList.append("src/symmetric/cipher/config/symmetric_cipher.py")
+configFileList.append("src/symmetric/cipher/config/block_cipher.py")
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/config/block_cipher_interface.py")
-configFileList.append("src/symmetric/cipher/config/symmetric_cipher_abstract.py")
+configFileList.append("src/symmetric/cipher/config/block_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_aes.py")
 
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")

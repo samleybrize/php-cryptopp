@@ -1,6 +1,6 @@
 #include "../../php_cryptopp.h"
-#include "php_symmetric_cipher_abstract.h"
 #include "php_aes.h"
+#include "php_block_cipher_abstract.h"
 #include <aes.h>
 
 /* {{{ arginfo */
@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_SymmetricCipherAes[] = {
 };
 
 void init_class_SymmetricCipherAes(TSRMLS_D) {
-    init_class_SymmetricCipherAbstractChild("aes", "SymmetricCipherAes", cryptopp_ce_SymmetricCipherAes, cryptopp_methods_SymmetricCipherAes TSRMLS_CC);
+    init_class_BlockCipherAbstractChild("aes", "SymmetricCipherAes", cryptopp_ce_SymmetricCipherAes, cryptopp_methods_SymmetricCipherAes TSRMLS_CC);
 }
 /* }}} */
 
@@ -27,10 +27,10 @@ PHP_METHOD(Cryptopp_SymmetricCipherAes, __construct) {
     CryptoPP::AES::Decryption *decryptor;
     encryptor = new CryptoPP::AES::Encryption();
     decryptor = new CryptoPP::AES::Decryption();
-    setCryptoppSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
-    setCryptoppSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
+    setCryptoppBlockCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
+    setCryptoppBlockCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
-    zend_update_property_stringl(cryptopp_ce_SymmetricCipherAbstract, getThis(), "name", 4, "aes", 3 TSRMLS_CC);
+    zend_update_property_stringl(cryptopp_ce_BlockCipherAbstract, getThis(), "name", 4, "aes", 3 TSRMLS_CC);
 }
 /* }}} */
 

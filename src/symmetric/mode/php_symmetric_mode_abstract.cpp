@@ -2,6 +2,7 @@
 #include "php_symmetric_mode_abstract.h"
 #include "php_symmetric_mode_interface.h"
 #include "php_symmetric_mode.h"
+#include "../cipher/php_block_cipher_abstract.h"
 #include "../../exception/php_exception.h"
 #include <zend_exceptions.h>
 #include <string>
@@ -129,8 +130,8 @@ bool cryptoppSymmetricModeGetCipherElements(
     std::string **cipherName
 ) {
     // get cipher encryptor/decryptor ptr
-    *cipherEncryptor = static_cast<SymmetricCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
-    *cipherDecryptor = static_cast<SymmetricCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
+    *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
+    *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
 
     // verify that cipher encryptor/decryptor ptr are not null
     if (NULL == cipherEncryptor || NULL == cipherDecryptor) {

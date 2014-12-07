@@ -1,5 +1,5 @@
 #include "../../php_cryptopp.h"
-#include "../cipher/php_symmetric_cipher_abstract.h"
+#include "../cipher/php_block_cipher_abstract.h"
 #include "php_symmetric_mode_abstract.h"
 #include "php_ecb.h"
 #include <modes.h>
@@ -27,7 +27,7 @@ void init_class_SymmetricModeEcb(TSRMLS_D) {
 PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     zval *cipherObject;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &cipherObject, cryptopp_ce_SymmetricCipherAbstract)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &cipherObject, cryptopp_ce_BlockCipherAbstract)) {
         return;
     }
 

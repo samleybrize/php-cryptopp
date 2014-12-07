@@ -43,7 +43,7 @@ static PHP_MINFO_FUNCTION(cryptopp) {
     }
 
     /* supported block ciphers */
-    vector<string> blockCipherAlgoList = getSymmetricCipherAlgoList();
+    vector<string> blockCipherAlgoList = getBlockCipherAlgoList();
     string supportedBlockCipherList;
 
     for (vector<string>::iterator it = blockCipherAlgoList.begin(); it != blockCipherAlgoList.end(); ++it) {
