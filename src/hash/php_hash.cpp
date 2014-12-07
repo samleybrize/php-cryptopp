@@ -7,8 +7,8 @@
 using namespace std;
 
 /* {{{ hash algo list, and corresponding PHP classes */
-vector<string> hashAlgoList;
-vector<string> hashClassList;
+static vector<string> hashAlgoList;
+static vector<string> hashClassList;
 
 void addHashAlgo(const string algoName, const string hashClassname) {
     hashAlgoList.push_back(algoName);

@@ -7,8 +7,8 @@
 using namespace std;
 
 /* {{{ block cipher algo list, and corresponding PHP classes */
-vector<string> cipherAlgoList;
-vector<string> cipherClassList;
+static vector<string> cipherAlgoList;
+static vector<string> cipherClassList;
 
 void addBlockCipherAlgo(const string algoName, const string cipherClassname) {
     cipherAlgoList.push_back(algoName);

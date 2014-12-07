@@ -7,8 +7,8 @@
 using namespace std;
 
 /* {{{ mac algo list, and corresponding PHP classes */
-vector<string> macAlgoList;
-vector<string> macClassList;
+static vector<string> macAlgoList;
+static vector<string> macClassList;
 
 void addMacAlgo(const string algoName, const string macClassname) {
     macAlgoList.push_back(algoName);

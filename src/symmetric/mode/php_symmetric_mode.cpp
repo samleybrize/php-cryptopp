@@ -7,8 +7,8 @@
 using namespace std;
 
 /* {{{ symmetric mode algo list, and corresponding PHP classes */
-vector<string> modeNameList;
-vector<string> modeClassList;
+static vector<string> modeNameList;
+static vector<string> modeClassList;
 
 void addSymmetricMode(const string algoName, const string modeClassname) {
     modeNameList.push_back(algoName);
