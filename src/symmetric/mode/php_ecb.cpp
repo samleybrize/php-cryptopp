@@ -6,7 +6,7 @@
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeEcb_construct, 0)
-    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\BlockCipherAbstract, 0)
+    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\BlockCipherInterface, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -23,7 +23,7 @@ void init_class_SymmetricModeEcb(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ proto SymmetricModeEcb::__construct(Cryptopp\SymmetricCipherAbstract cipher) */
+/* {{{ proto SymmetricModeEcb::__construct(Cryptopp\BlockCipherInterface cipher) */
 PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     zval *cipherObject;
 
@@ -34,25 +34,23 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     // get needed cipher elements
     CryptoPP::BlockCipher *cipherEncryptor;
     CryptoPP::BlockCipher *cipherDecryptor;
-    std::string *cipherName;
+    std::string *modeName;
 
-    if (!cryptoppSymmetricModeGetCipherElements(cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &cipherName)) {
+    if (!cryptoppSymmetricModeGetCipherElements("ecb", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &modeName)) {
         RETURN_NULL()
     }
 
     // instanciate mode encryptor/decryptor
     CryptoPP::ECB_Mode_ExternalCipher::Encryption *encryptor;
     CryptoPP::ECB_Mode_ExternalCipher::Decryption *decryptor;
+
     encryptor = new CryptoPP::ECB_Mode_ExternalCipher::Encryption(*cipherEncryptor);
     decryptor = new CryptoPP::ECB_Mode_ExternalCipher::Decryption(*cipherDecryptor);
     setCryptoppSymmetricModeEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppSymmetricModeDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
-    std::string name("ecb(");
-    name.append(*cipherName);
-    name.append(")");
-    zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, name.c_str(), name.size() TSRMLS_CC);
-    delete cipherName;
+    zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, modeName->c_str(), modeName->size() TSRMLS_CC);
+    delete modeName;
 
     // hold the cipher object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
     zend_update_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);

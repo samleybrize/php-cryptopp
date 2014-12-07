@@ -61,6 +61,7 @@ ZEND_END_ARG_INFO()
 
 /* {{{ Get needed cipher elements to build a mode object */
 bool cryptoppSymmetricModeGetCipherElements(
+    const char *modeName,
     zval *cipherObject,
     zval *modeObject,
     CryptoPP::BlockCipher **cipherEncryptor,

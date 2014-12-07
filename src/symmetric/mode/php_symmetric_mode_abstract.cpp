@@ -123,15 +123,20 @@ void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::CipherModeBa
 
 /* {{{ Get needed cipher elements to build a mode object */
 bool cryptoppSymmetricModeGetCipherElements(
+    const char *modeName,
     zval *cipherObject,
     zval *modeObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **cipherName
+    std::string **modeFullName
 ) {
-    // get cipher encryptor/decryptor ptr
-    *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
-    *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
+    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract)) {
+        // retrieve native objects
+        *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
+        *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
+    } else {
+        // TODO use proxy
+    }
 
     // verify that cipher encryptor/decryptor ptr are not null
     if (NULL == cipherEncryptor || NULL == cipherDecryptor) {
@@ -149,7 +154,11 @@ bool cryptoppSymmetricModeGetCipherElements(
     ZVAL_STRING(funcName, "getName", 1);
     call_user_function(NULL, &cipherObject, funcName, zCipherName, 0, NULL TSRMLS_CC);
 
-    *cipherName = new std::string(Z_STRVAL_P(zCipherName), Z_STRLEN_P(zCipherName));
+    // build mode name with cipher name
+    *modeFullName = new std::string(modeName);
+    (*modeFullName)->append("(");
+    (*modeFullName)->append(Z_STRVAL_P(zCipherName), Z_STRLEN_P(zCipherName));
+    (*modeFullName)->append(")");
 
     zval_dtor(zCipherName);
     zval_dtor(funcName);
