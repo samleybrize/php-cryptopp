@@ -1,6 +1,7 @@
 #include "../../php_cryptopp.h"
 #include "php_symmetric_cipher_abstract.h"
 #include "php_symmetric_cipher_interface.h"
+#include "php_block_cipher_interface.h"
 #include "php_symmetric_cipher.h"
 #include "../../exception/php_exception.h"
 #include <zend_exceptions.h>
@@ -58,7 +59,7 @@ void init_class_SymmetricCipherAbstract(TSRMLS_D) {
     memcpy(&SymmetricCipherAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     SymmetricCipherAbstract_object_handlers.clone_obj = NULL;
 
-    zend_class_implements(cryptopp_ce_SymmetricCipherAbstract TSRMLS_CC, 1, cryptopp_ce_SymmetricCipherInterface);
+    zend_class_implements(cryptopp_ce_SymmetricCipherAbstract TSRMLS_CC, 1, cryptopp_ce_BlockCipherInterface);
 
     zend_declare_property_string(cryptopp_ce_SymmetricCipherAbstract, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
 }
