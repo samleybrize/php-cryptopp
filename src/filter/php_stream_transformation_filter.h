@@ -62,7 +62,7 @@ zend_object_value StreamTransformationFilter_create_handler(zend_class_entry *ty
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __sleep);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, getCipherMode);
+PHP_METHOD(Cryptopp_StreamTransformationFilter, getStreamCipher);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString);
 PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString);
 /* }}} */

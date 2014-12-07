@@ -6,7 +6,7 @@
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeEcb_construct, 0)
-    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\SymmetricCipherAbstract, 0)
+    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\BlockCipherAbstract, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 

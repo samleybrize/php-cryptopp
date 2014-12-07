@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "php_stream_transformation_filter.h"
+#include "../symmetric/cipher/stream/php_stream_cipher.h"
 #include "../symmetric/mode/php_symmetric_mode_interface.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "../exception/php_exception.h"
@@ -203,7 +204,7 @@ void StreamTransformationFilter::NextPutModifiable(byte *inString, size_t length
 
 /* {{{ arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___construct, 0)
-    ZEND_ARG_OBJ_INFO(0, cipherMode, Cryptopp\\SymmetricModeInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, cipherMode, Cryptopp\\StreamCipherInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___wakeup, 0)
@@ -212,7 +213,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___sleep, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter_getCipherMode, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter_getStreamCipher, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter_encryptString, 0)
@@ -263,7 +264,7 @@ static zend_function_entry cryptopp_methods_StreamTransformationFilter[] = {
     PHP_ME(Cryptopp_StreamTransformationFilter, __construct, arginfo_StreamTransformationFilter___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(Cryptopp_StreamTransformationFilter, __sleep, arginfo_StreamTransformationFilter___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamTransformationFilter, __wakeup, arginfo_StreamTransformationFilter___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamTransformationFilter, getCipherMode, arginfo_StreamTransformationFilter_getCipherMode, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamTransformationFilter, getStreamCipher, arginfo_StreamTransformationFilter_getStreamCipher, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamTransformationFilter, encryptString, arginfo_StreamTransformationFilter_encryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamTransformationFilter, decryptString, arginfo_StreamTransformationFilter_decryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
@@ -278,7 +279,7 @@ void init_class_StreamTransformationFilter(TSRMLS_D) {
     memcpy(&StreamTransformationFilter_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     StreamTransformationFilter_object_handlers.clone_obj = NULL;
 
-    zend_declare_property_null(cryptopp_ce_StreamTransformationFilter, "cipherMode", 10, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_null(cryptopp_ce_StreamTransformationFilter, "streamCipher", 12, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_null(cryptopp_ce_StreamTransformationFilter, "padding", 7, ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
@@ -333,18 +334,20 @@ static CryptoPP::CipherModeBase *getModeDecryptor(zval *modeObject) {
 }
 /* }}} */
 
-/* {{{ indicates if the native mode object holded by a stf object is valid */
-static bool isNativeModeObjectValid(zval *stfObject) {
-    zval *modeObject;
-    modeObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "cipherMode", 10, 0 TSRMLS_CC);
+/* {{{ indicates if the native stream cipher object holded by a stf object is valid */
+static bool isNativeStreamCipherObjectValid(zval *stfObject) {
+    zval *streamCipherObject;
+    streamCipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "streamCipher", 12, 0 TSRMLS_CC);
 
-    if (instanceof_function(Z_OBJCE_P(modeObject), cryptopp_ce_SymmetricModeAbstract)) {
+    if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
         CryptoPP::CipherModeBase *modeEncryptor;
-        modeEncryptor = getModeEncryptor(modeObject);
+        modeEncryptor = getModeEncryptor(streamCipherObject);
 
-        if (!isCryptoppSymmetricModeKeyValid(modeObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(modeObject, modeEncryptor)) {
+        if (!isCryptoppSymmetricModeKeyValid(streamCipherObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(streamCipherObject, modeEncryptor)) {
             return false;
         }
+    } else if (0) {
+        // TODO StreamCipherAbstract
     }
 
     return true;
@@ -365,12 +368,12 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup) {
 }
 /* }}} */
 
-/* {{{ proto StreamTransformationFilter::__construct(Cryptopp\SymmetricModeInterface cipherMode) */
+/* {{{ proto StreamTransformationFilter::__construct(Cryptopp\StreamCipherInterface streamCipher) */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
-    zval *modeObject;
+    zval *streamCipherObject;
     zval *paddingObject = NULL;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &modeObject, cryptopp_ce_SymmetricModeInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &streamCipherObject, cryptopp_ce_StreamCipherInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
         return;
     }
 
@@ -388,14 +391,16 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     StreamTransformationFilter *stfDecryptor;
 
     try {
-        if (instanceof_function(Z_OBJCE_P(modeObject), cryptopp_ce_SymmetricModeAbstract)) {
+        if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
             // retrieve native objects
             CryptoPP::CipherModeBase *modeEncryptor;
             CryptoPP::CipherModeBase *modeDecryptor;
-            modeEncryptor = getModeEncryptor(modeObject);
-            modeDecryptor = getModeDecryptor(modeObject);
+            modeEncryptor = getModeEncryptor(streamCipherObject);
+            modeDecryptor = getModeDecryptor(streamCipherObject);
             stfEncryptor = new StreamTransformationFilter(*modeEncryptor, paddingObject);
             stfDecryptor = new StreamTransformationFilter(*modeDecryptor, paddingObject);
+        } else if (0) {
+            // TODO StreamCipherAbstract
         } else {
             // TODO use the proxy
         }
@@ -408,7 +413,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
 
     // hold the cipher mode object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
     // same for padding
-    zend_update_property(cryptopp_ce_StreamTransformationFilter, getThis(), "cipherMode", 10, modeObject TSRMLS_CC);
+    zend_update_property(cryptopp_ce_StreamTransformationFilter, getThis(), "streamCipher", 12, streamCipherObject TSRMLS_CC);
     zend_update_property(cryptopp_ce_StreamTransformationFilter, getThis(), "padding", 7, paddingObject TSRMLS_CC);
 
     if (createdPadding) {
@@ -417,11 +422,11 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
 }
 /* }}} */
 
-/* {{{ proto Cryptopp\SymmetricModeInterface StreamTransformationFilter::getCipherMode()
-       Returns the cipher mode */
-PHP_METHOD(Cryptopp_StreamTransformationFilter, getCipherMode) {
+/* {{{ proto Cryptopp\SymmetricModeInterface StreamTransformationFilter::getStreamCipher()
+       Returns the stream cipher object */
+PHP_METHOD(Cryptopp_StreamTransformationFilter, getStreamCipher) {
     zval *cipherMode;
-    cipherMode = zend_read_property(cryptopp_ce_StreamTransformationFilter, getThis(), "cipherMode", 10, 0 TSRMLS_CC);
+    cipherMode = zend_read_property(cryptopp_ce_StreamTransformationFilter, getThis(), "streamCipher", 12, 0 TSRMLS_CC);
     RETURN_ZVAL(cipherMode, 0, 0)
 }
 /* }}} */
@@ -439,7 +444,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isNativeModeObjectValid(getThis())) {
+    if (!isNativeStreamCipherObjectValid(getThis())) {
         RETURN_FALSE
     }
 
@@ -479,7 +484,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isNativeModeObjectValid(getThis())) {
+    if (!isNativeStreamCipherObjectValid(getThis())) {
         RETURN_FALSE
     }
 
