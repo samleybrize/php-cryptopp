@@ -1,12 +1,12 @@
-#ifndef PHP_SYMMETRIC_CIPHER_AES_H
-#define PHP_SYMMETRIC_CIPHER_AES_H
+#ifndef PHP_BLOCK_CIPHER_AES_H
+#define PHP_BLOCK_CIPHER_AES_H
 
 #include "../../php_cryptopp.h"
 
-void init_class_SymmetricCipherAes(TSRMLS_D);
-PHP_METHOD(Cryptopp_SymmetricCipherAes, __construct);
+void init_class_BlockCipherAes(TSRMLS_D);
+PHP_METHOD(Cryptopp_BlockCipherAes, __construct);
 
-#endif /* PHP_SYMMETRIC_CIPHER_AES_H */
+#endif /* PHP_BLOCK_CIPHER_AES_H */
 
 /*
  * Local variables:
