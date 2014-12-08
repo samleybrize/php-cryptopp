@@ -3,6 +3,7 @@
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
 #include "../symmetric/cipher/stream/php_stream_cipher.h"
+#include "../symmetric/cipher/stream/stream_cipher_proxy.h"
 #include "../symmetric/mode/php_symmetric_mode_interface.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "php_stream_transformation_filter.h"
@@ -115,7 +116,7 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
             int outputLength = Z_STRLEN_P(zOutput);
 
             if (0 != outputLength % blockSize) {
-                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: output length (%u) is not multiple of block size (%u) (StreamTransformationFilter)", length, blockSize);
+                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"StreamTransformationFilter: cipher text last block length (%u) is not a multiple of block size (%u)", length, blockSize);
                 throw false;
             }
 
@@ -129,7 +130,7 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
             // unpad
             // ensure inString length is a multiple of block size
             if (0 != length % blockSize) {
-                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: input length (%u) is not multiple of block size (%u) (StreamTransformationFilter)", length, blockSize);
+                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"StreamTransformationFilter: cipher text last block length (%u) is not a multiple of block size (%u)", length, blockSize);
                 throw false;
             } else if (0 == length) {
                 // nothing to unpad

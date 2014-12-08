@@ -72,7 +72,7 @@ configFileList.append("src/filter/config/stream_transformation_filter.py")
 
 # process all config scripts
 phpMinitStatements  = []
-srcFileList         = ["php_cryptopp.cpp"]
+srcFileList         = ["php_cryptopp.cpp", "symmetric/cipher/stream/stream_cipher_proxy.cpp"]
 headerFileList      = []
 hashNativeAssoc     = {}
 hashCryptoppHeaders = []
