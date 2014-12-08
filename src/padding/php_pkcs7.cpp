@@ -29,17 +29,17 @@ void init_class_PaddingPkcs7(TSRMLS_D) {
 /* {{{ proto string|false PaddingPkcs7::pad(string data, int blockSize)
    Pad data */
 PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
-    zval *data;
+    char *data;
+    int dataLength;
     long blockSize;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &data, &blockSize) || IS_STRING != Z_TYPE_P(data)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &data, &dataLength, &blockSize)) {
         RETURN_FALSE;
     }
 
     byte *plain;
-    plain                   = reinterpret_cast<byte*>(Z_STRVAL_P(data));
-    const long plainSize    = Z_STRLEN_P(data);
-    long alignedSize        = ceil(static_cast<double>(plainSize) / static_cast<double>(blockSize)) * blockSize;
+    plain               = reinterpret_cast<byte*>(data);
+    long alignedSize    = ceil(static_cast<double>(dataLength) / static_cast<double>(blockSize)) * blockSize;
 
     if (blockSize < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : block size cannot be lower than 1, %d given", cryptopp_ce_PaddingPkcs7->name, blockSize);
@@ -48,16 +48,16 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
         // PKCS7 does not handle block sizes higher than 256
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : PKCS #7 padding does not handle block sizes higher than 256", cryptopp_ce_PaddingPkcs7->name);
         RETURN_FALSE
-    } else if (alignedSize == plainSize) {
+    } else if (alignedSize == dataLength) {
         // if data size is a multiple of block size, pad on an additional block size
         alignedSize += blockSize;
     }
 
     // pad
-    const byte pad = byte(alignedSize - plainSize);
+    const byte pad = byte(alignedSize - dataLength);
     byte padded[alignedSize];
-    memcpy(padded, plain, plainSize);
-    memset(padded + plainSize, pad, alignedSize - plainSize);
+    memcpy(padded, plain, dataLength);
+    memset(padded + dataLength, pad, alignedSize - dataLength);
 
     char *returnData;
     returnData = reinterpret_cast<char*>(padded);
@@ -68,16 +68,16 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
 /* {{{ proto string|false PaddingPkcs7::unpad(string data, int blockSize)
    Unpad data */
 PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
-    zval *data;
+    char *data;
+    int dataLength;
     long blockSize;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &data, &blockSize) || IS_STRING != Z_TYPE_P(data)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &data, &dataLength, &blockSize)) {
         RETURN_FALSE;
     }
 
     byte *padded;
-    padded                  = reinterpret_cast<byte*>(Z_STRVAL_P(data));
-    const long paddedSize   = Z_STRLEN_P(data);
+    padded = reinterpret_cast<byte*>(data);
 
     if (blockSize < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : block size cannot be lower than 1, %d given", cryptopp_ce_PaddingPkcs7->name, blockSize);
@@ -85,21 +85,21 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
         // PKCS7 does not handle block sizes higher than 256
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : PKCS #7 padding does not handle block sizes higher than 256", cryptopp_ce_PaddingPkcs7->name);
         RETURN_FALSE
-    } else if (0 != paddedSize % blockSize) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : data length is not a multiple of block size (block size is %d, data size is %d)", cryptopp_ce_PaddingPkcs7->name, blockSize, paddedSize);
+    } else if (0 != dataLength % blockSize) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : data length is not a multiple of block size (block size is %d, data size is %d)", cryptopp_ce_PaddingPkcs7->name, blockSize, dataLength);
         RETURN_FALSE
     }
 
     // retrieve the pad character
-    byte pad = padded[paddedSize - 1];
+    byte pad = padded[dataLength - 1];
 
-    if (pad < 1 || pad > blockSize || std::find_if(padded + paddedSize - pad, padded + paddedSize, std::bind2nd(std::not_equal_to<byte>(), pad)) != padded + paddedSize) {
+    if (pad < 1 || pad > blockSize || std::find_if(padded + dataLength - pad, padded + dataLength, std::bind2nd(std::not_equal_to<byte>(), pad)) != padded + dataLength) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid PKCS #7 block padding found", cryptopp_ce_PaddingPkcs7->name);
         RETURN_FALSE
     }
 
     // unpad
-    long length = paddedSize - pad;
+    long length = dataLength - pad;
     byte unpadded[length];
     memcpy(unpadded, padded, length);
 

@@ -25,30 +25,30 @@ void init_class_PaddingNoPadding(TSRMLS_D) {
 /* {{{ proto string|false PaddingNoPadding::pad(string data, int blockSize)
    Pad data */
 PHP_METHOD(Cryptopp_PaddingNoPadding, pad) {
-    zval *data;
+    char *data;
+    int dataLength;
     long blockSize;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &data, &blockSize) || IS_STRING != Z_TYPE_P(data)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &data, &dataLength, &blockSize)) {
         RETURN_FALSE;
     }
 
-    Z_ADDREF_P(data);
-    RETURN_ZVAL(data, 0, 0)
+    RETURN_STRINGL(data, dataLength, 1)
 }
 /* }}} */
 
 /* {{{ proto string|false PaddingNoPadding::unpad(string data, int blockSize)
    Unpad data */
 PHP_METHOD(Cryptopp_PaddingNoPadding, unpad) {
-    zval *data;
+    char *data;
+    int dataLength;
     long blockSize;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zl", &data, &blockSize) || IS_STRING != Z_TYPE_P(data)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "sl", &data, &dataLength, &blockSize)) {
         RETURN_FALSE;
     }
 
-    Z_ADDREF_P(data);
-    RETURN_ZVAL(data, 0, 0)
+    RETURN_STRINGL(data, dataLength, 1)
 }
 /* }}} */
 

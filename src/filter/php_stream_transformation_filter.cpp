@@ -106,7 +106,9 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
             // pad
             ZVAL_STRING(funcName, "pad", 1);
             ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(inString), length, 1);
-            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC); // TODO segfault when using PaddingNoPadding
+            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
+            zval_dtor(zInput);
+            zInput = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
                 throw false;
@@ -144,6 +146,8 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
             ZVAL_STRING(funcName, "unpad", 1);
             ZVAL_STRINGL(zInput, reinterpret_cast<char*>(plain), length, 1);
             call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
+            zval_dtor(zInput);
+            zInput = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
                 throw false;
@@ -160,17 +164,24 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
     } catch (const std::exception &e) {
         // free zvals whatever happen
         zval_dtor(funcName);
-        zval_dtor(zInput);
         zval_dtor(zOutput);
         zval_dtor(zBlockSize);
+
+        if (NULL != zInput) {
+            zval_dtor(zInput);
+        }
+
         throw e;
     }
 
     // free zvals
     zval_dtor(funcName);
-    zval_dtor(zInput);
     zval_dtor(zOutput);
     zval_dtor(zBlockSize);
+
+    if (NULL != zInput) {
+        zval_dtor(zInput);
+    }
 }
 /* }}} */
 
