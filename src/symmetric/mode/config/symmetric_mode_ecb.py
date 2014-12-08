@@ -12,6 +12,5 @@ def getConfig(cryptoppDir):
     config["srcFileList"]               = ["symmetric/mode/php_ecb.cpp"]
     config["headerFileList"]            = ["symmetric/mode/php_ecb.h"]
     config["phpMinitStatements"]        = ["init_class_SymmetricModeEcb(TSRMLS_C);"]
-    config["hashCryptoppHeaders"]       = ["modes.h"]
 
     return config

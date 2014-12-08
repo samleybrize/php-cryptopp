@@ -12,6 +12,5 @@ def getConfig(cryptoppDir):
     config["srcFileList"]               = ["symmetric/cipher/stream/php_sosemanuk.cpp"]
     config["headerFileList"]            = ["symmetric/cipher/stream/php_sosemanuk.h"]
     config["phpMinitStatements"]        = ["init_class_StreamCipherSosemanuk(TSRMLS_C);"]
-    config["hashCryptoppHeaders"]       = ["sosemanuk.h"]
 
     return config
