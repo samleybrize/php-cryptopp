@@ -71,6 +71,20 @@ void StreamTransformationFilter::InitializeDerivedAndReturnNewSizes(const Crypto
 
 void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
 {
+    // if the cipher is not a block cipher, no padding is needed
+    bool isBlockCipher = (m_cipher.MandatoryBlockSize() > 1 && m_cipher.MinLastBlockSize() == 0);
+
+    if (!isBlockCipher) {
+        if (length > 0) {
+            byte processed[length];
+            m_cipher.ProcessData(processed, inString, length);
+            AttachedTransformation()->Put(processed, length);
+        }
+
+        return;
+    }
+
+    // prepare padding
     unsigned int blockSize  = m_cipher.MandatoryBlockSize();
     byte *output            = NULL;
 
@@ -322,35 +336,45 @@ static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, St
 }
 /* }}} */
 
-/* {{{ returns the mode encryptor */
-static CryptoPP::CipherModeBase *getModeEncryptor(zval *modeObject) {
-    return static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->encryptor;
-}
-/* }}} */
-
-/* {{{ returns the mode decryptor */
-static CryptoPP::CipherModeBase *getModeDecryptor(zval *modeObject) {
-    return static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(modeObject TSRMLS_CC))->decryptor;
-}
-/* }}} */
-
 /* {{{ indicates if the native stream cipher object holded by a stf object is valid */
 static bool isNativeStreamCipherObjectValid(zval *stfObject) {
     zval *streamCipherObject;
     streamCipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "streamCipher", 12, 0 TSRMLS_CC);
 
     if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
+        // SymmetricModeAbstract
         CryptoPP::CipherModeBase *modeEncryptor;
-        modeEncryptor = getModeEncryptor(streamCipherObject);
+        modeEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
 
         if (!isCryptoppSymmetricModeKeyValid(streamCipherObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(streamCipherObject, modeEncryptor)) {
             return false;
         }
-    } else if (0) {
-        // TODO StreamCipherAbstract
+    } else if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_StreamCipherAbstract)) {
+        // StreamCipherAbstract
+        CryptoPP::SymmetricCipher *streamCipherEncryptor;
+        streamCipherEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
+
+        if (!isCryptoppStreamCipherKeyValid(streamCipherObject, streamCipherEncryptor) || !isCryptoppStreamCipherIvValid(streamCipherObject, streamCipherEncryptor)) {
+            return false;
+        }
+    } else {
+        // TODO proxy
     }
 
     return true;
+}
+/* }}} */
+
+/* {{{ restart the stream cipher holded by a StreamTransformationFilter php object */
+static void restartStreamCipherObject(zval *stfObject) {
+    zval *streamCipherObject;
+    streamCipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "streamCipher", 12, 0 TSRMLS_CC);
+
+    zval *funcName;
+    MAKE_STD_ZVAL(funcName)
+    ZVAL_STRING(funcName, "restart", 1);
+    call_user_function(NULL, &streamCipherObject, funcName, funcName, 0, NULL TSRMLS_CC);
+    zval_dtor(funcName);
 }
 /* }}} */
 
@@ -392,15 +416,37 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
 
     try {
         if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
-            // retrieve native objects
+            // retrieve native mode objects
             CryptoPP::CipherModeBase *modeEncryptor;
             CryptoPP::CipherModeBase *modeDecryptor;
-            modeEncryptor = getModeEncryptor(streamCipherObject);
-            modeDecryptor = getModeDecryptor(streamCipherObject);
+            modeEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
+            modeDecryptor = getCryptoppSymmetricModeDecryptorPtr(streamCipherObject);
+
+            if (NULL == modeEncryptor || NULL == modeDecryptor) {
+                zend_class_entry *ce;
+                ce  = zend_get_class_entry(streamCipherObject TSRMLS_CC);
+                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
+                return;
+            }
+
             stfEncryptor = new StreamTransformationFilter(*modeEncryptor, paddingObject);
             stfDecryptor = new StreamTransformationFilter(*modeDecryptor, paddingObject);
-        } else if (0) {
-            // TODO StreamCipherAbstract
+        } else if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_StreamCipherAbstract)) {
+            // retrieve native stream cipher objects
+            CryptoPP::SymmetricCipher *streamCipherEncryptor;
+            CryptoPP::SymmetricCipher *streamCipherDecryptor;
+            streamCipherEncryptor = getCryptoppStreamCipherEncryptorPtr(streamCipherObject);
+            streamCipherDecryptor = getCryptoppStreamCipherDecryptorPtr(streamCipherObject);
+
+            if (NULL == streamCipherEncryptor || NULL == streamCipherDecryptor) {
+                zend_class_entry *ce;
+                ce  = zend_get_class_entry(streamCipherObject TSRMLS_CC);
+                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
+                return;
+            }
+
+            stfEncryptor = new StreamTransformationFilter(*streamCipherEncryptor, paddingObject);
+            stfDecryptor = new StreamTransformationFilter(*streamCipherDecryptor, paddingObject);
         } else {
             // TODO use the proxy
         }
@@ -425,9 +471,9 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
 /* {{{ proto Cryptopp\SymmetricModeInterface StreamTransformationFilter::getStreamCipher()
        Returns the stream cipher object */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, getStreamCipher) {
-    zval *cipherMode;
-    cipherMode = zend_read_property(cryptopp_ce_StreamTransformationFilter, getThis(), "streamCipher", 12, 0 TSRMLS_CC);
-    RETURN_ZVAL(cipherMode, 0, 0)
+    zval *cipherObject;
+    cipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, getThis(), "streamCipher", 12, 0 TSRMLS_CC);
+    RETURN_ZVAL(cipherObject, 0, 0)
 }
 /* }}} */
 
@@ -457,6 +503,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
         stfEncryptor->MessageEnd();
 
         CryptoPP::lword retrievable = stfEncryptor->MaxRetrievable();
+        restartStreamCipherObject(getThis());
 
         if (retrievable >= dataSize) {
             // return ciphertext
@@ -497,6 +544,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString) {
         stfDecryptor->MessageEnd();
 
         CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
+        restartStreamCipherObject(getThis());
 
         if (retrievable > 0 && retrievable <= ciphertextSize) {
             // return plain text

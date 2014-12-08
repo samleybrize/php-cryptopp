@@ -49,6 +49,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, __wakeup);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv);
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart);
 /* }}} */
 
 /* {{{ php mode classes methods arg info */

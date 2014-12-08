@@ -48,6 +48,7 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_StreamCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_StreamCipherInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_StreamCipherInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -280,6 +281,17 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
 
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
+    setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto void StreamCipherAbstract::restart()
+   Reset the initialization vector to its initial state (the one passed in setIv()) */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, restart) {
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
+    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor);
 }
 /* }}} */

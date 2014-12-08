@@ -11,6 +11,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_setIv, 0)
     ZEND_ARG_INFO(0, iv)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_restart, 0)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* inits the StreamCipherInterface php interface */
