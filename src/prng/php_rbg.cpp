@@ -1,7 +1,7 @@
 #include "../php_cryptopp.h"
+#include "../exception/php_exception.h"
 #include "php_rbg_interface.h"
 #include "php_rbg.h"
-#include "../exception/php_exception.h"
 #include <osrng.h>
 #include <zend_exceptions.h>
 

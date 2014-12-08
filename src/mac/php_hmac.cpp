@@ -1,8 +1,8 @@
 #include "../php_cryptopp.h"
+#include "../hash/php_hash_abstract.h"
 #include "php_mac_abstract.h"
 #include "php_hmac.h"
 #include "php_hmac_d.h"
-#include "../hash/php_hash_abstract.h"
 #include <hmac.h>
 #include <string>
 #include <zend_exceptions.h>

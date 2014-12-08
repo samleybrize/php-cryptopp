@@ -1,6 +1,6 @@
 #include "../../../php_cryptopp.h"
-#include "php_stream_cipher_interface.h"
 #include "../php_symmetric_cipher_interface.h"
+#include "php_stream_cipher_interface.h"
 
 /* {{{ PHP interface declaration */
 zend_class_entry *cryptopp_ce_StreamCipherInterface;

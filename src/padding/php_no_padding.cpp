@@ -1,6 +1,6 @@
 #include "../php_cryptopp.h"
-#include "php_no_padding.h"
 #include "php_padding_interface.h"
+#include "php_no_padding.h"
 
 /* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_PaddingNoPadding;

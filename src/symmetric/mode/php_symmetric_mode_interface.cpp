@@ -1,7 +1,7 @@
 #include "../../php_cryptopp.h"
-#include "php_symmetric_mode_interface.h"
 #include "../cipher/php_symmetric_cipher_interface.h"
 #include "../cipher/stream/php_stream_cipher_interface.h"
+#include "php_symmetric_mode_interface.h"
 
 /* {{{ PHP interface declaration */
 zend_class_entry *cryptopp_ce_SymmetricModeInterface;

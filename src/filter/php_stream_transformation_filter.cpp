@@ -1,11 +1,11 @@
 #include "../php_cryptopp.h"
-#include "php_stream_transformation_filter.h"
-#include "../symmetric/cipher/stream/php_stream_cipher.h"
-#include "../symmetric/mode/php_symmetric_mode_interface.h"
-#include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "../exception/php_exception.h"
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
+#include "../symmetric/cipher/stream/php_stream_cipher.h"
+#include "../symmetric/mode/php_symmetric_mode_interface.h"
+#include "../symmetric/mode/php_symmetric_mode_abstract.h"
+#include "php_stream_transformation_filter.h"
 #include <exception>
 #include <filters.h>
 #include <misc.h>

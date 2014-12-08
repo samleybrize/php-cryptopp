@@ -1,9 +1,9 @@
 #include "../../php_cryptopp.h"
-#include "php_symmetric_mode_abstract.h"
-#include "php_symmetric_mode_interface.h"
-#include "php_symmetric_mode.h"
-#include "../cipher/block/php_block_cipher_abstract.h"
 #include "../../exception/php_exception.h"
+#include "../cipher/block/php_block_cipher_abstract.h"
+#include "php_symmetric_mode.h"
+#include "php_symmetric_mode_interface.h"
+#include "php_symmetric_mode_abstract.h"
 #include <zend_exceptions.h>
 #include <string>
 

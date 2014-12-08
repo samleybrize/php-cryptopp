@@ -1,5 +1,5 @@
 #include "../php_cryptopp.h"
-#include "php_hash_interface.h"
+#include "php_hash_abstract.h"
 #include "php_sha3.h"
 #include <sha3.h>
 
