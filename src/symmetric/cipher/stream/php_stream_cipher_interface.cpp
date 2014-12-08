@@ -8,6 +8,9 @@ zend_class_entry *cryptopp_ce_StreamCipherInterface;
 static zend_function_entry cryptopp_methods_StreamCipherInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, setKey, arginfo_StreamCipherInterface_setKey)
     PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, setIv, arginfo_StreamCipherInterface_setIv)
+    PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, getBlockSize, arginfo_StreamCipherInterface_getBlockSize)
+    PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, encryptData, arginfo_StreamCipherInterface_encryptData)
+    PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, decryptData, arginfo_StreamCipherInterface_decryptData)
     PHP_ABSTRACT_ME(Cryptopp_StreamCipherInterface, restart, arginfo_StreamCipherInterface_restart)
     PHP_FE_END
 };

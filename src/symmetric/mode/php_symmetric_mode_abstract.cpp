@@ -48,6 +48,9 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_StreamCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_StreamCipherInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_StreamCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, encryptData, arginfo_StreamCipherInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, decryptData, arginfo_StreamCipherInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_StreamCipherInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
@@ -329,6 +332,27 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto int SymmetricModeAbstract::getBlockSize()
+   Returns the block size */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
+    // TODO
+}
+/* }}} */
+
+/* {{{ proto string SymmetricModeAbstract::encryptData(string data)
+   Encrypts data */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
+    // TODO
+}
+/* }}} */
+
+/* {{{ proto string SymmetricModeAbstract::decryptData(string data)
+   Decrypts data */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
+    // TODO
 }
 /* }}} */
 

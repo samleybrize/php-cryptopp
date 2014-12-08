@@ -48,6 +48,9 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, __wakeup);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getName);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, encryptData);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, decryptData);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart);
 /* }}} */
 

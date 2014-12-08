@@ -106,7 +106,7 @@ void StreamTransformationFilter::LastPut(const byte *inString, size_t length)
             // pad
             ZVAL_STRING(funcName, "pad", 1);
             ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(inString), length, 1);
-            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
+            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC); // TODO segfault when using PaddingNoPadding
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
                 throw false;
