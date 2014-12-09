@@ -1,9 +1,9 @@
-#ifndef PHP_STREAM_CIPHER_PROXY_H
-#define PHP_STREAM_CIPHER_PROXY_H
+#ifndef PHP_SYMMETRIC_TRANSFORMATION_PROXY_H
+#define PHP_SYMMETRIC_TRANSFORMATION_PROXY_H
 
-#include "../../../php_cryptopp.h"
+#include "../../php_cryptopp.h"
 
-class StreamCipherProxy
+class SymmetricTransformationProxy
 {
 public:
     /* {{{ base class */
@@ -47,7 +47,7 @@ public:
     /* }}} */
 };
 
-#endif /* PHP_STREAM_CIPHER_PROXY_H */
+#endif /* PHP_SYMMETRIC_TRANSFORMATION_PROXY_H */
 
 /*
  * Local variables:

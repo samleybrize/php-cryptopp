@@ -4,7 +4,7 @@
 #include "../padding/php_pkcs7.h"
 #include "../symmetric/cipher/php_symmetric_transformation_interface.h"
 #include "../symmetric/cipher/stream/php_stream_cipher_abstract.h"
-#include "../symmetric/cipher/stream/stream_cipher_proxy.h"
+#include "../symmetric/cipher/symmetric_transformation_proxy.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "php_stream_transformation_filter.h"
 #include <exception>

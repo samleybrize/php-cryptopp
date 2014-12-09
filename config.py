@@ -43,6 +43,7 @@ configFileList.append("src/prng/config/rbg.py")
 
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/config/symmetric_transformation_interface.py")
+configFileList.append("src/symmetric/cipher/config/symmetric_transformation_proxy.py")
 
 configFileList.append("src/symmetric/cipher/block/config/block_cipher.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_interface.py")
@@ -73,7 +74,7 @@ configFileList.append("src/filter/config/stream_transformation_filter.py")
 
 # process all config scripts
 phpMinitStatements  = []
-srcFileList         = ["php_cryptopp.cpp", "symmetric/cipher/stream/stream_cipher_proxy.cpp"]
+srcFileList         = ["php_cryptopp.cpp"]
 headerFileList      = []
 hashNativeAssoc     = {}
 hashCryptoppHeaders = []
