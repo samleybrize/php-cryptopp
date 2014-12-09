@@ -42,6 +42,7 @@ configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
 
 configFileList.append("src/symmetric/cipher/config/symmetric_cipher_interface.py")
+configFileList.append("src/symmetric/cipher/config/symmetric_transformation_interface.py")
 
 configFileList.append("src/symmetric/cipher/block/config/block_cipher.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_interface.py")

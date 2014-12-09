@@ -1,5 +1,6 @@
 #include "../../php_cryptopp.h"
 #include "../../exception/php_exception.h"
+#include "../cipher/php_symmetric_transformation_interface.h"
 #include "../cipher/block/php_block_cipher_abstract.h"
 #include "php_symmetric_mode.h"
 #include "php_symmetric_mode_interface.h"
@@ -46,12 +47,12 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, __sleep, arginfo_SymmetricModeAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, __wakeup, arginfo_SymmetricModeAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_StreamCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_StreamCipherInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_StreamCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, encryptData, arginfo_StreamCipherInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, decryptData, arginfo_StreamCipherInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_StreamCipherInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, encryptData, arginfo_SymmetricTransformationInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, decryptData, arginfo_SymmetricTransformationInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 

@@ -3,32 +3,6 @@
 
 #include "../../../php_cryptopp.h"
 
-/* {{{ php stream cipher classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_setKey, 0)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_setIv, 0)
-    ZEND_ARG_INFO(0, iv)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_getBlockSize, 0)
-ZEND_END_ARG_INFO()
-
-// TODO optimalBlockSize??
-
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_encryptData, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_decryptData, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherInterface_restart, 0)
-ZEND_END_ARG_INFO()
-/* }}} */
-
 /* inits the StreamCipherInterface php interface */
 extern zend_class_entry *cryptopp_ce_StreamCipherInterface;
 void init_interface_StreamCipherInterface(TSRMLS_D);

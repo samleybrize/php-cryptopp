@@ -2,9 +2,9 @@
 #include "../exception/php_exception.h"
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
-#include "../symmetric/cipher/stream/php_stream_cipher.h"
+#include "../symmetric/cipher/php_symmetric_transformation_interface.h"
+#include "../symmetric/cipher/stream/php_stream_cipher_abstract.h"
 #include "../symmetric/cipher/stream/stream_cipher_proxy.h"
-#include "../symmetric/mode/php_symmetric_mode_interface.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
 #include "php_stream_transformation_filter.h"
 #include <exception>
@@ -231,7 +231,7 @@ void StreamTransformationFilter::NextPutModifiable(byte *inString, size_t length
 
 /* {{{ arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___construct, 0)
-    ZEND_ARG_OBJ_INFO(0, cipherMode, Cryptopp\\StreamCipherInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, cipherMode, Cryptopp\\SymmetricTransformationInterface, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_StreamTransformationFilter___wakeup, 0)
@@ -350,7 +350,7 @@ static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, St
 /* }}} */
 
 /* {{{ indicates if the native stream cipher object holded by a stf object is valid */
-static bool isNativeStreamCipherObjectValid(zval *stfObject) {
+static bool isSymmetricTransformationObjectValid(zval *stfObject) {
     zval *streamCipherObject;
     streamCipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "streamCipher", 12, 0 TSRMLS_CC);
 
@@ -405,12 +405,12 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup) {
 }
 /* }}} */
 
-/* {{{ proto StreamTransformationFilter::__construct(Cryptopp\StreamCipherInterface streamCipher) */
+/* {{{ proto StreamTransformationFilter::__construct(Cryptopp\SymmetricTransformationInterface streamCipher) */
 PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     zval *streamCipherObject;
     zval *paddingObject = NULL;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &streamCipherObject, cryptopp_ce_StreamCipherInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &streamCipherObject, cryptopp_ce_SymmetricTransformationInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
         return;
     }
 
@@ -503,7 +503,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isNativeStreamCipherObjectValid(getThis())) {
+    if (!isSymmetricTransformationObjectValid(getThis())) {
         RETURN_FALSE
     }
 
@@ -544,7 +544,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isNativeStreamCipherObjectValid(getThis())) {
+    if (!isSymmetricTransformationObjectValid(getThis())) {
         RETURN_FALSE
     }
 

@@ -1,6 +1,7 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
 #include "../php_symmetric_cipher_interface.h"
+#include "../php_symmetric_transformation_interface.h"
 #include "php_stream_cipher.h"
 #include "php_stream_cipher_interface.h"
 #include "php_stream_cipher_abstract.h"
@@ -46,12 +47,12 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, __sleep, arginfo_StreamCipherAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, __wakeup, arginfo_StreamCipherAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_StreamCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_StreamCipherInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_StreamCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, encryptData, arginfo_StreamCipherInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, decryptData, arginfo_StreamCipherInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_StreamCipherInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, encryptData, arginfo_SymmetricTransformationInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, decryptData, arginfo_SymmetricTransformationInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
