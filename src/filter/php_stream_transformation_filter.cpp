@@ -10,6 +10,7 @@
 #include <exception>
 #include <filters.h>
 #include <misc.h>
+#include <modes.h>
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
@@ -355,7 +356,7 @@ static bool isNativeStreamCipherObjectValid(zval *stfObject) {
 
     if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
         // SymmetricModeAbstract
-        CryptoPP::CipherModeBase *modeEncryptor;
+        CryptoPP::SymmetricCipher *modeEncryptor;
         modeEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
 
         if (!isCryptoppSymmetricModeKeyValid(streamCipherObject, modeEncryptor) || !isCryptoppSymmetricModeIvValid(streamCipherObject, modeEncryptor)) {
@@ -422,47 +423,47 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
         createdPadding = true;
     }
 
+    // retrieve native cipher object
+    CryptoPP::SymmetricCipher *symmetricEncryptor;
+    CryptoPP::SymmetricCipher *symmetricDecryptor;
+    bool parentConstructorError = false;
+
+    if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
+        // retrieve native mode objects
+        symmetricEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
+        symmetricDecryptor = getCryptoppSymmetricModeDecryptorPtr(streamCipherObject);
+
+        if (NULL == symmetricEncryptor || NULL == symmetricDecryptor) {
+            parentConstructorError = true;
+        }
+    } else if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_StreamCipherAbstract)) {
+        // retrieve native stream cipher objects
+        symmetricEncryptor = getCryptoppStreamCipherEncryptorPtr(streamCipherObject);
+        symmetricDecryptor = getCryptoppStreamCipherDecryptorPtr(streamCipherObject);
+
+        if (NULL == symmetricEncryptor || NULL == symmetricDecryptor) {
+            parentConstructorError = true;
+        }
+    } else {
+        // TODO create a proxy to the user php object
+    }
+
+    if (parentConstructorError) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(streamCipherObject TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
+        return;
+    }
+
     // create native stream transformation filter
     StreamTransformationFilter *stfEncryptor;
     StreamTransformationFilter *stfDecryptor;
 
     try {
-        if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
-            // retrieve native mode objects
-            CryptoPP::CipherModeBase *modeEncryptor;
-            CryptoPP::CipherModeBase *modeDecryptor;
-            modeEncryptor = getCryptoppSymmetricModeEncryptorPtr(streamCipherObject);
-            modeDecryptor = getCryptoppSymmetricModeDecryptorPtr(streamCipherObject);
-
-            if (NULL == modeEncryptor || NULL == modeDecryptor) {
-                zend_class_entry *ce;
-                ce  = zend_get_class_entry(streamCipherObject TSRMLS_CC);
-                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
-                return;
-            }
-
-            stfEncryptor = new StreamTransformationFilter(*modeEncryptor, paddingObject);
-            stfDecryptor = new StreamTransformationFilter(*modeDecryptor, paddingObject);
-        } else if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_StreamCipherAbstract)) {
-            // retrieve native stream cipher objects
-            CryptoPP::SymmetricCipher *streamCipherEncryptor;
-            CryptoPP::SymmetricCipher *streamCipherDecryptor;
-            streamCipherEncryptor = getCryptoppStreamCipherEncryptorPtr(streamCipherObject);
-            streamCipherDecryptor = getCryptoppStreamCipherDecryptorPtr(streamCipherObject);
-
-            if (NULL == streamCipherEncryptor || NULL == streamCipherDecryptor) {
-                zend_class_entry *ce;
-                ce  = zend_get_class_entry(streamCipherObject TSRMLS_CC);
-                zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
-                return;
-            }
-
-            stfEncryptor = new StreamTransformationFilter(*streamCipherEncryptor, paddingObject);
-            stfDecryptor = new StreamTransformationFilter(*streamCipherDecryptor, paddingObject);
-        } else {
-            // TODO use the proxy
-        }
-    } catch (bool e) {
+        stfEncryptor = new StreamTransformationFilter(*symmetricEncryptor, paddingObject);
+        stfDecryptor = new StreamTransformationFilter(*symmetricDecryptor, paddingObject);
+    } catch (std::exception &e) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: StreamTransformationFilter: %s", e.what());
         return;
     }
 

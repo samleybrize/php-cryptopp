@@ -88,8 +88,8 @@ void init_class_SymmetricModeAbstractChild(const char *modeName, const char* cla
 /* }}} */
 
 /* {{{ get the pointer to the native encryptor object of a php mode class */
-CryptoPP::CipherModeBase *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::CipherModeBase *encryptor;
+CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC) {
+    CryptoPP::SymmetricCipher *encryptor;
     encryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
     if (NULL == encryptor) {
@@ -101,8 +101,8 @@ CryptoPP::CipherModeBase *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TS
 /* }}} */
 
 /* {{{ get the pointer to the native decryptor object of a php mode class */
-CryptoPP::CipherModeBase *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::CipherModeBase *decryptor;
+CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC) {
+    CryptoPP::SymmetricCipher *decryptor;
     decryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
     if (NULL == decryptor) {
@@ -114,13 +114,13 @@ CryptoPP::CipherModeBase *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TS
 /* }}} */
 
 /* {{{ set the pointer to the native encryptor object of a php mode class */
-void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::CipherModeBase *encryptorPtr TSRMLS_DC) {
+void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *encryptorPtr TSRMLS_DC) {
     static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor = encryptorPtr;
 }
 /* }}} */
 
 /* {{{ set the pointer to the native decryptor object of a php mode class */
-void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::CipherModeBase *decryptorPtr TSRMLS_DC) {
+void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *decryptorPtr TSRMLS_DC) {
     static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor = decryptorPtr;
 }
 /* }}} */
@@ -172,7 +172,7 @@ bool cryptoppSymmetricModeGetCipherElements(
 /* }}} */
 
 /* {{{ verify that a key size is valid for a SymmetricModeAbstract instance */
-static bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBase *mode, int keySize) {
+static bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode, int keySize) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
@@ -189,7 +189,7 @@ static bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBa
     return true;
 }
 
-bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBase *mode) {
+bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode) {
     zval *key;
     key         = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
@@ -199,7 +199,7 @@ bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBase *mod
 /* }}} */
 
 /* {{{ verify that an iv size is valid for a SymmetricModeAbstract instance */
-static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBase *mode, int ivSize) {
+static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode, int ivSize) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
@@ -216,7 +216,7 @@ static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBas
     return true;
 }
 
-bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBase *mode) {
+bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode) {
     zval *iv;
     iv          = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize  = Z_STRLEN_P(iv);
@@ -226,7 +226,7 @@ bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBase *mode
 /* }}} */
 
 /* {{{ sets the key and the iv (if applicable) of the native mode objects of a mode php object */
-static void setKeyWithIv(zval *object, CryptoPP::CipherModeBase *encryptor, CryptoPP::CipherModeBase *decryptor) {
+static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor) {
     // get key and iv of the php object
     zval *zKey;
     zval *zIv;
@@ -272,7 +272,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, __wakeup) {
 /* {{{ proto string SymmetricModeAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName) {
-    CryptoPP::CipherModeBase *encryptor;
+    CryptoPP::SymmetricCipher *encryptor;
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     zval *name;
@@ -291,8 +291,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
         return;
     }
 
-    CryptoPP::CipherModeBase *encryptor;
-    CryptoPP::CipherModeBase *decryptor;
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
@@ -316,8 +316,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
         return;
     }
 
-    CryptoPP::CipherModeBase *encryptor;
-    CryptoPP::CipherModeBase *decryptor;
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
@@ -359,8 +359,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
 /* {{{ proto void SymmetricModeAbstract::restart()
    Reset the initialization vector to its initial state (the one passed in setIv()) */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart) {
-    CryptoPP::CipherModeBase *encryptor;
-    CryptoPP::CipherModeBase *decryptor;
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor);

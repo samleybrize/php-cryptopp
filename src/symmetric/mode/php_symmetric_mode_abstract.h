@@ -2,16 +2,15 @@
 #define PHP_SYMMETRIC_MODE_ABSTRACT_H
 
 #include "../../php_cryptopp.h"
-#include <modes.h>
 
 extern zend_class_entry *cryptopp_ce_SymmetricModeAbstract;
 void init_class_SymmetricModeAbstract(TSRMLS_D);
 void init_class_SymmetricModeAbstractChild(const char *modeName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
-CryptoPP::CipherModeBase *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC);
-CryptoPP::CipherModeBase *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC);
-void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::CipherModeBase *nativePtr TSRMLS_DC);
-void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::CipherModeBase *nativePtr TSRMLS_DC);
+CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC);
+CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC);
+void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
+void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
 
 /* {{{ get the pointer to the native encryptor object of a php mode class */
 #define CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(ptrName)         \
@@ -34,8 +33,8 @@ void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::CipherModeBa
 /* {{{ object creation related stuff */
 struct SymmetricModeAbstractContainer {
     zend_object std;
-    CryptoPP::CipherModeBase *encryptor;
-    CryptoPP::CipherModeBase *decryptor;
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
 };
 
 extern zend_object_handlers SymmetricModeAbstract_object_handlers;
@@ -75,10 +74,10 @@ bool cryptoppSymmetricModeGetCipherElements(
 /* }}} */
 
 /* verify that a key size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::CipherModeBase *mode);
+bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode);
 
 /* verify that an iv size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::CipherModeBase *mode);
+bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode);
 
 #endif /* PHP_SYMMETRIC_MODE_ABSTRACT_H */
 
