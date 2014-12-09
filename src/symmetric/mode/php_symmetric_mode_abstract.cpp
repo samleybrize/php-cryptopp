@@ -339,21 +339,81 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
 /* {{{ proto int SymmetricModeAbstract::getBlockSize()
    Returns the block size */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
-    // TODO
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
 
 /* {{{ proto string SymmetricModeAbstract::encryptData(string data)
    Encrypts data */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
-    // TODO
+    char *data      = NULL;
+    int dataSize    = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &data, &dataSize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    // check key and iv
+    if (!isCryptoppSymmetricModeKeyValid(getThis(), encryptor) || !isCryptoppSymmetricModeIvValid(getThis(), encryptor)) {
+        RETURN_FALSE
+    }
+
+    // check dataSize against block size
+    long blockSize = static_cast<long>(encryptor->MandatoryBlockSize());
+
+    if (0 != dataSize % blockSize) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
+        RETURN_FALSE
+    }
+
+    // encrypt
+    byte output[dataSize];
+    encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }
 /* }}} */
 
 /* {{{ proto string SymmetricModeAbstract::decryptData(string data)
    Decrypts data */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
-    // TODO
+    char *data      = NULL;
+    int dataSize    = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &data, &dataSize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *decryptor;
+    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+
+    // check key and iv
+    if (!isCryptoppSymmetricModeKeyValid(getThis(), decryptor) || !isCryptoppSymmetricModeIvValid(getThis(), decryptor)) {
+        RETURN_FALSE
+    }
+
+    // check dataSize against block size
+    long blockSize = static_cast<long>(decryptor->MandatoryBlockSize());
+
+    if (0 != dataSize % blockSize) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
+        RETURN_FALSE
+    }
+
+    // encrypt
+    byte output[dataSize];
+    decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }
 /* }}} */
 

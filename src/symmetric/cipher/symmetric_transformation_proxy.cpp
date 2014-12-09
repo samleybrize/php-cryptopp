@@ -57,7 +57,6 @@ unsigned int SymmetricTransformationProxy::Base::MandatoryBlockSize() const
 
 unsigned int SymmetricTransformationProxy::Base::OptimalBlockSize() const
 {
-    // TODO
     return m_blockSize;
 }
 
