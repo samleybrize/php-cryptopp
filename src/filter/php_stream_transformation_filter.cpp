@@ -14,14 +14,15 @@
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
-StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject)
+StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed)
     : CryptoPP::FilterWithBufferedInput(NULL)
-    , m_cipher(c)
+    , m_cipher(cipher)
     , m_optimalBufferSize(0)
+    , m_cipherMustBeDestructed(cipherMustBeDestructed)
 {
     // check paddingObject
     if (NULL == paddingObject || !instanceof_function(Z_OBJCE_P(paddingObject), cryptopp_ce_PaddingInterface)) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: expected instance of PaddingInterface");
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: expected instance of PaddingInterface");
         throw false;
     }
 
@@ -30,12 +31,19 @@ StreamTransformationFilter::StreamTransformationFilter(CryptoPP::StreamTransform
     // initialization copied from CryptoPP::StreamTransformationFilter
     assert(c.MinLastBlockSize() == 0 || c.MinLastBlockSize() > c.MandatoryBlockSize());
 
-    if (dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&c) != 0) {
+    if (dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&cipher) != 0) {
         // TODO
         throw CryptoPP::InvalidArgument("StreamTransformationFilter: please use AuthenticatedEncryptionFilter and AuthenticatedDecryptionFilter for AuthenticatedSymmetricCipher");
     }
 
     IsolatedInitialize(MakeParameters(CryptoPP::Name::BlockPaddingScheme(), NO_PADDING, false));
+}
+
+StreamTransformationFilter::~StreamTransformationFilter()
+{
+    if (m_cipherMustBeDestructed) {
+        delete &m_cipher;
+    }
 }
 
 bool StreamTransformationFilter::PaddingObjectCanUnpad()
@@ -349,8 +357,8 @@ static void setCryptoppStreamTransformationFilterDecryptorPtr(zval *this_ptr, St
 }
 /* }}} */
 
-/* {{{ indicates if the native stream cipher object holded by a stf object is valid */
-static bool isSymmetricTransformationObjectValid(zval *stfObject) {
+/* {{{ indicates if the native symmetric transformation object holded by a stf object is valid */
+static bool isNativeSymmetricTransformationObjectValid(zval *stfObject) {
     zval *streamCipherObject;
     streamCipherObject = zend_read_property(cryptopp_ce_StreamTransformationFilter, stfObject, "streamCipher", 12, 0 TSRMLS_CC);
 
@@ -370,8 +378,6 @@ static bool isSymmetricTransformationObjectValid(zval *stfObject) {
         if (!isCryptoppStreamCipherKeyValid(streamCipherObject, streamCipherEncryptor) || !isCryptoppStreamCipherIvValid(streamCipherObject, streamCipherEncryptor)) {
             return false;
         }
-    } else {
-        // TODO proxy
     }
 
     return true;
@@ -427,6 +433,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     CryptoPP::SymmetricCipher *symmetricEncryptor;
     CryptoPP::SymmetricCipher *symmetricDecryptor;
     bool parentConstructorError = false;
+    bool cipherMustBeDestructed = false;
 
     if (instanceof_function(Z_OBJCE_P(streamCipherObject), cryptopp_ce_SymmetricModeAbstract)) {
         // retrieve native mode objects
@@ -445,7 +452,17 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
             parentConstructorError = true;
         }
     } else {
-        // TODO create a proxy to the user php object
+        // create a proxy to the user php object
+        try {
+            symmetricEncryptor      = new SymmetricTransformationProxy::Encryption(streamCipherObject);
+            symmetricDecryptor      = new SymmetricTransformationProxy::Decryption(streamCipherObject);
+            cipherMustBeDestructed  = true;
+        } catch (bool e) {
+            return;
+        } catch (const char *e) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: StreamTransformationFilter: %s", e);
+            return;
+        }
     }
 
     if (parentConstructorError) {
@@ -460,10 +477,10 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct) {
     StreamTransformationFilter *stfDecryptor;
 
     try {
-        stfEncryptor = new StreamTransformationFilter(*symmetricEncryptor, paddingObject);
-        stfDecryptor = new StreamTransformationFilter(*symmetricDecryptor, paddingObject);
+        stfEncryptor = new StreamTransformationFilter(*symmetricEncryptor, paddingObject, cipherMustBeDestructed);
+        stfDecryptor = new StreamTransformationFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed);
     } catch (std::exception &e) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: StreamTransformationFilter: %s", e.what());
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: StreamTransformationFilter: %s", e.what());
         return;
     }
 
@@ -503,7 +520,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isSymmetricTransformationObjectValid(getThis())) {
+    if (!isNativeSymmetricTransformationObjectValid(getThis())) {
         RETURN_FALSE
     }
 
@@ -544,7 +561,7 @@ PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString) {
     }
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isSymmetricTransformationObjectValid(getThis())) {
+    if (!isNativeSymmetricTransformationObjectValid(getThis())) {
         RETURN_FALSE
     }
 

@@ -5,35 +5,41 @@
 
 class SymmetricTransformationProxy
 {
-public:
     /* {{{ base class */
     class Base : public CryptoPP::SymmetricCipher
     {
     public:
-        Base(zval *streamCipherObject);
-
+        ~Base();
         unsigned int MandatoryBlockSize() const;
         unsigned int OptimalBlockSize() const;
+        void ProcessData(byte *outString, const byte *inString, size_t length);
 
-        // TODO unused methods
-        IV_Requirement IVRequirement() const {php_printf("IVRequirement\n"); return UNPREDICTABLE_RANDOM_IV;}
-        bool IsRandomAccess() const {php_printf("IsRandomAccess\n"); return false;}
-        bool IsSelfInverting() const {php_printf("IsSelfInverting\n"); return false;}
+        // unused methods
+        IV_Requirement IVRequirement() const {return UNPREDICTABLE_RANDOM_IV;}
+        bool IsRandomAccess() const {return false;}
+        bool IsSelfInverting() const {return false;}
 
-        size_t MinKeyLength() const {php_printf("MinKeyLength\n"); return 1;}
-        size_t MaxKeyLength() const {php_printf("MaxKeyLength\n"); return 1;}
-        size_t DefaultKeyLength() const {php_printf("DefaultKeyLength\n"); return 1;}
-        size_t GetValidKeyLength(size_t n) const {php_printf("GetValidKeyLength\n"); return 1;}
-        void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {php_printf("UncheckedSetKey\n");}
+        size_t MinKeyLength() const {return 1;}
+        size_t MaxKeyLength() const {return 1;}
+        size_t DefaultKeyLength() const {return 1;}
+        size_t GetValidKeyLength(size_t n) const {return 1;}
+        void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {}
+
+    protected:
+        Base(zval *symmetricTransformationObject, const char* processDataFuncname);
+        unsigned int m_blockSize;
+        zval *m_symmetricTransformationObject;
+        zval *m_processDataFuncname;
     };
     /* }}} */
 
+public:
     /* {{{ encryption class */
     class Encryption : public Base
     {
     public:
-        bool IsForwardTransformation() const {return false;};
-        void ProcessData(byte *outString, const byte *inString, size_t length);
+        Encryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "encryptData"){};
+        bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
 
@@ -41,8 +47,8 @@ public:
     class Decryption : public Base
     {
     public:
+        Decryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "decryptData"){};
         bool IsForwardTransformation() const {return false;};
-        void ProcessData(byte *outString, const byte *inString, size_t length);
     };
     /* }}} */
 };

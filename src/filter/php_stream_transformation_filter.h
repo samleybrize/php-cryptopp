@@ -11,7 +11,8 @@ void init_class_StreamTransformationFilter(TSRMLS_D);
 class StreamTransformationFilter : public CryptoPP::FilterWithBufferedInput, public CryptoPP::BlockPaddingSchemeDef, private CryptoPP::FilterPutSpaceHelper
 {
 public:
-    StreamTransformationFilter(CryptoPP::StreamTransformation &c, zval *paddingObject);
+    StreamTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed);
+    ~StreamTransformationFilter();
     std::string AlgorithmName() const {return m_cipher.AlgorithmName();}
 
 protected:
@@ -25,6 +26,7 @@ protected:
     CryptoPP::StreamTransformation &m_cipher;
     unsigned int m_optimalBufferSize;
     zval *m_paddingObject;
+    bool m_cipherMustBeDestructed;
 };
 /* }}} */
 
