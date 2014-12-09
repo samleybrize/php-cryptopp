@@ -35,6 +35,7 @@ PHP_METHOD(Cryptopp_HashAbstract, __sleep);
 PHP_METHOD(Cryptopp_HashAbstract, __wakeup);
 PHP_METHOD(Cryptopp_HashAbstract, getName);
 PHP_METHOD(Cryptopp_HashAbstract, getDigestSize);
+PHP_METHOD(Cryptopp_HashAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_HashAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_HashAbstract, update);
 PHP_METHOD(Cryptopp_HashAbstract, final);

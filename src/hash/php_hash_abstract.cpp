@@ -45,6 +45,7 @@ static zend_function_entry cryptopp_methods_HashAbstract[] = {
     PHP_ME(Cryptopp_HashAbstract, __wakeup, arginfo_HashAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, getBlockSize, arginfo_HashInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, final, arginfo_HashInterface_final, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -121,6 +122,17 @@ PHP_METHOD(Cryptopp_HashAbstract, getDigestSize) {
     hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     unsigned int digestSize = hash->DigestSize();
+    RETURN_LONG(digestSize);
+}
+/* }}} */
+
+/* {{{ proto int HashAbstract::getBlockSize(void)
+   Returns the block size */
+PHP_METHOD(Cryptopp_HashAbstract, getBlockSize) {
+    CryptoPP::HashTransformation *hash;
+    hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+
+    unsigned int digestSize = hash->BlockSize();
     RETURN_LONG(digestSize);
 }
 /* }}} */

@@ -37,6 +37,7 @@ configFileList.append("src/hash/config/hash_abstract.py")
 configFileList.append("src/hash/config/hash_md5.py")
 configFileList.append("src/hash/config/hash_sha1.py")
 configFileList.append("src/hash/config/hash_sha3.py")
+configFileList.append("src/hash/config/hash_proxy.py")
 
 configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
