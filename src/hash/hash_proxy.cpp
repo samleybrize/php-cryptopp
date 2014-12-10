@@ -4,10 +4,9 @@
 #include "php_hash_interface.h"
 #include <zend_exceptions.h>
 #include <exception>
+#include <algorithm>
 
-HashProxy::HashProxy() {}
-
-void HashProxy::setHashObject(zval *hashObject)
+HashProxy::HashProxy(zval *hashObject)
 {
     // verify that hashObject is an instance of HashInterface
     if (IS_OBJECT != Z_TYPE_P(hashObject) ||
@@ -75,8 +74,6 @@ void HashProxy::setHashObject(zval *hashObject)
 
 HashProxy::~HashProxy()
 {
-    // TODO ensure that destructor is called
-    php_printf("hash proxy destructor\n"); // TODO
     Z_DELREF_P(m_hashObject);
     zval_dtor(m_funcnameCalculateDigest);
     zval_dtor(m_funcnameUpdate);
@@ -97,8 +94,18 @@ unsigned int HashProxy::OptimalBlockSize() const {
 }
 
 void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
-    // TODO
-    php_printf("TruncatedFinal\n");
+    zval *zOutput;
+    MAKE_STD_ZVAL(zOutput)
+    call_user_function(NULL, &m_hashObject, m_funcnameFinal, zOutput, 0, NULL TSRMLS_CC);
+
+    if (IS_STRING != Z_TYPE_P(zOutput)) {
+        zval_dtor(zOutput);
+        throw false;
+    }
+
+    int length = std::min(static_cast<int>(digestSize), Z_STRLEN_P(zOutput));
+    memcpy(digest, Z_STRVAL_P(zOutput), length);
+    zval_dtor(zOutput);
 }
 
 void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
@@ -128,28 +135,12 @@ void HashProxy::Update(const byte *input, size_t length) {
     ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
     call_user_function(NULL, &m_hashObject, m_funcnameUpdate, zOutput, 1, &zInput TSRMLS_CC);
 
-    if (IS_STRING != Z_TYPE_P(zOutput)) {
-        zval_dtor(zInput);
-        zval_dtor(zOutput);
-        throw false;
-    }
-
     zval_dtor(zInput);
     zval_dtor(zOutput);
 }
 
 void HashProxy::Final(byte *digest) {
-    zval *zOutput;
-    MAKE_STD_ZVAL(zOutput)
-    call_user_function(NULL, &m_hashObject, m_funcnameFinal, zOutput, 0, NULL TSRMLS_CC);
-
-    if (IS_STRING != Z_TYPE_P(zOutput)) {
-        zval_dtor(zOutput);
-        throw false;
-    }
-
-    memcpy(digest, Z_STRVAL_P(zOutput), Z_STRLEN_P(zOutput));
-    zval_dtor(zOutput);
+    TruncatedFinal(digest, m_digestSize);
 }
 
 void HashProxy::Restart() {

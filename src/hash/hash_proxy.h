@@ -6,9 +6,8 @@
 class HashProxy : public CryptoPP::HashTransformation
 {
 public:
-    HashProxy();
+    HashProxy(zval *hashObject);
     ~HashProxy();
-    void setHashObject(zval *hashObject);
     unsigned int DigestSize() const;
     unsigned int BlockSize() const;
     void Update(const byte *input, size_t length);
@@ -20,7 +19,7 @@ public:
 
     static const char * CRYPTOPP_API StaticAlgorithmName() {return "User";}
 
-    // TODO unused
+    // unused
     unsigned int OptimalDataAlignment() const {return 1;}
     byte * CreateUpdateSpace(size_t &size) {return NULL;}
     bool Verify(const byte *digest) {return true;}
