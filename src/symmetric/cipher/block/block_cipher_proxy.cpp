@@ -5,7 +5,7 @@
 #include <zend_exceptions.h>
 #include <exception>
 
-BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname)
+BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname)
 {
     // verify that blockCipherObject is an instance of BlockCipherInterface
     if (IS_OBJECT != Z_TYPE_P(blockCipherObject) ||
@@ -37,9 +37,11 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
 
     // create a zval with the php method name to call for AdvancedProcessBlocks()
     MAKE_STD_ZVAL(m_funcnameProcessData);
+    MAKE_STD_ZVAL(m_funcnameProcessBlock);
     MAKE_STD_ZVAL(m_funcnameIsValidKeyLength);
     MAKE_STD_ZVAL(m_funcnameSetKey);
     ZVAL_STRING(m_funcnameProcessData, processDataFuncname, 1);
+    ZVAL_STRING(m_funcnameProcessBlock, processBlockFuncname, 1);
     ZVAL_STRING(m_funcnameIsValidKeyLength, "isValidKeyLength", 1);
     ZVAL_STRING(m_funcnameSetKey, "setKey", 1);
 
@@ -52,6 +54,7 @@ BlockCipherProxy::Base::~Base()
 {
     Z_DELREF_P(m_blockCipherObject);
     zval_dtor(m_funcnameProcessData);
+    zval_dtor(m_funcnameProcessBlock);
     zval_dtor(m_funcnameIsValidKeyLength);
     zval_dtor(m_funcnameSetKey);
 }
@@ -96,7 +99,15 @@ void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const Crypto
     zval_dtor(output);
 }
 
-// TODO AdvancedProcessBlocks
+void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
+{
+    // TODO optimize? (use of AdvancedProcessBlocks)
+
+    // TODO encrypt or decrypt inBlock, xor with xorBlock, and write to outBlock
+    // TODO php method: encryptBlock / decryptBlock
+    php_printf("ProcessAndXorBlock\n");
+    memcpy(outBlock, inBlock, BlockSize());
+}
 
 /*
  * Local variables:

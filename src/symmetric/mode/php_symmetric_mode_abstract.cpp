@@ -1,6 +1,7 @@
 #include "../../php_cryptopp.h"
 #include "../../exception/php_exception.h"
 #include "../cipher/php_symmetric_transformation_interface.h"
+#include "../cipher/block/block_cipher_proxy.h"
 #include "../cipher/block/php_block_cipher_abstract.h"
 #include "php_symmetric_mode.h"
 #include "php_symmetric_mode_interface.h"
@@ -140,7 +141,9 @@ bool cryptoppSymmetricModeGetCipherElements(
         *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
         *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
     } else {
-        // TODO use proxy
+        // create a proxy to the user php object
+        *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject);
+        *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject);
     }
 
     // verify that cipher encryptor/decryptor ptr are not null
