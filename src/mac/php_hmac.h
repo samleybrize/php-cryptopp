@@ -2,6 +2,26 @@
 #define PHP_MAC_HMAC_H
 
 #include "../php_cryptopp.h"
+#include <hmac.h>
+#include <seckey.h>
+
+/* {{{ fork of CryptoPP::HMAC that take a hash as parameter instead of a template parameter */
+class Hmac : public CryptoPP::MessageAuthenticationCodeImpl<CryptoPP::HMAC_Base, Hmac>
+{
+public:
+    Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject);
+    ~Hmac();
+
+    static std::string StaticAlgorithmName() {return std::string("HMAC");}
+    std::string AlgorithmName() const {return std::string("HMAC(") + m_hash->AlgorithmName() + ")";}
+
+private:
+    CryptoPP::HashTransformation & AccessHash() {return *m_hash;}
+
+    CryptoPP::HashTransformation *m_hash;
+    bool m_freeHashObject;
+};
+/* }}} */
 
 void init_class_MacHmac(TSRMLS_D);
 PHP_METHOD(Cryptopp_MacHmac, __construct);

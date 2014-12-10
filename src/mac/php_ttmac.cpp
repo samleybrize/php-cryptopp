@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_MacTwoTrackMac[] = {
 };
 
 void init_class_MacTwoTrackMac(TSRMLS_D) {
-    init_class_MacAbstractChild("two_track_mac", "MacTwoTrackMac", cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac TSRMLS_CC);
+    init_class_MacAbstractChild("two_track_mac", "MacTwoTrackMac", &cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac TSRMLS_CC);
 }
 /* }}} */
 

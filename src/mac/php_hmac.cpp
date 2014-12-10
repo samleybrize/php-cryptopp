@@ -1,15 +1,31 @@
 #include "../php_cryptopp.h"
+#include "../hash/php_hash_interface.h"
 #include "../hash/php_hash_abstract.h"
+#include "../hash/hash_proxy.h"
 #include "php_mac_abstract.h"
 #include "php_hmac.h"
-#include "php_hmac_d.h"
 #include <hmac.h>
 #include <string>
 #include <zend_exceptions.h>
 
+/* {{{ fork of CryptoPP::HMAC that take a hash as parameter instead of a template parameter */
+Hmac::Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject)
+{
+    m_hash              = hash;
+    m_freeHashObject    = freeHashObject;
+}
+
+Hmac::~Hmac()
+{
+    if (m_freeHashObject) {
+        delete m_hash;
+    }
+}
+/* }}} */
+
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacHmac_construct, 0)
-    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashAbstract, 0)
+    ZEND_ARG_OBJ_INFO(0, hashAlgo, Cryptopp\\HashInterface, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -22,19 +38,34 @@ static zend_function_entry cryptopp_methods_MacHmac[] = {
 };
 
 void init_class_MacHmac(TSRMLS_D) {
-    init_class_MacAbstractChild("hmac", "MacHmac", cryptopp_ce_MacHmac, cryptopp_methods_MacHmac TSRMLS_CC);
+    init_class_MacAbstractChild("hmac", "MacHmac", &cryptopp_ce_MacHmac, cryptopp_methods_MacHmac TSRMLS_CC);
+    zend_declare_property_null(cryptopp_ce_MacHmac, "hash", 4,  ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
-/* {{{ proto MacHmac::__construct(Cryptopp\HashAbstract hashAlgo) */
+/* {{{ proto MacHmac::__construct(Cryptopp\HashInterface hashAlgo) */
 PHP_METHOD(Cryptopp_MacHmac, __construct) {
     zval *hashObject;
 
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, cryptopp_ce_HashAbstract)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &hashObject, cryptopp_ce_HashInterface)) {
         return;
     }
 
-    // retrieve the name of the hash algorithm
+    CryptoPP::MessageAuthenticationCode *mac;
+
+    if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract)) {
+        // retrieve native hash object
+        CryptoPP::HashTransformation *hash;
+        hash = getCryptoppHashNativePtr(hashObject);
+        mac = new Hmac(hash, false);
+    } else {
+        // create a proxy to the user php object
+        mac = new Hmac(new HashProxy(hashObject), true);
+    }
+
+    setCryptoppMacNativePtr(getThis(), mac  TSRMLS_CC);
+
+    // compute algo name
     zval *hashAlgoName;
     zval *funcName;
     MAKE_STD_ZVAL(hashAlgoName);
@@ -42,29 +73,20 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     ZVAL_STRING(funcName, "getName", 1);
     call_user_function(NULL, &hashObject, funcName, hashAlgoName, 0, NULL TSRMLS_CC);
 
-    // pick the right HMAC implementation
-    std::string algoName(Z_STRVAL_P(hashAlgoName), Z_STRLEN_P(hashAlgoName));
-    CryptoPP::MessageAuthenticationCode *mac;
-    zval_dtor(hashAlgoName);
-    zval_dtor(funcName);
-
-    CRYPTOPP_MAC_HMAC_CONDITIONAL_CREATION(algoName, mac)
-    else {
-        // not a valid hash algo name
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : unsupported hash algorithm %s", cryptopp_ce_MacHmac->name, algoName.c_str());
-        RETURN_NULL();
-    }
-
-    setCryptoppMacNativePtr(getThis(), mac  TSRMLS_CC);
-
     std::string name("hmac(");
-    name.append(algoName);
+    name.append(Z_STRVAL_P(hashAlgoName), Z_STRLEN_P(hashAlgoName));
     name.append(")");
     zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "name", 4, name.c_str(), name.length() TSRMLS_CC);
+
+    zval_dtor(hashAlgoName);
+    zval_dtor(funcName);
 
     // set a default empty key
     byte defaultKey[0];
     mac->SetKey(defaultKey, 0);
+
+    // hold the hash object. if not, it can be deleted.
+    zend_update_property(cryptopp_ce_MacHmac, getThis(), "hash", 4, hashObject TSRMLS_CC);
 }
 /* }}} */
 
