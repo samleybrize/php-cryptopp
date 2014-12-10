@@ -46,6 +46,11 @@ zend_object_value BlockCipherAbstract_create_handler(zend_class_entry *type TSRM
 PHP_METHOD(Cryptopp_BlockCipherAbstract, __sleep);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, __wakeup);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getName);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData);
 /* }}} */
 
 /* {{{ php cipher classes methods arg info */

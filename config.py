@@ -50,6 +50,7 @@ configFileList.append("src/symmetric/cipher/block/config/block_cipher.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/block/config/block_cipher_aes.py")
+configFileList.append("src/symmetric/cipher/block/config/block_cipher_proxy.py")
 
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher.py")
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_interface.py")
