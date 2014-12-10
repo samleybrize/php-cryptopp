@@ -12,9 +12,5 @@ def getConfig(cryptoppDir):
     config["srcFileList"]               = ["hash/php_sha1.cpp"]
     config["headerFileList"]            = ["hash/php_sha1.h"]
     config["phpMinitStatements"]        = ["init_class_HashSha1(TSRMLS_C);"]
-    config["hashCryptoppHeaders"]       = ["sha.h"]
-
-    config["hashNativeAssoc"]           = {}
-    config["hashNativeAssoc"]["sha1"]   = "CryptoPP::SHA1";
 
     return config

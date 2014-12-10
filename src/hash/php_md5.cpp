@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_HashMd5[] = {
 };
 
 void init_class_HashMd5(TSRMLS_D) {
-    init_class_HashAbstractChild("md5", "HashMd5", cryptopp_ce_HashMd5, cryptopp_methods_HashMd5 TSRMLS_CC);
+    init_class_HashAbstractChild("md5", "HashMd5", &cryptopp_ce_HashMd5, cryptopp_methods_HashMd5 TSRMLS_CC);
 }
 /* }}} */
 

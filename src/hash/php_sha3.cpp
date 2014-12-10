@@ -45,10 +45,10 @@ static zend_function_entry cryptopp_methods_HashSha3_512[] = {
 
 void init_classes_HashSha3(TSRMLS_D)
 {
-    init_class_HashAbstractChild("sha3_224", "HashSha3_224", cryptopp_ce_HashSha3_224, cryptopp_methods_HashSha3_224 TSRMLS_CC);
-    init_class_HashAbstractChild("sha3_256", "HashSha3_256", cryptopp_ce_HashSha3_256, cryptopp_methods_HashSha3_256 TSRMLS_CC);
-    init_class_HashAbstractChild("sha3_384", "HashSha3_384", cryptopp_ce_HashSha3_384, cryptopp_methods_HashSha3_384 TSRMLS_CC);
-    init_class_HashAbstractChild("sha3_512", "HashSha3_512", cryptopp_ce_HashSha3_512, cryptopp_methods_HashSha3_512 TSRMLS_CC);
+    init_class_HashAbstractChild("sha3_224", "HashSha3_224", &cryptopp_ce_HashSha3_224, cryptopp_methods_HashSha3_224 TSRMLS_CC);
+    init_class_HashAbstractChild("sha3_256", "HashSha3_256", &cryptopp_ce_HashSha3_256, cryptopp_methods_HashSha3_256 TSRMLS_CC);
+    init_class_HashAbstractChild("sha3_384", "HashSha3_384", &cryptopp_ce_HashSha3_384, cryptopp_methods_HashSha3_384 TSRMLS_CC);
+    init_class_HashAbstractChild("sha3_512", "HashSha3_512", &cryptopp_ce_HashSha3_512, cryptopp_methods_HashSha3_512 TSRMLS_CC);
 }
 /* }}} */
 

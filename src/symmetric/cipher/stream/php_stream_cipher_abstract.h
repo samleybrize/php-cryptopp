@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_StreamCipherAbstract;
 void init_class_StreamCipherAbstract(TSRMLS_D);
-void init_class_StreamCipherAbstractChild(const char *algoName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
+void init_class_StreamCipherAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TSRMLS_DC);
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherDecryptorPtr(zval *this_ptr TSRMLS_DC);

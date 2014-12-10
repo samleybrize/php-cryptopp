@@ -19,7 +19,7 @@ static zend_function_entry cryptopp_methods_SymmetricModeEcb[] = {
 };
 
 void init_class_SymmetricModeEcb(TSRMLS_D) {
-    init_class_SymmetricModeAbstractChild("ecb", "SymmetricModeEcb", cryptopp_ce_SymmetricModeEcb, cryptopp_methods_SymmetricModeEcb TSRMLS_CC);
+    init_class_SymmetricModeAbstractChild("ecb", "SymmetricModeEcb", &cryptopp_ce_SymmetricModeEcb, cryptopp_methods_SymmetricModeEcb TSRMLS_CC);
 }
 /* }}} */
 

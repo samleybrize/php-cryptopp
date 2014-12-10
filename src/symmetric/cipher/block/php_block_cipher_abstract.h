@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_BlockCipherAbstract;
 void init_class_BlockCipherAbstract(TSRMLS_D);
-void init_class_BlockCipherAbstractChild(const char *algoName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
+void init_class_BlockCipherAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
 CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_DC);
 CryptoPP::BlockCipher *getCryptoppBlockCipherDecryptorPtr(zval *this_ptr TSRMLS_DC);

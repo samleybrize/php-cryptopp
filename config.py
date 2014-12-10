@@ -102,12 +102,6 @@ for configFile in configFileList:
     if "phpMinitStatements" in config:
         phpMinitStatements.extend(config["phpMinitStatements"])
 
-    if "hashNativeAssoc" in config:
-        hashNativeAssoc = dict(hashNativeAssoc.items() + config["hashNativeAssoc"].items())
-
-    if "hashCryptoppHeaders" in config:
-        hashCryptoppHeaders.extend(config["hashCryptoppHeaders"])
-
 # build includes for main header file
 headerFileIncludes = "";
 
@@ -121,10 +115,6 @@ mainHeaderContent   = mainHeaderContent.replace("//%configure_inclusion%", confi
 mainHeaderContent   = mainHeaderContent.replace("%ext_version%", EXTENSION_VERSION)
 
 open("src/php_cryptopp.h", "w").write(mainHeaderContent)
-
-# configure HMAC
-hmac = loadModuleFromFile("src/mac/config/mac_hmac.py")
-hmac.configure(hashNativeAssoc, hashCryptoppHeaders)
 
 # print the list of source files to add
 for key, srcFile in enumerate(srcFileList):

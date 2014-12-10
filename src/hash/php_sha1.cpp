@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_HashSha1[] = {
 };
 
 void init_class_HashSha1(TSRMLS_D) {
-    init_class_HashAbstractChild("sha1", "HashSha1", cryptopp_ce_HashSha1, cryptopp_methods_HashSha1 TSRMLS_CC);
+    init_class_HashAbstractChild("sha1", "HashSha1", &cryptopp_ce_HashSha1, cryptopp_methods_HashSha1 TSRMLS_CC);
 }
 /* }}} */
 

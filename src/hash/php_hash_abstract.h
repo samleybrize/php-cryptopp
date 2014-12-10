@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_HashAbstract;
 void init_class_HashAbstract(TSRMLS_D);
-void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
+void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
 CryptoPP::HashTransformation *getCryptoppHashNativePtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppHashNativePtr(zval *this_ptr, CryptoPP::HashTransformation *nativePtr TSRMLS_DC);

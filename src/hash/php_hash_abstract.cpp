@@ -70,13 +70,13 @@ void init_class_HashAbstract(TSRMLS_D) {
 /* }}} */
 
 /* {{{ inits a child class */
-void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
+void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
 
     zend_class_entry ce;
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
-    classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_HashAbstract, NULL TSRMLS_CC);
+    *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_HashAbstract, NULL TSRMLS_CC);
 
     addHashAlgo(algoName, namespacedClassName.c_str());
 }

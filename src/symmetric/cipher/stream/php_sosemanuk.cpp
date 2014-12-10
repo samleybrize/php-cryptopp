@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_StreamCipherSosemanuk[] = {
 };
 
 void init_class_StreamCipherSosemanuk(TSRMLS_D) {
-    init_class_StreamCipherAbstractChild("sosemanuk", "StreamCipherSosemanuk", cryptopp_ce_StreamCipherSosemanuk, cryptopp_methods_StreamCipherSosemanuk TSRMLS_CC);
+    init_class_StreamCipherAbstractChild("sosemanuk", "StreamCipherSosemanuk", &cryptopp_ce_StreamCipherSosemanuk, cryptopp_methods_StreamCipherSosemanuk TSRMLS_CC);
 }
 /* }}} */
 

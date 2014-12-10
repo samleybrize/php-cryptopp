@@ -17,7 +17,7 @@ static zend_function_entry cryptopp_methods_BlockCipherAes[] = {
 };
 
 void init_class_BlockCipherAes(TSRMLS_D) {
-    init_class_BlockCipherAbstractChild("aes", "BlockCipherAes", cryptopp_ce_BlockCipherAes, cryptopp_methods_BlockCipherAes TSRMLS_CC);
+    init_class_BlockCipherAbstractChild("aes", "BlockCipherAes", &cryptopp_ce_BlockCipherAes, cryptopp_methods_BlockCipherAes TSRMLS_CC);
 }
 /* }}} */
 

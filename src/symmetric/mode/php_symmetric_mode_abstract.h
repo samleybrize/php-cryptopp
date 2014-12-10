@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_SymmetricModeAbstract;
 void init_class_SymmetricModeAbstract(TSRMLS_D);
-void init_class_SymmetricModeAbstractChild(const char *modeName, const char* className, zend_class_entry *classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
+void init_class_SymmetricModeAbstractChild(const char *modeName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC);
 
 CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC);
 CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC);
