@@ -36,7 +36,7 @@ class Child extends Cryptopp\RandomByteGenerator
     public function __construct(){}
 }
 
-$o = new CHild();
+$o = new Child();
 
 try {
     $o->generate(2);
