@@ -50,8 +50,8 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, encryptData, arginfo_SymmetricTransformationInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, decryptData, arginfo_SymmetricTransformationInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
@@ -298,9 +298,9 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
 }
 /* }}} */
 
-/* {{{ proto string StreamCipherAbstract::encryptData(string data)
+/* {{{ proto string StreamCipherAbstract::encrypt(string data)
    Encrypts data */
-PHP_METHOD(Cryptopp_StreamCipherAbstract, encryptData) {
+PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 
@@ -334,9 +334,9 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, encryptData) {
 }
 /* }}} */
 
-/* {{{ proto string StreamCipherAbstract::decryptData(string data)
+/* {{{ proto string StreamCipherAbstract::decrypt(string data)
    Decrypts data */
-PHP_METHOD(Cryptopp_StreamCipherAbstract, decryptData) {
+PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 

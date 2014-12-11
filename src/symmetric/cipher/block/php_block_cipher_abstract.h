@@ -51,8 +51,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock);
-PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData);
-PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt);
 /* }}} */
 
 /* {{{ php cipher classes methods arg info */

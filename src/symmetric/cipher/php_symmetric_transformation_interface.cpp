@@ -9,8 +9,8 @@ static zend_function_entry cryptopp_methods_SymmetricTransformationInterface[] =
     PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, setKey, arginfo_SymmetricTransformationInterface_setKey)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, setIv, arginfo_SymmetricTransformationInterface_setIv)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize)
-    PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, encryptData, arginfo_SymmetricTransformationInterface_encryptData)
-    PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, decryptData, arginfo_SymmetricTransformationInterface_decryptData)
+    PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, encrypt, arginfo_SymmetricTransformationInterface_encrypt)
+    PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, decrypt, arginfo_SymmetricTransformationInterface_decrypt)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricTransformationInterface, restart, arginfo_SymmetricTransformationInterface_restart)
     PHP_FE_END
 };

@@ -38,7 +38,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "encryptData"){};
+        Encryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "encrypt"){};
         bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
@@ -47,7 +47,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "decryptData"){};
+        Decryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "decrypt"){};
         bool IsForwardTransformation() const {return false;};
     };
     /* }}} */

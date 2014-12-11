@@ -57,7 +57,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *blockCipherObject) : Base(blockCipherObject, "encryptData", "encryptBlock"){};
+        Encryption(zval *blockCipherObject) : Base(blockCipherObject, "encrypt", "encryptBlock"){};
         bool IsForwardTransformation() const {return true;};
         inline CryptoPP::CipherDir GetCipherDirection() const {return CryptoPP::ENCRYPTION;}
     };
@@ -67,7 +67,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *blockCipherObject) : Base(blockCipherObject, "decryptData", "decryptBlock"){};
+        Decryption(zval *blockCipherObject) : Base(blockCipherObject, "decrypt", "decryptBlock"){};
         bool IsForwardTransformation() const {return false;};
         inline CryptoPP::CipherDir GetCipherDirection() const {return CryptoPP::DECRYPTION;}
     };

@@ -51,8 +51,8 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, encryptData, arginfo_SymmetricTransformationInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, decryptData, arginfo_SymmetricTransformationInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
@@ -348,9 +348,9 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
 }
 /* }}} */
 
-/* {{{ proto string SymmetricModeAbstract::encryptData(string data)
+/* {{{ proto string SymmetricModeAbstract::encrypt(string data)
    Encrypts data */
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, encrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 
@@ -389,9 +389,9 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
 }
 /* }}} */
 
-/* {{{ proto string SymmetricModeAbstract::decryptData(string data)
+/* {{{ proto string SymmetricModeAbstract::decrypt(string data)
    Decrypts data */
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 

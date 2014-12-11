@@ -49,8 +49,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize);
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData);
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData);
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, encrypt);
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart);
 /* }}} */
 

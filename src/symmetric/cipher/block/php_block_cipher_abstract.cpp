@@ -51,8 +51,8 @@ static zend_function_entry cryptopp_methods_BlockCipherAbstract[] = {
     PHP_ME(Cryptopp_BlockCipherAbstract, setKey, arginfo_BlockCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, encryptBlock, arginfo_BlockCipherInterface_encryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, decryptBlock, arginfo_BlockCipherInterface_decryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_BlockCipherAbstract, encryptData, arginfo_BlockCipherInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_BlockCipherAbstract, decryptData, arginfo_BlockCipherInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_BlockCipherAbstract, encrypt, arginfo_BlockCipherInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_BlockCipherAbstract, decrypt, arginfo_BlockCipherInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -301,9 +301,9 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
 }
 /* }}} */
 
-/* {{{ proto string BlockCipherAbstract::encryptData(string data)
+/* {{{ proto string BlockCipherAbstract::encrypt(string data)
    Encrypts data */
-PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
+PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 
@@ -343,9 +343,9 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
 }
 /* }}} */
 
-/* {{{ proto string BlockCipherAbstract::decryptData(string data)
+/* {{{ proto string BlockCipherAbstract::decrypt(string data)
    Decrypts data */
-PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData) {
+PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
     char *data      = NULL;
     int dataSize    = 0;
 

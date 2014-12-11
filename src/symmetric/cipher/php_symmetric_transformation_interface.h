@@ -15,11 +15,11 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_getBlockSize, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_encryptData, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_encrypt, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_decryptData, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_decrypt, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 
