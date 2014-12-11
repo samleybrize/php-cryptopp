@@ -55,4 +55,4 @@ bool(true)
 Size must be a positive integer, 0 given
 Size must be a positive integer, -1 given
 
-Constructor was not called
+Parent constructor was not called

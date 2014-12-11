@@ -108,7 +108,7 @@ PHP_METHOD(Cryptopp_RandomByteGenerator, generate) {
     rbg = static_cast<RandomByteGeneratorContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg;
 
     if (NULL == rbg) {
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Constructor was not called");
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Parent constructor was not called");
         RETURN_FALSE;
     }
 
