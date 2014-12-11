@@ -49,6 +49,26 @@ var_dump(bin2hex($o->finalize()));
 var_dump(in_array("sha3_512", Cryptopp\Hash::getAlgos()));
 var_dump(Cryptopp\Hash::getClassname("sha3_512"));
 
+// test inheritance
+class Child extends Cryptopp\HashSha3_512{}
+
+$o = new Child();
+var_dump($o->getBlockSize());
+
+// test inheritance - parent constructor not called
+class ChildParentConstructorNotCalled extends Cryptopp\HashSha3_512
+{
+    public function __construct(){}
+}
+
+$o = new ChildParentConstructorNotCalled();
+
+try {
+    $o->getBlockSize();
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 ?>
 --EXPECT--
 bool(true)
@@ -63,3 +83,5 @@ string(128) "a11d37ec4d9a4d6030e01faafdf75c4ba7537968e1debd5163fa57f44a847bbc96c
 string(128) "bca0f72b90de6b3a335a09814ec1d478d7d087f88ca2813f571b25728f1fb1c1bd8828a970294128490e59b2b7eeacec079ae0ebfbd9df7cc18cce27d23d516f"
 bool(true)
 string(21) "Cryptopp\HashSha3_512"
+int(0)
+Cryptopp\HashAbstract cannot be extended by user classes
