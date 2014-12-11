@@ -52,7 +52,6 @@ var_dump($o->restart());
 
 ?>
 --EXPECT--
-bool(true)
 string(4) "test"
 int(12)
 int(5)
