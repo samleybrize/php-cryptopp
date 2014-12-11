@@ -301,7 +301,6 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
 }
 /* }}} */
 
-// TODO
 /* {{{ proto string BlockCipherAbstract::encryptData(string data)
    Encrypts data */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
@@ -321,7 +320,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
     }
 
     // check dataSize against block size
-    long blockSize = static_cast<long>(encryptor->BlockSize());
+    int blockSize = static_cast<int>(encryptor->BlockSize());
 
     if (0 != dataSize % blockSize) {
         zend_class_entry *ce;
@@ -331,14 +330,19 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
     }
 
     // encrypt
+    byte *input = reinterpret_cast<byte*>(data);
     byte output[dataSize];
-//    encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+    byte block[blockSize];
+    int blocks = dataSize / blockSize;
+
+    for (int i = 0; i < blocks; i++) {
+        encryptor->ProcessAndXorBlock(&input[i * blockSize], NULL, &output[i * blockSize]);
+    }
 
     RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }
 /* }}} */
 
-// TODO
 /* {{{ proto string BlockCipherAbstract::decryptData(string data)
    Decrypts data */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData) {
@@ -358,7 +362,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData) {
     }
 
     // check dataSize against block size
-    long blockSize = static_cast<long>(decryptor->BlockSize());
+    int blockSize = static_cast<int>(decryptor->BlockSize());
 
     if (0 != dataSize % blockSize) {
         zend_class_entry *ce;
@@ -368,8 +372,14 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData) {
     }
 
     // encrypt
+    byte *input = reinterpret_cast<byte*>(data);
     byte output[dataSize];
-//    decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+    byte block[blockSize];
+    int blocks = dataSize / blockSize;
+
+    for (int i = 0; i < blocks; i++) {
+        decryptor->ProcessAndXorBlock(&input[i * blockSize], NULL, &output[i * blockSize]);
+    }
 
     RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }

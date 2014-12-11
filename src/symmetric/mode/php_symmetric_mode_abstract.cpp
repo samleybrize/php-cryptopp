@@ -367,7 +367,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
     }
 
     // check dataSize against block size
-    long blockSize = static_cast<long>(encryptor->MandatoryBlockSize());
+    int blockSize = static_cast<int>(encryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
         zend_class_entry *ce;
@@ -408,7 +408,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
     }
 
     // check dataSize against block size
-    long blockSize = static_cast<long>(decryptor->MandatoryBlockSize());
+    int blockSize = static_cast<int>(decryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
         zend_class_entry *ce;
