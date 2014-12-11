@@ -39,6 +39,10 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
+// check values returned by Cryptopp\Hash for this algorithm
+var_dump(in_array("sha1", Cryptopp\Hash::getAlgos()));
+var_dump(Cryptopp\Hash::getClassname("sha1"));
+
 ?>
 --EXPECT--
 bool(true)
@@ -51,3 +55,5 @@ string(40) "9cf95dacd226dcf43da376cdb6cbba7035218921"
 string(40) "b0399d2029f64d445bd131ffaa399a42d2f8e7dc"
 string(40) "b0399d2029f64d445bd131ffaa399a42d2f8e7dc"
 string(40) "3334ae6608f4ed4b9da5a946aff43f4dabc3e6b6"
+bool(true)
+string(17) "Cryptopp\HashSha1"

@@ -39,6 +39,10 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
+// check values returned by Cryptopp\Hash for this algorithm
+var_dump(in_array("md5", Cryptopp\Hash::getAlgos()));
+var_dump(Cryptopp\Hash::getClassname("md5"));
+
 ?>
 --EXPECT--
 bool(true)
@@ -51,3 +55,5 @@ string(32) "ab4f63f9ac65152575886860dde480a1"
 string(32) "6eea9b7ef19179a06954edd0f6c05ceb"
 string(32) "6eea9b7ef19179a06954edd0f6c05ceb"
 string(32) "ba266745410d3c888ad3ca53f55e3b4f"
+bool(true)
+string(16) "Cryptopp\HashMd5"

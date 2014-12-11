@@ -45,6 +45,10 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
+// check values returned by Cryptopp\Hash for this algorithm
+var_dump(in_array("sha3_384", Cryptopp\Hash::getAlgos()));
+var_dump(Cryptopp\Hash::getClassname("sha3_384"));
+
 ?>
 --EXPECT--
 bool(true)
@@ -57,3 +61,5 @@ string(96) "e27d047d91207046d60f405ced5d0f177d81374b6cfa7851a81966f36434e4b1c65b
 string(96) "979f984c6de6d69d4137c8a92d4c2509a7adcc4d40e9880f761dcc45498408fa475ab56f656fc9f41b05d5f0c42bb92a"
 string(96) "979f984c6de6d69d4137c8a92d4c2509a7adcc4d40e9880f761dcc45498408fa475ab56f656fc9f41b05d5f0c42bb92a"
 string(96) "cc506f90bb6bc68d5553f0293d9e9b6ba61113c95cf2f782eac04a33c5aa213d8849df42b74892ba3b34bf070594c32f"
+bool(true)
+string(21) "Cryptopp\HashSha3_384"
