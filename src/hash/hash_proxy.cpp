@@ -64,7 +64,7 @@ HashProxy::HashProxy(zval *hashObject)
     MAKE_STD_ZVAL(m_funcnameRestart);
     ZVAL_STRING(m_funcnameCalculateDigest, "calculateDigest", 1);
     ZVAL_STRING(m_funcnameUpdate, "update", 1);
-    ZVAL_STRING(m_funcnameFinal, "final", 1);
+    ZVAL_STRING(m_funcnameFinal, "finalize", 1);
     ZVAL_STRING(m_funcnameRestart, "restart", 1);
 
     // hold hashObject

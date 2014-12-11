@@ -10,7 +10,7 @@ static zend_function_entry cryptopp_methods_HashInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_HashInterface, getBlockSize, arginfo_HashInterface_getBlockSize)
     PHP_ABSTRACT_ME(Cryptopp_HashInterface, calculateDigest, arginfo_HashInterface_calculateDigest)
     PHP_ABSTRACT_ME(Cryptopp_HashInterface, update, arginfo_HashInterface_update)
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, final, arginfo_HashInterface_final)
+    PHP_ABSTRACT_ME(Cryptopp_HashInterface, finalize, arginfo_HashInterface_finalize)
     PHP_ABSTRACT_ME(Cryptopp_HashInterface, restart, arginfo_HashInterface_restart)
     PHP_FE_END
 };

@@ -48,7 +48,7 @@ static zend_function_entry cryptopp_methods_MacAbstract[] = {
     PHP_ME(Cryptopp_MacAbstract, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, final, arginfo_MacInterface_final, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, finalize, arginfo_MacInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
@@ -238,9 +238,9 @@ PHP_METHOD(Cryptopp_MacAbstract, update) {
 }
 /* }}} */
 
-/* {{{ proto string MacAbstract::final(void)
+/* {{{ proto string MacAbstract::finalize(void)
    Finalize an incremental MAC and return resulting digest */
-PHP_METHOD(Cryptopp_MacAbstract, final) {
+PHP_METHOD(Cryptopp_MacAbstract, finalize) {
     CryptoPP::MessageAuthenticationCode *mac;
     mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 

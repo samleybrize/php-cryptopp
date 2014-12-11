@@ -38,7 +38,7 @@ PHP_METHOD(Cryptopp_HashAbstract, getDigestSize);
 PHP_METHOD(Cryptopp_HashAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_HashAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_HashAbstract, update);
-PHP_METHOD(Cryptopp_HashAbstract, final);
+PHP_METHOD(Cryptopp_HashAbstract, finalize);
 PHP_METHOD(Cryptopp_HashAbstract, restart);
 /* }}} */
 

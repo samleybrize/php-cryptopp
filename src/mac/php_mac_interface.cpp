@@ -10,7 +10,7 @@ static zend_function_entry cryptopp_methods_MacInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, setKey, arginfo_MacInterface_setKey)
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, calculateDigest, arginfo_MacInterface_calculateDigest)
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, update, arginfo_MacInterface_update)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, final, arginfo_MacInterface_final)
+    PHP_ABSTRACT_ME(Cryptopp_MacInterface, finalize, arginfo_MacInterface_finalize)
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, restart, arginfo_MacInterface_restart)
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, verify, arginfo_MacInterface_verify)
     PHP_FE_END

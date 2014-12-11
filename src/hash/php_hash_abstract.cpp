@@ -48,7 +48,7 @@ static zend_function_entry cryptopp_methods_HashAbstract[] = {
     PHP_ME(Cryptopp_HashAbstract, getBlockSize, arginfo_HashInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, final, arginfo_HashInterface_final, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, finalize, arginfo_HashInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, restart, arginfo_HashInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
@@ -186,9 +186,9 @@ PHP_METHOD(Cryptopp_HashAbstract, update) {
 }
 /* }}} */
 
-/* {{{ proto string HashAbstract::final(void)
+/* {{{ proto string HashAbstract::finalize(void)
    Finalize an incremental hash and return resulting digest */
-PHP_METHOD(Cryptopp_HashAbstract, final) {
+PHP_METHOD(Cryptopp_HashAbstract, finalize) {
     CryptoPP::HashTransformation *hash;
     hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 

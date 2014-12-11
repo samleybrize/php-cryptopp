@@ -22,7 +22,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_update, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_final, 0)
+ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_finalize, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_restart, 0)
