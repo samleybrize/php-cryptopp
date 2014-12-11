@@ -81,6 +81,7 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
 
     if (blockSize < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : block size cannot be lower than 1, %d given", cryptopp_ce_PaddingPkcs7->name, blockSize);
+        RETURN_FALSE
     } else if (blockSize > 256) {
         // PKCS7 does not handle block sizes higher than 256
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : PKCS #7 padding does not handle block sizes higher than 256", cryptopp_ce_PaddingPkcs7->name);
