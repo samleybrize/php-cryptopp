@@ -31,12 +31,19 @@ try {
 
 // test inheritance
 echo "\n";
-class Child extends Cryptopp\RandomByteGenerator
+class Child extends Cryptopp\RandomByteGenerator{}
+
+$o = new Child();
+var_dump(strlen($o->generate(2)));
+
+// test inheritance - parent constructor not called
+echo "\n";
+class ChildParentConstructorNotCalled extends Cryptopp\RandomByteGenerator
 {
     public function __construct(){}
 }
 
-$o = new Child();
+$o = new ChildParentConstructorNotCalled();
 
 try {
     $o->generate(2);
@@ -54,5 +61,7 @@ bool(true)
 
 Size must be a positive integer, 0 given
 Size must be a positive integer, -1 given
+
+int(2)
 
 Parent constructor was not called
