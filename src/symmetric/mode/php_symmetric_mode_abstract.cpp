@@ -378,7 +378,12 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, encryptData) {
 
     // encrypt
     byte output[dataSize];
-    encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    try {
+        encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+    } catch (bool e) {
+        RETURN_FALSE
+    }
 
     RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }
@@ -414,7 +419,12 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decryptData) {
 
     // encrypt
     byte output[dataSize];
-    decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    try {
+        decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+    } catch (bool e) {
+        RETURN_FALSE
+    }
 
     RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
 }

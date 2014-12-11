@@ -15,6 +15,14 @@ ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_setKey, 0)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_encryptBlock, 0)
+    ZEND_ARG_INFO(0, block)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_decryptBlock, 0)
+    ZEND_ARG_INFO(0, block)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_encryptData, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()

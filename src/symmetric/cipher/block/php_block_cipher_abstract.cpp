@@ -49,6 +49,8 @@ static zend_function_entry cryptopp_methods_BlockCipherAbstract[] = {
     PHP_ME(Cryptopp_BlockCipherAbstract, getBlockSize, arginfo_BlockCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, isValidKeyLength, arginfo_BlockCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, setKey, arginfo_BlockCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_BlockCipherAbstract, encryptBlock, arginfo_BlockCipherInterface_encryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_BlockCipherAbstract, decryptBlock, arginfo_BlockCipherInterface_decryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, encryptData, arginfo_BlockCipherInterface_encryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, decryptData, arginfo_BlockCipherInterface_decryptData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
@@ -231,6 +233,74 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
 }
 /* }}} */
 
+/* {{{ proto string BlockCipherAbstract::encryptBlock(string block)
+   Encrypts a single block of data */
+PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock) {
+    char *block     = NULL;
+    int blockSize   = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &block, &blockSize)) {
+        return;
+    }
+
+    CryptoPP::BlockCipher *encryptor;
+    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    // check key
+    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor)) {
+        RETURN_FALSE
+    }
+
+    // check block size
+    if (encryptor->BlockSize() != blockSize) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not equal to cipher block size (%d)", ce->name, blockSize, encryptor->BlockSize());
+        RETURN_FALSE
+    }
+
+    // encrypt
+    byte output[blockSize];
+    encryptor->ProcessAndXorBlock(reinterpret_cast<byte*>(block), NULL, output);
+
+    RETURN_STRINGL(reinterpret_cast<char*>(output), blockSize, 1)
+}
+/* }}} */
+
+/* {{{ proto string BlockCipherAbstract::decryptBlock(string block)
+   Decrypts a single block of data */
+PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
+    char *block     = NULL;
+    int blockSize   = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &block, &blockSize)) {
+        return;
+    }
+
+    CryptoPP::BlockCipher *decryptor;
+    decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+
+    // check key
+    if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor)) {
+        RETURN_FALSE
+    }
+
+    // check block size
+    if (decryptor->BlockSize() != blockSize) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not equal to cipher block size (%d)", ce->name, blockSize, decryptor->BlockSize());
+        RETURN_FALSE
+    }
+
+    // decrypt
+    byte output[blockSize];
+    decryptor->ProcessAndXorBlock(reinterpret_cast<byte*>(block), NULL, output);
+
+    RETURN_STRINGL(reinterpret_cast<char*>(output), blockSize, 1)
+}
+/* }}} */
+
 // TODO
 /* {{{ proto string BlockCipherAbstract::encryptData(string data)
    Encrypts data */
@@ -245,7 +315,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptData) {
     CryptoPP::BlockCipher *encryptor;
     encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
-    // check key and iv
+    // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor)) {
         RETURN_FALSE
     }
@@ -282,7 +352,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptData) {
     CryptoPP::BlockCipher *decryptor;
     decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    // check key and iv
+    // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor)) {
         RETURN_FALSE
     }

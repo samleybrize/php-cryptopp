@@ -9,6 +9,8 @@ static zend_function_entry cryptopp_methods_BlockCipherInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, getBlockSize, arginfo_BlockCipherInterface_getBlockSize)
     PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, isValidKeyLength, arginfo_BlockCipherInterface_isValidKeyLength)
     PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, setKey, arginfo_BlockCipherInterface_setKey)
+    PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, encryptBlock, arginfo_BlockCipherInterface_encryptBlock)
+    PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, decryptBlock, arginfo_BlockCipherInterface_decryptBlock)
     PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, encryptData, arginfo_BlockCipherInterface_encryptData)
     PHP_ABSTRACT_ME(Cryptopp_BlockCipherInterface, decryptData, arginfo_BlockCipherInterface_decryptData)
     PHP_FE_END

@@ -35,6 +35,21 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     zval_dtor(funcName);
     zval_dtor(zBlockSize);
 
+    // retrieve algo name once
+    zval *zName;
+    MAKE_STD_ZVAL(funcName);
+    MAKE_STD_ZVAL(zName);
+    ZVAL_STRING(funcName, "getName", 1);
+    call_user_function(NULL, &blockCipherObject, funcName, zName, 0, NULL TSRMLS_CC);
+
+    if (IS_STRING != Z_TYPE_P(zName)) {
+        ZVAL_STRING(zName, "User", 1);
+    }
+
+    m_name.assign(Z_STRVAL_P(zName), Z_STRLEN_P(zName));
+    zval_dtor(funcName);
+    zval_dtor(zName);
+
     // create a zval with the php method name to call for AdvancedProcessBlocks()
     MAKE_STD_ZVAL(m_funcnameProcessData);
     MAKE_STD_ZVAL(m_funcnameProcessBlock);
@@ -101,12 +116,38 @@ void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const Crypto
 
 void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // TODO optimize? (use of AdvancedProcessBlocks)
+    const_cast<BlockCipherProxy::Base*>(this)->ProcessAndXorBlock(inBlock, xorBlock, outBlock);
+}
 
-    // TODO encrypt or decrypt inBlock, xor with xorBlock, and write to outBlock
-    // TODO php method: encryptBlock / decryptBlock
-    php_printf("ProcessAndXorBlock\n");
-    memcpy(outBlock, inBlock, BlockSize());
+void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock)
+{
+    // TODO optimize? (use of AdvancedProcessBlocks)
+    // process block
+    unsigned int blockSize = BlockSize();
+    zval *zInBlock;
+    zval *zProcessedBlock;
+    MAKE_STD_ZVAL(zInBlock);
+    MAKE_STD_ZVAL(zProcessedBlock);
+    ZVAL_STRINGL(zInBlock, reinterpret_cast<const char*>(inBlock), blockSize, 1);
+    call_user_function(NULL, &m_blockCipherObject, m_funcnameProcessBlock, zProcessedBlock, 1, &zInBlock TSRMLS_CC);
+
+    if (IS_STRING != Z_TYPE_P(zProcessedBlock)) {
+        zval_dtor(zInBlock);
+        zval_dtor(zProcessedBlock);
+        throw false;
+    }
+
+    memcpy(outBlock, reinterpret_cast<byte*>(Z_STRVAL_P(zProcessedBlock)), blockSize);
+
+    // xor block
+    if (NULL != xorBlock) {
+        for (int i = 0; i < blockSize; i++) {
+            outBlock[i] ^= xorBlock[i];
+        }
+    }
+
+    zval_dtor(zInBlock);
+    zval_dtor(zProcessedBlock);
 }
 
 /*
