@@ -62,6 +62,14 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// sleep
+echo "\n";
+try {
+    serialize($o);
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // test inheritance
 echo "\n";
 class Child extends Cryptopp\MacTwoTrackMac{}
@@ -108,6 +116,8 @@ bool(true)
 string(23) "Cryptopp\MacTwoTrackMac"
 
 Cryptopp\MacTwoTrackMac : 3 is not a valid key length
+
+You cannot serialize or unserialize Cryptopp\MacAbstract instances
 
 int(20)
 

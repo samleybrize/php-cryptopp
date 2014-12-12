@@ -48,6 +48,14 @@ echo "\n";
 var_dump(in_array("sha1", Cryptopp\Hash::getAlgos()));
 var_dump(Cryptopp\Hash::getClassname("sha1"));
 
+// sleep
+echo "\n";
+try {
+    serialize($o);
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // test inheritance
 echo "\n";
 class Child extends Cryptopp\HashSha1{}
@@ -89,6 +97,8 @@ string(40) "3334ae6608f4ed4b9da5a946aff43f4dabc3e6b6"
 
 bool(true)
 string(17) "Cryptopp\HashSha1"
+
+You cannot serialize or unserialize Cryptopp\HashAbstract instances
 
 int(64)
 
