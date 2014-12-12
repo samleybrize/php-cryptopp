@@ -52,15 +52,27 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     }
 
     CryptoPP::MessageAuthenticationCode *mac;
+    CryptoPP::HashTransformation *hash;
 
     if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract)) {
         // retrieve native hash object
-        CryptoPP::HashTransformation *hash;
-        hash = getCryptoppHashNativePtr(hashObject);
-        mac = new Hmac(hash, false);
+        hash    = getCryptoppHashNativePtr(hashObject);
+        mac     = new Hmac(hash, false);
     } else {
         // create a proxy to the user php object
-        mac = new Hmac(new HashProxy(hashObject), true);
+        hash    = new HashProxy(hashObject);
+        mac     = new Hmac(hash, true);
+    }
+
+    // ensure that the hash algorithm is compatible
+    if (0 == hash->BlockSize()) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s can only be used with a block-based hash function (block size > 0)", cryptopp_ce_MacHmac->name);
+        delete mac;
+        return;
+    } else if (hash->BlockSize() < hash->DigestSize()) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: hash block size (%d) cannot be lower than digest size (%d)", cryptopp_ce_MacHmac->name, hash->BlockSize(), hash->DigestSize());
+        delete mac;
+        return;
     }
 
     setCryptoppMacNativePtr(getThis(), mac  TSRMLS_CC);
