@@ -17,26 +17,26 @@ var_dump($o->getBlockSize());
 var_dump($o->getDigestSize());
 
 // check digest calculation
-echo "\n";
+echo "- digest calculation:\n";
 var_dump(bin2hex($o->calculateDigest("qwertyuiop")));
 var_dump(bin2hex($o->calculateDigest("azerty")));
 
 // check incremental hash
-echo "\n";
+echo "- incremental hash:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check that a restart() is not necessary after a call to finalize()
-echo "\n";
+echo "- restart not necessary:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check restart()
-echo "\n";
+echo "- restart:\n";
 $o->update("qwerty");
 $o->restart();
 $o->update("uio");
@@ -44,12 +44,12 @@ $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check values returned by Cryptopp\Hash for this algorithm
-echo "\n";
+echo "- Cryptopp\Hash:\n";
 var_dump(in_array("md5", Cryptopp\Hash::getAlgos()));
 var_dump(Cryptopp\Hash::getClassname("md5"));
 
 // sleep
-echo "\n";
+echo "- sleep:\n";
 try {
     serialize($o);
 } catch (Cryptopp\CryptoppException $e) {
@@ -57,14 +57,14 @@ try {
 }
 
 // test inheritance
-echo "\n";
+echo "- inheritance:\n";
 class Child extends Cryptopp\HashMd5{}
 
 $o = new Child();
 var_dump($o->getBlockSize());
 
 // test inheritance - parent constructor not called
-echo "\n";
+echo "- inheritance (parent constructor not called):\n";
 class ChildParentConstructorNotCalled extends Cryptopp\HashMd5
 {
     public function __construct(){}
@@ -85,21 +85,21 @@ string(3) "md5"
 string(3) "md5"
 int(64)
 int(16)
-
+- digest calculation:
 string(32) "6eea9b7ef19179a06954edd0f6c05ceb"
 string(32) "ab4f63f9ac65152575886860dde480a1"
-
+- incremental hash:
 string(32) "6eea9b7ef19179a06954edd0f6c05ceb"
-
+- restart not necessary:
 string(32) "6eea9b7ef19179a06954edd0f6c05ceb"
-
+- restart:
 string(32) "ba266745410d3c888ad3ca53f55e3b4f"
-
+- Cryptopp\Hash:
 bool(true)
 string(16) "Cryptopp\HashMd5"
-
+- sleep:
 You cannot serialize or unserialize Cryptopp\HashAbstract instances
-
+- inheritance:
 int(64)
-
+- inheritance (parent constructor not called):
 Cryptopp\HashAbstract cannot be extended by user classes

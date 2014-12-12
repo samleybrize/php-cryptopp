@@ -59,27 +59,27 @@ var_dump($o->getName());
 var_dump($o->getDigestSize());
 
 // check digest calculation
-echo "\n";
+echo "- calculate digest:\n";
 $o->setKey("123456");
 var_dump(bin2hex($o->calculateDigest("qwertyuiop")));
 var_dump(bin2hex($o->calculateDigest("azerty")));
 
 // check incremental hash
-echo "\n";
+echo "- incremental hash:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check that a restart() is not necessary after a call to finalize()
-echo "\n";
+echo "- restart not necessary:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check restart()
-echo "\n";
+echo "- restart:\n";
 $o->update("qwerty");
 $o->restart();
 $o->update("uio");
@@ -87,13 +87,13 @@ $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
 // check verify()
-echo "\n";
+echo "- verify:\n";
 var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34")));
 var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("b27165d2f7de41c23aabe559cad7cc592fb50194")));
 var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b33")));
 
 // hash algorithm with block size = 0
-echo "\n";
+echo "- block size 0:\n";
 class HashUser2 extends HashUser
 {
     public function getBlockSize()
@@ -109,7 +109,7 @@ try {
 }
 
 // hash algorithm with block size < digest size
-echo "\n";
+echo "- block size < digest size:\n";
 class HashUser3 extends HashUser
 {
     public function getBlockSize()
@@ -128,20 +128,20 @@ try {
 --EXPECT--
 string(10) "hmac(user)"
 int(12)
-
+- calculate digest:
 string(24) "363671776572747975696f70"
 string(24) "363636363636617a65727479"
-
+- incremental hash:
 string(24) "363671776572747975696f70"
-
+- restart not necessary:
 string(24) "363671776572747975696f70"
-
+- restart:
 string(24) "363636363636363675696f70"
-
+- verify:
 bool(true)
 bool(false)
 bool(false)
-
+- block size 0:
 Cryptopp\MacHmac can only be used with a block-based hash function (block size > 0)
-
+- block size < digest size:
 Cryptopp\MacHmac: hash block size (2) cannot be lower than digest size (12)

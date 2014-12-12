@@ -16,7 +16,7 @@ var_dump(strlen($gen3));
 var_dump($gen1 != $gen2);
 
 // test errors
-echo "\n";
+echo "- errors:\n";
 try {
     $rbg->generate(0);
 } catch (Cryptopp\CryptoppException $e) {
@@ -30,14 +30,14 @@ try {
 }
 
 // test inheritance
-echo "\n";
+echo "- inheritance:\n";
 class Child extends Cryptopp\RandomByteGenerator{}
 
 $o = new Child();
 var_dump(strlen($o->generate(2)));
 
 // test inheritance - parent constructor not called
-echo "\n";
+echo "- inheritance (parent constructor not called):\n";
 class ChildParentConstructorNotCalled extends Cryptopp\RandomByteGenerator
 {
     public function __construct(){}
@@ -58,10 +58,10 @@ int(5)
 int(5)
 int(8)
 bool(true)
-
+- errors:
 Size must be a positive integer, 0 given
 Size must be a positive integer, -1 given
-
+- inheritance:
 int(2)
-
+- inheritance (parent constructor not called):
 Parent constructor was not called

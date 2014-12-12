@@ -20,7 +20,7 @@ var_dump($padding->canPad());
 var_dump($padding->canUnpad());
 
 // test errors (pad)
-echo "\n";
+echo "- errors (pad):\n";
 try {
     $padding->pad("", 0);
 } catch (Cryptopp\CryptoppException $e) {
@@ -34,7 +34,7 @@ try {
 }
 
 // test errors (unpad)
-echo "\n";
+echo "- errors (unpad):\n";
 try {
     $padding->unpad("", 0);
 } catch (Cryptopp\CryptoppException $e) {
@@ -78,10 +78,10 @@ string(6) "qwerty"
 string(6) "wxcvbn"
 bool(true)
 bool(true)
-
+- errors (pad):
 Cryptopp\PaddingPkcs7 : block size cannot be lower than 1, 0 given
 Cryptopp\PaddingPkcs7 : PKCS #7 padding does not handle block sizes higher than 256
-
+- errors (unpad):
 Cryptopp\PaddingPkcs7 : block size cannot be lower than 1, 0 given
 Cryptopp\PaddingPkcs7 : PKCS #7 padding does not handle block sizes higher than 256
 Cryptopp\PaddingPkcs7 : data length is not a multiple of block size (block size is 4, data size is 3)

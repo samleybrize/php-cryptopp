@@ -16,6 +16,7 @@ try {
 }
 
 // check final methods
+echo "- final methods:\n";
 $reflection = new ReflectionClass("Cryptopp\SymmetricModeAbstract");
 $methods    = $reflection->getMethods(ReflectionMethod::IS_FINAL | ReflectionMethod::IS_PUBLIC);
 
@@ -28,6 +29,7 @@ foreach ($methods as $method) {
 bool(true)
 string(26) "Cryptopp\CryptoppException"
 string(65) "Cryptopp\SymmetricModeAbstract cannot be extended by user classes"
+- final methods:
 string(7) "__sleep"
 string(8) "__wakeup"
 string(7) "getName"
