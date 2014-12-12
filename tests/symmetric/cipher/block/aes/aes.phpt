@@ -56,6 +56,12 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+try {
+    $o->setKey("");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -102,6 +108,7 @@ Cryptopp\BlockCipherAes: data size (17) is not a multiple of block size (16)
 Cryptopp\BlockCipherAes: data size (17) is not a multiple of block size (16)
 - invalid key:
 Cryptopp\BlockCipherAes : 3 is not a valid key length
+Cryptopp\BlockCipherAes : a key is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\BlockCipherAbstract instances
 - inheritance:

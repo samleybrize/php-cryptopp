@@ -62,6 +62,12 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+try {
+    $o->setKey("");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -116,6 +122,7 @@ bool(true)
 string(23) "Cryptopp\MacTwoTrackMac"
 - invalid key:
 Cryptopp\MacTwoTrackMac : 3 is not a valid key length
+Cryptopp\MacTwoTrackMac : a key is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\MacAbstract instances
 - inheritance:
