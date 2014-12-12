@@ -1,18 +1,18 @@
-#ifndef PHP_STREAM_TRANSFORMATION_FILTER_H
-#define PHP_STREAM_TRANSFORMATION_FILTER_H
+#ifndef PHP_SYMMETRIC_TRANSFORMATION_FILTER_H
+#define PHP_SYMMETRIC_TRANSFORMATION_FILTER_H
 
 #include "../php_cryptopp.h"
 #include <filters.h>
 #include <string>
 
-void init_class_StreamTransformationFilter(TSRMLS_D);
+void init_class_SymmetricTransformationFilter(TSRMLS_D);
 
 /* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
-class StreamTransformationFilter : public CryptoPP::FilterWithBufferedInput, public CryptoPP::BlockPaddingSchemeDef, private CryptoPP::FilterPutSpaceHelper
+class SymmetricTransformationFilter : public CryptoPP::FilterWithBufferedInput, public CryptoPP::BlockPaddingSchemeDef, private CryptoPP::FilterPutSpaceHelper
 {
 public:
-    StreamTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed);
-    ~StreamTransformationFilter();
+    SymmetricTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed);
+    ~SymmetricTransformationFilter();
     std::string AlgorithmName() const {return m_cipher.AlgorithmName();}
 
 protected:
@@ -31,8 +31,8 @@ protected:
 /* }}} */
 
 /* {{{ get the pointer to the native stf encryptor object of the php class */
-#define CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(ptrName)    \
-    ptrName = getCryptoppStreamTransformationFilterEncryptorPtr(getThis() TSRMLS_CC); \
+#define CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(ptrName)    \
+    ptrName = getCryptoppSymmetricTransformationFilterEncryptorPtr(getThis() TSRMLS_CC); \
                                                                             \
     if (NULL == ptrName) {                                                  \
         RETURN_FALSE;                                                       \
@@ -40,8 +40,8 @@ protected:
 /* }}} */
 
 /* {{{ get the pointer to the native stf decryptor object of the php class */
-#define CRYPTOPP_STREAM_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(ptrName)    \
-    ptrName = getCryptoppStreamTransformationFilterDecryptorPtr(getThis() TSRMLS_CC); \
+#define CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(ptrName)    \
+    ptrName = getCryptoppSymmetricTransformationFilterDecryptorPtr(getThis() TSRMLS_CC); \
                                                                             \
     if (NULL == ptrName) {                                                  \
         RETURN_FALSE;                                                       \
@@ -49,27 +49,27 @@ protected:
 /* }}} */
 
 /* {{{ object creation related stuff */
-struct StreamTransformationFilterContainer {
+struct SymmetricTransformationFilterContainer {
     zend_object std;
-    StreamTransformationFilter *stfEncryptor;
-    StreamTransformationFilter *stfDecryptor;
+    SymmetricTransformationFilter *stfEncryptor;
+    SymmetricTransformationFilter *stfDecryptor;
 };
 
-extern zend_object_handlers StreamTransformationFilter_object_handlers;
-void StreamTransformationFilter_free_storage(void *object TSRMLS_DC);
-zend_object_value StreamTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC);
+extern zend_object_handlers SymmetricTransformationFilter_object_handlers;
+void SymmetricTransformationFilter_free_storage(void *object TSRMLS_DC);
+zend_object_value SymmetricTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */
-PHP_METHOD(Cryptopp_StreamTransformationFilter, __construct);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, __sleep);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, __wakeup);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, getStreamCipher);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, encryptString);
-PHP_METHOD(Cryptopp_StreamTransformationFilter, decryptString);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __sleep);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __wakeup);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, decryptString);
 /* }}} */
 
-#endif /* PHP_STREAM_TRANSFORMATION_FILTER_H */
+#endif /* PHP_SYMMETRIC_TRANSFORMATION_FILTER_H */
 
 /*
  * Local variables:
