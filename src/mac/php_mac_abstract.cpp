@@ -105,8 +105,7 @@ static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac, i
 static bool isKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac) {
     zend_class_entry *ce;
     zval *key;
-    ce          = zend_get_class_entry(object TSRMLS_CC);
-    key         = zend_read_property(ce, object, "key", 3, 1 TSRMLS_CC);
+    key         = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
     return isKeyValid(object, mac, keySize);
