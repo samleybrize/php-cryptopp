@@ -49,7 +49,15 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// TODO encrypt without key
+// encrypt without key
+echo "- no key:\n";
+$o = new Cryptopp\SymmetricModeEcb(new Cryptopp\BlockCipherAes());
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // sleep
 echo "- sleep:\n";
@@ -98,6 +106,8 @@ string(64) "3ad77bb40d7a3660a89ecaf32466ef97f5d3d58503b9699de785895a96fdbaaf"
 string(64) "43b1cd7f598ece23881b00e3ed0306887b0c785e27e8ad3f8223207104725dd4"
 - invalid key:
 Cryptopp\SymmetricModeEcb : 33 is not a valid key length
+Cryptopp\SymmetricModeEcb : a key is required
+- no key:
 Cryptopp\SymmetricModeEcb : a key is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\SymmetricModeAbstract instances

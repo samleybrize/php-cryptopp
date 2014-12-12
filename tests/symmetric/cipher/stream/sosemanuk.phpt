@@ -49,7 +49,15 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// TODO encrypt without key
+// encrypt without key
+echo "- no key:\n";
+$o = new Cryptopp\StreamCipherSosemanuk();
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // invalid iv
 echo "- invalid iv:\n";
@@ -106,6 +114,8 @@ string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "fe81d2162c9a100d04895c454a77515b"
 - invalid key:
 Cryptopp\StreamCipherSosemanuk : 33 is not a valid key length
+Cryptopp\StreamCipherSosemanuk : a key is required
+- no key:
 Cryptopp\StreamCipherSosemanuk : a key is required
 - invalid iv:
 Cryptopp\StreamCipherSosemanuk : 3 is not a valid initialization vector length

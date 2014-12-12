@@ -68,12 +68,21 @@ var_dump(Cryptopp\Mac::getClassname("hmac"));
 echo "- empty key:\n";
 try {
     $o->setKey("");
-    echo "key ok\n";
+    echo "empty key ok\n";
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
 
-// TODO encrypt without key
+// encrypt without key
+echo "- no key:\n";
+$o = new Cryptopp\MacHmac(new Cryptopp\HashSha1());
+
+try {
+    $o->calculateDigest("123456");
+    echo "no key ok\n";
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // sleep
 echo "- sleep:\n";
@@ -132,7 +141,9 @@ string(32) "9294727a3638bb1c13f48ef8158bfc9d"
 bool(true)
 string(16) "Cryptopp\MacHmac"
 - empty key:
-key ok
+empty key ok
+- no key:
+no key ok
 - sleep:
 You cannot serialize or unserialize Cryptopp\MacAbstract instances
 - inheritance:

@@ -97,7 +97,15 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// TODO encrypt without key
+// encrypt without key
+echo "- no key:\n";
+$o = new Cryptopp\SymmetricModeEcb(new BlockCipherUser());
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // block size = 0
 echo "- block size 0:\n";
@@ -132,6 +140,8 @@ string(12) "402ee2bec16b"
 string(12) "5ca3461cc830"
 - invalid key:
 Cryptopp\SymmetricModeEcb : 33 is not a valid key length
+Cryptopp\SymmetricModeEcb : a key is required
+- no key:
 Cryptopp\SymmetricModeEcb : a key is required
 - block size 0:
 Cryptopp\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0
