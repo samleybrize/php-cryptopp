@@ -46,9 +46,10 @@ zend_object_value StreamCipherAbstract_create_handler(zend_class_entry *type TSR
 PHP_METHOD(Cryptopp_StreamCipherAbstract, __sleep);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, __wakeup);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getName);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv);
-PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart);

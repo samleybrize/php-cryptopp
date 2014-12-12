@@ -6,6 +6,17 @@
 /* {{{ php symmetric cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getName, 0)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getBlockSize, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_isValidKeyLength, 0)
+    ZEND_ARG_INFO(0, keyLength)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_setKey, 0)
+    ZEND_ARG_INFO(0, key)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* inits the SymmetricCipherInterface php interface */

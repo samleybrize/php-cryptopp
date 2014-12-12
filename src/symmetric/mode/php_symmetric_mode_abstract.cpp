@@ -1,5 +1,6 @@
 #include "../../php_cryptopp.h"
 #include "../../exception/php_exception.h"
+#include "../cipher/php_symmetric_cipher_interface.h"
 #include "../cipher/php_symmetric_transformation_interface.h"
 #include "../cipher/block/block_cipher_proxy.h"
 #include "../cipher/block/php_block_cipher_abstract.h"
@@ -48,9 +49,10 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, __sleep, arginfo_SymmetricModeAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, __wakeup, arginfo_SymmetricModeAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -285,6 +287,35 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName) {
 }
 /* }}} */
 
+/* {{{ proto int SymmetricModeAbstract::getBlockSize()
+   Returns the block size */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    RETURN_LONG(encryptor->MandatoryBlockSize())
+}
+/* }}} */
+
+/* {{{ proto bool SymmetricModeAbstract::isValidKeyLength()
+   Indicates if a key length is valid */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength) {
+    int keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    if (encryptor->IsValidKeyLength(keySize)) {
+        RETURN_TRUE
+    } else {
+        RETURN_FALSE
+    }
+}
+/* }}} */
+
 /* {{{ proto void SymmetricModeAbstract::setKey(string key)
    Sets the key */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
@@ -336,15 +367,6 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
-}
-/* }}} */
-
-/* {{{ proto int SymmetricModeAbstract::getBlockSize()
-   Returns the block size */
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
 

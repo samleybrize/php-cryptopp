@@ -13,7 +13,7 @@ var_dump($o->getName());
 // check algorithm infos
 $o = new Cryptopp\BlockCipherAes();
 var_dump($o->getName());
-var_dump($o->getBlockSize());;
+var_dump($o->getBlockSize());
 
 // encrypt block > block size
 $o->setKey("1234567890123456");

@@ -4,15 +4,8 @@
 #include "../../php_cryptopp.h"
 
 /* {{{ php symmetric transformation classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_setKey, 0)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_setIv, 0)
     ZEND_ARG_INFO(0, iv)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_getBlockSize, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_encrypt, 0)

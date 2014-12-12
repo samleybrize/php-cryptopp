@@ -4,17 +4,6 @@
 #include "../../../php_cryptopp.h"
 
 /* {{{ php block cipher classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_getBlockSize, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_isValidKeyLength, 0)
-    ZEND_ARG_INFO(0, keyLength)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_setKey, 0)
-    ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_encryptBlock, 0)
     ZEND_ARG_INFO(0, block)
 ZEND_END_ARG_INFO()

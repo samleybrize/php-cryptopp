@@ -47,9 +47,10 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, __sleep, arginfo_StreamCipherAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, __wakeup, arginfo_StreamCipherAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricTransformationInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_SymmetricTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -235,6 +236,35 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getName) {
 }
 /* }}} */
 
+/* {{{ proto int StreamCipherAbstract::getBlockSize()
+   Returns the block size */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    RETURN_LONG(encryptor->MandatoryBlockSize())
+}
+/* }}} */
+
+/* {{{ proto bool StreamCipherAbstract::isValidKeyLength()
+   Indicates if a key length is valid */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
+    int keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    if (encryptor->IsValidKeyLength(keySize)) {
+        RETURN_TRUE
+    } else {
+        RETURN_FALSE
+    }
+}
+/* }}} */
+
 /* {{{ proto void StreamCipherAbstract::setKey(string key)
    Sets the key */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey) {
@@ -286,15 +316,6 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
-}
-/* }}} */
-
-/* {{{ proto int StreamCipherAbstract::getBlockSize()
-   Returns the block size */
-PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
 

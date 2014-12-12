@@ -46,9 +46,10 @@ zend_object_value SymmetricModeAbstract_create_handler(zend_class_entry *type TS
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, __sleep);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, __wakeup);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName);
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize);
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv);
-PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, encrypt);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt);
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart);
