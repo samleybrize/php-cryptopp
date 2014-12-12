@@ -65,6 +65,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct);
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __sleep);
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __wakeup);
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher);
+PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getPadding);
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString);
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, decryptString);
 /* }}} */

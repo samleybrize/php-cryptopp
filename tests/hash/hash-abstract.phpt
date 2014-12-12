@@ -18,9 +18,13 @@ try {
 // check final methods
 echo "- final methods:\n";
 $reflection = new ReflectionClass("Cryptopp\HashAbstract");
-$methods    = $reflection->getMethods(ReflectionMethod::IS_FINAL | ReflectionMethod::IS_PUBLIC);
+$methods    = $reflection->getMethods();
 
 foreach ($methods as $method) {
+    if (!$method->isFinal()) {
+        continue;
+    }
+
     var_dump($method->getName());
 }
 
