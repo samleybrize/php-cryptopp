@@ -64,7 +64,7 @@ echo "- Cryptopp\Mac:\n";
 var_dump(in_array("hmac", Cryptopp\Mac::getAlgos()));
 var_dump(Cryptopp\Mac::getClassname("hmac"));
 
-// invalid key
+// empty key
 echo "- empty key:\n";
 try {
     $o->setKey("");
@@ -72,6 +72,8 @@ try {
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
+
+// TODO encrypt without key
 
 // sleep
 echo "- sleep:\n";

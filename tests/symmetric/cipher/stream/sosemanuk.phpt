@@ -31,9 +31,9 @@ var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 // restart
 echo "- restart:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 
 // invalid key
 echo "- invalid key:\n";
@@ -48,6 +48,8 @@ try {
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
+
+// TODO encrypt without key
 
 // invalid iv
 echo "- invalid iv:\n";

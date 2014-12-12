@@ -119,12 +119,22 @@ CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr T
 
 /* {{{ set the pointer to the native encryptor object of a php mode class */
 void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *encryptorPtr TSRMLS_DC) {
+    if (encryptorPtr->MandatoryBlockSize() < 1) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0");
+        return;
+    }
+
     static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor = encryptorPtr;
 }
 /* }}} */
 
 /* {{{ set the pointer to the native decryptor object of a php mode class */
 void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *decryptorPtr TSRMLS_DC) {
+    if (decryptorPtr->MandatoryBlockSize() < 1) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0");
+        return;
+    }
+
     static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor = decryptorPtr;
 }
 /* }}} */

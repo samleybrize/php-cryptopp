@@ -62,6 +62,8 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// TODO encrypt without key
+
 // sleep
 echo "- sleep:\n";
 try {
