@@ -11,11 +11,6 @@ if (!class_exists("Cryptopp\HashSha3_224")) {
 
 var_dump(is_a("Cryptopp\HashSha3_224", "Cryptopp\HashAbstract", true));
 
-// check that the class can be extended
-class HashChild extends Cryptopp\HashSha3_224{}
-$o = new HashChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\HashSha3_224();
 var_dump($o->getName());
@@ -87,7 +82,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(8) "sha3_224"
 string(8) "sha3_224"
 int(0)
 int(28)

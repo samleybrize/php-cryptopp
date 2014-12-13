@@ -5,11 +5,6 @@ MAC algorithm: Two-Track-Mac
 
 var_dump(is_a("Cryptopp\MacTwoTrackMac", "Cryptopp\MacAbstract", true));
 
-// check that the class can be extended
-class MacChild extends Cryptopp\MacTwoTrackMac{}
-$o = new MacChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\MacTwoTrackMac();
 var_dump($o->getName());
@@ -111,7 +106,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(13) "two_track_mac"
 string(13) "two_track_mac"
 int(20)
 - digest calculation:

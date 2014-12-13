@@ -3,9 +3,7 @@ Symmetric transformation filter
 --FILE--
 <?php
 
-// check that the class can be extended
-class FilterChild extends Cryptopp\SymmetricTransformationFilter{}
-$o = new FilterChild(new Cryptopp\SymmetricModeEcb(new Cryptopp\BlockCipherAes()));
+$o = new Cryptopp\SymmetricTransformationFilter(new Cryptopp\StreamCipherSosemanuk());
 var_dump($o->getCipher()->getName());
 
 // check default padding
@@ -96,7 +94,7 @@ try {
 
 ?>
 --EXPECT--
-string(8) "ecb(aes)"
+string(9) "sosemanuk"
 string(21) "Cryptopp\PaddingPkcs7"
 - final methods:
 string(7) "__sleep"

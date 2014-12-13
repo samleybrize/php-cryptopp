@@ -5,11 +5,6 @@ Hash algorithm: MD5
 
 var_dump(is_a("Cryptopp\HashMd5", "Cryptopp\HashAbstract", true));
 
-// check that the class can be extended
-class HashChild extends Cryptopp\HashMd5{}
-$o = new HashChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\HashMd5();
 var_dump($o->getName());
@@ -81,7 +76,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(3) "md5"
 string(3) "md5"
 int(64)
 int(16)

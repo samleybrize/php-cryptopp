@@ -5,11 +5,6 @@ Cipher mode: ECB
 
 var_dump(is_a("Cryptopp\SymmetricModeEcb", "Cryptopp\SymmetricModeAbstract", true));
 
-// check that the class can be extended
-class CipherChild extends Cryptopp\SymmetricModeEcb{}
-$o = new CipherChild(new Cryptopp\BlockCipherAes());
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\SymmetricModeEcb(new Cryptopp\BlockCipherAes());
 var_dump($o->getName());
@@ -92,7 +87,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(8) "ecb(aes)"
 string(8) "ecb(aes)"
 int(16)
 - encrypt:

@@ -5,11 +5,6 @@ Hash algorithm: SHA1
 
 var_dump(is_a("Cryptopp\HashSha1", "Cryptopp\HashAbstract", true));
 
-// check that the class can be extended
-class HashChild extends Cryptopp\HashSha1{}
-$o = new HashChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\HashSha1();
 var_dump($o->getName());
@@ -81,7 +76,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(4) "sha1"
 string(4) "sha1"
 int(64)
 int(20)

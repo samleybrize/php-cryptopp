@@ -5,11 +5,6 @@ Stream cipher: Sosemanuk
 
 var_dump(is_a("Cryptopp\StreamCipherSosemanuk", "Cryptopp\StreamCipherAbstract", true));
 
-// check that the class can be extended
-class CipherChild extends Cryptopp\StreamCipherSosemanuk{}
-$o = new CipherChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\StreamCipherSosemanuk();
 var_dump($o->getName());
@@ -100,7 +95,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(9) "sosemanuk"
 string(9) "sosemanuk"
 int(1)
 - encrypt:

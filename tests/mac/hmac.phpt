@@ -5,11 +5,6 @@ MAC algorithm: HMAC
 
 var_dump(is_a("Cryptopp\MacHmac", "Cryptopp\MacAbstract", true));
 
-// check that the class can be extended
-class MacChild extends Cryptopp\MacHmac{}
-$o = new MacChild(new Cryptopp\HashSha1());
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\MacHmac(new Cryptopp\HashMd5());
 var_dump($o->getName());
@@ -117,7 +112,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(10) "hmac(sha1)"
 string(9) "hmac(md5)"
 int(16)
 string(10) "hmac(sha1)"

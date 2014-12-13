@@ -5,11 +5,6 @@ Block cipher: AES
 
 var_dump(is_a("Cryptopp\BlockCipherAes", "Cryptopp\BlockCipherAbstract", true));
 
-// check that the class can be extended
-class CipherChild extends Cryptopp\BlockCipherAes{}
-$o = new CipherChild();
-var_dump($o->getName());
-
 // check algorithm infos
 $o = new Cryptopp\BlockCipherAes();
 var_dump($o->getName());
@@ -105,7 +100,6 @@ try {
 ?>
 --EXPECT--
 bool(true)
-string(3) "aes"
 string(3) "aes"
 int(16)
 - encrypt block != block size:
