@@ -101,6 +101,14 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         zval_dtor(zOutput);
         throw false;
+    } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
+        // bad returned digest size
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(m_hashObject TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+
+        zval_dtor(zOutput);
+        throw false;
     }
 
     int length = std::min(static_cast<int>(digestSize), Z_STRLEN_P(zOutput));
@@ -117,6 +125,15 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
     call_user_function(NULL, &m_hashObject, m_funcnameCalculateDigest, zOutput, 1, &zInput TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
+        zval_dtor(zInput);
+        zval_dtor(zOutput);
+        throw false;
+    } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
+        // bad returned digest size
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(m_hashObject TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+
         zval_dtor(zInput);
         zval_dtor(zOutput);
         throw false;

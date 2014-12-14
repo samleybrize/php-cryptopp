@@ -124,6 +124,24 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// TODO
+echo "- bad digest size:\n";
+class HashUser4 extends HashUser
+{
+    public function calculateDigest($data)
+    {
+        $data = parent::calculateDigest($data);
+        return $data . "1";
+    }
+}
+
+try {
+    $o = new Cryptopp\MacHmac(new HashUser4());
+    $o->calculateDigest("qwertyuiop");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 ?>
 --EXPECT--
 string(10) "hmac(user)"
@@ -145,3 +163,5 @@ bool(false)
 Cryptopp\MacHmac can only be used with a block-based hash function (block size > 0)
 - block size < digest size:
 Cryptopp\MacHmac: hash block size (2) cannot be lower than digest size (12)
+- bad digest size:
+HashUser4 : digest size is 12 bytes, returned 13 bytes

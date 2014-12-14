@@ -210,7 +210,12 @@ PHP_METHOD(Cryptopp_MacAbstract, calculateDigest) {
     }
 
     byte digest[mac->DigestSize()];
-    mac->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
+
+    try {
+        mac->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
+    } catch (bool e) {
+        RETURN_FALSE;
+    }
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), mac->DigestSize(), 1);
 }
@@ -248,7 +253,12 @@ PHP_METHOD(Cryptopp_MacAbstract, finalize) {
     }
 
     byte digest[mac->DigestSize()];
-    mac->Final(digest);
+
+    try {
+        mac->Final(digest);
+    } catch (bool e) {
+        RETURN_FALSE;
+    }
 
     RETVAL_STRINGL(reinterpret_cast<char*>(digest), mac->DigestSize(), 1);
 }
