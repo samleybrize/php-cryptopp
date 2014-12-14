@@ -63,6 +63,9 @@ ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
+/* verify that a key size is valid for a BlockCipherAbstract instance */
+bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher);
+
 #endif /* PHP_BLOCK_CIPHER_ABSTRACT_H */
 
 /*
