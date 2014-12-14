@@ -37,6 +37,17 @@ var_dump($o->decryptString(hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
 var_dump($o->decryptString(hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
 var_dump($o->decryptString(hex2bin("da7885b5ad196250c037599a7bf9d62a")));
 
+// stream cipher
+echo "- stream cipher:\n";
+$c = new Cryptopp\StreamCipherSosemanuk();
+$o = new Cryptopp\SymmetricTransformationFilter($c, new Cryptopp\PaddingPkcs7());
+$c->setKey("1234567890123456");
+$c->setIv("0987654321987654");
+var_dump(bin2hex($o->encryptString("azertyuiop")));
+var_dump(bin2hex($o->encryptString("azertyuiop")));
+var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
+var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -111,6 +122,11 @@ string(32) "da7885b5ad196250c037599a7bf9d62a"
 string(10) "azertyuiop"
 string(10) "azertyuiop"
 string(11) "wxcvbnqsdfg"
+- stream cipher:
+string(20) "76312c85afc0bbdf7821"
+string(20) "76312c85afc0bbdf7821"
+string(10) "azertyuiop"
+string(10) "azertyuiop"
 - sleep:
 You cannot serialize or unserialize Cryptopp\SymmetricTransformationFilter instances
 - mode object (parent constructor not called):
