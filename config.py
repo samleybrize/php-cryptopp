@@ -32,6 +32,7 @@ configFileList = []
 configFileList.append("src/exception/config/exception.py")
 
 configFileList.append("src/hash/config/hash.py")
+configFileList.append("src/hash/config/hash_transformation_interface.py")
 configFileList.append("src/hash/config/hash_interface.py")
 configFileList.append("src/hash/config/hash_abstract.py")
 configFileList.append("src/hash/config/hash_md5.py")

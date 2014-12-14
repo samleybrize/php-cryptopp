@@ -4,27 +4,7 @@
 #include "../php_cryptopp.h"
 
 /* {{{ php hash classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getName, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getDigestSize, 0)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_getBlockSize, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_calculateDigest, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_update, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_finalize, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_HashInterface_restart, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 

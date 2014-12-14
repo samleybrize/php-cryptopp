@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../hash/php_hash_transformation_interface.h"
 #include "php_mac.h"
 #include "php_mac_interface.h"
 #include "php_mac_abstract.h"
@@ -43,13 +44,13 @@ zend_class_entry *cryptopp_ce_MacAbstract;
 static zend_function_entry cryptopp_methods_MacAbstract[] = {
     PHP_ME(Cryptopp_MacAbstract, __sleep, arginfo_MacAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, __wakeup, arginfo_MacAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, getName, arginfo_MacInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, getDigestSize, arginfo_MacInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, getName, arginfo_HashTransformationInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, getDigestSize, arginfo_HashTransformationInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, calculateDigest, arginfo_MacInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, update, arginfo_MacInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, finalize, arginfo_MacInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, restart, arginfo_MacInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, calculateDigest, arginfo_HashTransformationInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, finalize, arginfo_HashTransformationInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, restart, arginfo_HashTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };

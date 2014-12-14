@@ -1,6 +1,7 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
 #include "php_hash.h"
+#include "php_hash_transformation_interface.h"
 #include "php_hash_interface.h"
 #include "php_hash_abstract.h"
 #include <zend_exceptions.h>
@@ -43,13 +44,13 @@ zend_class_entry *cryptopp_ce_HashAbstract;
 static zend_function_entry cryptopp_methods_HashAbstract[] = {
     PHP_ME(Cryptopp_HashAbstract, __sleep, arginfo_HashAbstract___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, __wakeup, arginfo_HashAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, getName, arginfo_HashInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, getDigestSize, arginfo_HashInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, getName, arginfo_HashTransformationInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, getDigestSize, arginfo_HashTransformationInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_HashAbstract, getBlockSize, arginfo_HashInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, calculateDigest, arginfo_HashInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, update, arginfo_HashInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, finalize, arginfo_HashInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_HashAbstract, restart, arginfo_HashInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, calculateDigest, arginfo_HashTransformationInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, finalize, arginfo_HashTransformationInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_HashAbstract, restart, arginfo_HashTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 

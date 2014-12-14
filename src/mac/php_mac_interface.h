@@ -4,28 +4,8 @@
 #include "../php_cryptopp.h"
 
 /* {{{ php Mac classes methods arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_getName, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_getDigestSize, 0)
-ZEND_END_ARG_INFO()
-
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_setKey, 0)
     ZEND_ARG_INFO(0, key)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_calculateDigest, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_update, 0)
-    ZEND_ARG_INFO(0, data)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_finalize, 0)
-ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_restart, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_verify, 0)

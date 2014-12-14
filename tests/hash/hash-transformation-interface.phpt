@@ -1,9 +1,9 @@
 --TEST--
-Mac interface
+Hash transformation interface
 --FILE--
 <?php
 
-class MacInterfaceChild implements Cryptopp\MacInterface
+class HashTransformationInterfaceChild implements Cryptopp\HashTransformationInterface
 {
     public function getName()
     {
@@ -13,11 +13,6 @@ class MacInterfaceChild implements Cryptopp\MacInterface
     public function getDigestSize()
     {
         return 12;
-    }
-
-    public function setKey($key)
-    {
-        return $key;
     }
 
     public function calculateDigest($data)
@@ -39,33 +34,21 @@ class MacInterfaceChild implements Cryptopp\MacInterface
     {
         return "restarted";
     }
-
-    public function verify($a, $b)
-    {
-        return true;
-    }
 }
 
-$o = new MacInterfaceChild();
+$o = new HashTransformationInterfaceChild();
 var_dump($o->getName());
 var_dump($o->getDigestSize());
-var_dump($o->setKey("keyyy"));
 var_dump($o->calculateDigest("a"));
 var_dump($o->update("b"));
 var_dump($o->finalize());
 var_dump($o->restart());
-var_dump($o->verify("e", "rt"));
-
-var_dump(is_a("Cryptopp\MacInterface", "Cryptopp\HashTransformationInterface", true));
 
 ?>
 --EXPECT--
 string(4) "test"
 int(12)
-string(5) "keyyy"
 string(6) "d!gest"
 string(7) "updated"
 string(9) "finalized"
 string(9) "restarted"
-bool(true)
-bool(true)

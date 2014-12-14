@@ -50,6 +50,8 @@ var_dump($o->update("b"));
 var_dump($o->finalize());
 var_dump($o->restart());
 
+var_dump(is_a("Cryptopp\HashInterface", "Cryptopp\HashTransformationInterface", true));
+
 ?>
 --EXPECT--
 string(4) "test"
@@ -59,3 +61,4 @@ string(6) "d!gest"
 string(7) "updated"
 string(9) "finalized"
 string(9) "restarted"
+bool(true)
