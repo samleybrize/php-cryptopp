@@ -1,7 +1,7 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
 #include "hash_proxy.h"
-#include "php_hash_interface.h"
+#include "php_hash_transformation_interface.h"
 #include <zend_exceptions.h>
 #include <exception>
 #include <algorithm>
@@ -10,8 +10,8 @@ HashProxy::HashProxy(zval *hashObject)
 {
     // verify that hashObject is an instance of HashInterface
     if (IS_OBJECT != Z_TYPE_P(hashObject) ||
-            !instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashInterface)) {
-        throw "HashProxy expect a zval that holds an instance of Cryptopp\\HashInterface";
+            !instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashTransformationInterface)) {
+        throw "HashProxy expect a zval that holds an instance of Cryptopp\\HashTransformationInterface";
     }
 
     // retrieve block size once

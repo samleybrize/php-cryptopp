@@ -74,6 +74,7 @@ configFileList.append("src/padding/config/padding_no_padding.py")
 configFileList.append("src/padding/config/padding_pkcs7.py")
 
 configFileList.append("src/filter/config/symmetric_transformation_filter.py")
+configFileList.append("src/filter/config/hash_transformation_filter.py")
 
 # process all config scripts
 phpMinitStatements  = []

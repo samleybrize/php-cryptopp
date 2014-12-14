@@ -35,6 +35,7 @@ PHP_METHOD(Cryptopp_MacAbstract, __sleep);
 PHP_METHOD(Cryptopp_MacAbstract, __wakeup);
 PHP_METHOD(Cryptopp_MacAbstract, getName);
 PHP_METHOD(Cryptopp_MacAbstract, getDigestSize);
+PHP_METHOD(Cryptopp_MacAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_MacAbstract, setKey);
 PHP_METHOD(Cryptopp_MacAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_MacAbstract, update);
@@ -50,6 +51,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_MacAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
+
+/* verify that a key size is valid for a MacAbstract instance */
+bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac);
 
 #endif /* PHP_MAC_ABSTRACT_H */
 

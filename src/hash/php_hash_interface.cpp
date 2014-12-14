@@ -6,7 +6,6 @@
 zend_class_entry *cryptopp_ce_HashInterface;
 
 static zend_function_entry cryptopp_methods_HashInterface[] = {
-    PHP_ABSTRACT_ME(Cryptopp_HashInterface, getBlockSize, arginfo_HashInterface_getBlockSize)
     PHP_FE_END
 };
 

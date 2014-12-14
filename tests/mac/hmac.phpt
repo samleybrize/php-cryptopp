@@ -9,10 +9,12 @@ var_dump(is_a("Cryptopp\MacHmac", "Cryptopp\MacAbstract", true));
 $o = new Cryptopp\MacHmac(new Cryptopp\HashMd5());
 var_dump($o->getName());
 var_dump($o->getDigestSize());
+var_dump($o->getBlockSize());
 
 $o = new Cryptopp\MacHmac(new Cryptopp\HashSha1());
 var_dump($o->getName());
 var_dump($o->getDigestSize());
+var_dump($o->getBlockSize());
 
 // check digest calculation
 echo "- digest calculation (sha1):\n";
@@ -114,8 +116,10 @@ try {
 bool(true)
 string(9) "hmac(md5)"
 int(16)
+int(0)
 string(10) "hmac(sha1)"
 int(20)
+int(0)
 - digest calculation (sha1):
 string(40) "b7b39196ab5f9c0cf7863b8e0a0bda37aea2c93e"
 string(40) "286d11632a144649124bf912f2826ee80887206f"

@@ -9,6 +9,7 @@ var_dump(is_a("Cryptopp\MacTwoTrackMac", "Cryptopp\MacAbstract", true));
 $o = new Cryptopp\MacTwoTrackMac();
 var_dump($o->getName());
 var_dump($o->getDigestSize());
+var_dump($o->getBlockSize());
 
 // check digest calculation
 echo "- digest calculation:\n";
@@ -108,6 +109,7 @@ try {
 bool(true)
 string(13) "two_track_mac"
 int(20)
+int(64)
 - digest calculation:
 string(40) "e64c1b6d1e1b062b57bafabe75816a121c2f7b34"
 string(40) "b27165d2f7de41c23aabe559cad7cc592fb50194"

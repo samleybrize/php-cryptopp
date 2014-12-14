@@ -57,6 +57,7 @@ class HashUser implements Cryptopp\HashInterface
 $o = new Cryptopp\MacHmac(new HashUser());
 var_dump($o->getName());
 var_dump($o->getDigestSize());
+var_dump($o->getBlockSize());
 
 // check digest calculation
 echo "- calculate digest:\n";
@@ -146,6 +147,7 @@ try {
 --EXPECT--
 string(10) "hmac(user)"
 int(12)
+int(0)
 - calculate digest:
 string(24) "363671776572747975696f70"
 string(24) "363636363636617a65727479"

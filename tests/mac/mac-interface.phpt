@@ -15,6 +15,11 @@ class MacInterfaceChild implements Cryptopp\MacInterface
         return 12;
     }
 
+    public function getBlockSize()
+    {
+        return 5;
+    }
+
     public function setKey($key)
     {
         return $key;
@@ -49,6 +54,7 @@ class MacInterfaceChild implements Cryptopp\MacInterface
 $o = new MacInterfaceChild();
 var_dump($o->getName());
 var_dump($o->getDigestSize());
+var_dump($o->getBlockSize());
 var_dump($o->setKey("keyyy"));
 var_dump($o->calculateDigest("a"));
 var_dump($o->update("b"));
@@ -62,6 +68,7 @@ var_dump(is_a("Cryptopp\MacInterface", "Cryptopp\HashTransformationInterface", t
 --EXPECT--
 string(4) "test"
 int(12)
+int(5)
 string(5) "keyyy"
 string(6) "d!gest"
 string(7) "updated"

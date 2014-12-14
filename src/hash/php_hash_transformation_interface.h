@@ -10,6 +10,9 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_HashTransformationInterface_getDigestSize, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_HashTransformationInterface_getBlockSize, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_HashTransformationInterface_calculateDigest, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
