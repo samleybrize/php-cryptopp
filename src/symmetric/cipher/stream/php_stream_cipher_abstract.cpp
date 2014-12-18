@@ -180,7 +180,7 @@ bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *ciph
 }
 /* }}} */
 
-/* {{{ sets the key and the iv (if applicable) of the native mode objects of a mode php object */
+/* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor) {
     // get key and iv of the php object
     zval *zKey;
@@ -190,7 +190,7 @@ static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, Cry
     int keySize = Z_STRLEN_P(zKey);
     int ivSize  = Z_STRLEN_P(zIv);
 
-    // set the key and the iv (if applicable) of native mode objects
+    // set the key and the iv (if applicable) of native cipher objects
     if (keySize > 0 && !encryptor->IsResynchronizable()) {
         // an iv is not required
         // set key

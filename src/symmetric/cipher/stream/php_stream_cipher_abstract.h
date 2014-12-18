@@ -64,10 +64,10 @@ ZEND_END_ARG_INFO()
 /* }}} */
 
 /* verify that a key size is valid for a StreamCipherAbstract instance */
-bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *mode);
+bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher);
 
 /* verify that an iv size is valid for a StreamCipherAbstract instance */
-bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *mode);
+bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher);
 
 #endif /* PHP_STREAM_CIPHER_ABSTRACT_H */
 

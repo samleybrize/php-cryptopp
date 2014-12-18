@@ -40,6 +40,12 @@ configFileList.append("src/hash/config/hash_sha1.py")
 configFileList.append("src/hash/config/hash_sha3.py")
 configFileList.append("src/hash/config/hash_proxy.py")
 
+configFileList.append("src/mac/config/mac.py")
+configFileList.append("src/mac/config/mac_interface.py")
+configFileList.append("src/mac/config/mac_abstract.py")
+configFileList.append("src/mac/config/mac_hmac.py")
+configFileList.append("src/mac/config/mac_ttmac.py")
+
 configFileList.append("src/prng/config/rbg_interface.py")
 configFileList.append("src/prng/config/rbg.py")
 
@@ -58,16 +64,14 @@ configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_interfac
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_sosemanuk.py")
 
+configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher.py")
+configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_interface.py")
+configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_abstract.py")
+
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_abstract.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
-
-configFileList.append("src/mac/config/mac.py")
-configFileList.append("src/mac/config/mac_interface.py")
-configFileList.append("src/mac/config/mac_abstract.py")
-configFileList.append("src/mac/config/mac_hmac.py")
-configFileList.append("src/mac/config/mac_ttmac.py")
 
 configFileList.append("src/padding/config/padding_interface.py")
 configFileList.append("src/padding/config/padding_no_padding.py")

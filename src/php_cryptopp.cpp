@@ -4,6 +4,7 @@
 #include "php_cryptopp.h"
 #include "hash/php_hash.h"
 #include "mac/php_mac.h"
+#include "symmetric/cipher/authenticated/php_authenticated_symmetric_cipher.h"
 #include "symmetric/cipher/block/php_block_cipher.h"
 #include "symmetric/cipher/stream/php_stream_cipher.h"
 #include "symmetric/mode/php_symmetric_mode.h"
@@ -64,6 +65,15 @@ static PHP_MINFO_FUNCTION(cryptopp) {
         supportedBlockCipherList.append(" ");
     }
 
+    /* supported authenticated ciphers */
+    vector<string> authenticatedCipherAlgoList = getAuthenticatedSymmetricCipherAlgoList();
+    string supportedAuthenticatedCipherList;
+
+    for (vector<string>::iterator it = authenticatedCipherAlgoList.begin(); it != authenticatedCipherAlgoList.end(); ++it) {
+        supportedAuthenticatedCipherList.append(it->c_str());
+        supportedAuthenticatedCipherList.append(" ");
+    }
+
     /* supported cipher modes */
     vector<string> modeAlgoList = getSymmetricModeList();
     string supportedModeList;
@@ -82,6 +92,7 @@ static PHP_MINFO_FUNCTION(cryptopp) {
     php_info_print_table_row(2, "Supported stream ciphers", supportedStreamCipherList.c_str());
     php_info_print_table_row(2, "Supported block ciphers", supportedBlockCipherList.c_str());
     php_info_print_table_row(2, "Supported cipher modes", supportedModeList.c_str());
+    php_info_print_table_row(2, "Supported authenticated encryption schemes", supportedAuthenticatedCipherList.c_str());
     php_info_print_table_end();
 }
 /* }}} */
