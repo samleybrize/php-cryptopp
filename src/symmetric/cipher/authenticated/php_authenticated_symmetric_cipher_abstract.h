@@ -57,6 +57,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, update);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalize);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, verify);
 /* }}} */
 
 /* {{{ php cipher classes methods arg info */
@@ -65,6 +66,17 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
+/* }}} */
+
+/* {{{ Get needed cipher elements to build an authenticated cipher object */
+bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
+    const char *authenticatedCipherName,
+    zval *cipherObject,
+    zval *authenticatedCipherObject,
+    CryptoPP::BlockCipher **cipherEncryptor,
+    CryptoPP::BlockCipher **cipherDecryptor,
+    std::string **authenticatedCipherFullName
+);
 /* }}} */
 
 /* verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
