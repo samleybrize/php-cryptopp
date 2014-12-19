@@ -70,7 +70,7 @@ bool cryptoppSymmetricModeGetCipherElements(
     zval *modeObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **cipherName
+    std::string **modeFullName
 );
 /* }}} */
 

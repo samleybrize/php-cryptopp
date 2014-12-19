@@ -3,6 +3,7 @@
 #include "../cipher/php_symmetric_cipher_interface.h"
 #include "../cipher/php_symmetric_transformation_interface.h"
 #include "../cipher/block/block_cipher_proxy.h"
+#include "../cipher/block/php_block_cipher_interface.h"
 #include "../cipher/block/php_block_cipher_abstract.h"
 #include "php_symmetric_mode.h"
 #include "php_symmetric_mode_interface.h"
@@ -152,10 +153,16 @@ bool cryptoppSymmetricModeGetCipherElements(
         // retrieve native objects
         *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
         *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
-    } else {
+    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherInterface)) {
         // create a proxy to the user php object
         *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject);
         *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject);
+    } else {
+        // invalid object
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(modeObject TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Internal error: %s : invalid cipher object", ce->name);
+        return false;
     }
 
     // verify that cipher encryptor/decryptor ptr are not null
