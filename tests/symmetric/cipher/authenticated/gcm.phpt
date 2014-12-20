@@ -32,6 +32,7 @@ $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72"))));
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72"))));
+var_dump(bin2hex($o->finalizeEncryption()));
 
 // encrypt data + aad
 echo "- encrypt + aad:\n";
@@ -90,6 +91,7 @@ try {
 echo "- invalid iv:\n";
 try {
     $o->setIv("123");
+    echo "iv size 3 ok\n";
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -101,8 +103,6 @@ try {
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
-
-// TODO invalid cipher block size -> gcm with user class
 
 // test inheritance
 echo "- inheritance:\n";
@@ -143,6 +143,7 @@ string(32) "4d5c2af327cd64a62cf35abd2ba6fab4"
 - restart:
 string(64) "42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e"
 string(64) "42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e"
+string(32) "67383e3899332afdd4d83a204575a052"
 - encrypt + aad:
 string(32) "5bc94fbc3221a5db94fae95ae7121a47"
 - decrypt + aad:
@@ -157,7 +158,7 @@ Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 - no key:
 Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 - invalid iv:
-Cryptopp\AuthenticatedSymmetricCipherGcm : 3 is not a valid initialization vector length
+iv size 3 ok
 - sleep:
 You cannot serialize or unserialize Cryptopp\AuthenticatedSymmetricCipherAbstract instances
 - inheritance:

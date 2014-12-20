@@ -219,7 +219,8 @@ static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
-    if (cipher->IsResynchronizable() && cipher->IVSize() != ivSize) {
+    if (cipher->IsResynchronizable() &&
+            (ivSize < cipher->MinIVLength() || ivSize > cipher->MaxIVLength())) {
         if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
