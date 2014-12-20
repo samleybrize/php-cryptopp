@@ -8,6 +8,7 @@
 #include "symmetric/cipher/block/php_block_cipher.h"
 #include "symmetric/cipher/stream/php_stream_cipher.h"
 #include "symmetric/mode/php_symmetric_mode.h"
+#include "utils/php_hash_equals.h"
 #include <ext/standard/info.h>
 #include <string>
 #include <vector>
@@ -101,7 +102,7 @@ static PHP_MINFO_FUNCTION(cryptopp) {
 zend_module_entry cryptopp_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_CRYPTOPP_EXTNAME,
-    NULL,
+    hash_equals_function,
     PHP_MINIT(cryptopp),
     NULL,
     NULL,
