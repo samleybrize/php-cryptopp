@@ -1,7 +1,5 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
-#include "../../../hash/php_hash_transformation_interface.h"
-#include "../../../mac/php_mac_interface.h"
 #include "../block/php_block_cipher_interface.h"
 #include "../block/php_block_cipher_abstract.h"
 #include "../php_symmetric_cipher_interface.h"
@@ -51,17 +49,17 @@ static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherAbstract
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, __wakeup, arginfo_AuthenticatedSymmetricCipherAbstract___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getDigestSize, arginfo_HashTransformationInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getDigestSize, arginfo_AuthenticatedSymmetricCipherInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, calculateDigest, arginfo_HashTransformationInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalize, arginfo_HashTransformationInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData, arginfo_AuthenticatedSymmetricCipherInterface_addEncryptionAdditionalData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditionalData, arginfo_AuthenticatedSymmetricCipherInterface_addDecryptionAdditionalData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption, arginfo_AuthenticatedSymmetricCipherInterface_finalizeEncryption, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption, arginfo_AuthenticatedSymmetricCipherInterface_finalizeDecryption, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -465,9 +463,10 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt) {
 }
 /* }}} */
 
-/* {{{ proto string AuthenticatedSymmetricCipherAbstract::calculateDigest(string data)
-   Calculate the MAC */
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, calculateDigest) {
+/* {{{ proto void AuthenticatedSymmetricCipherAbstract::addEncryptionAdditionalData(string data)
+   Adds additional data to authenticate to the encryption. Cannot be called after encrypt() has been called at least one time without a restart. */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData) {
+    // TODO check if encrypt() has been called without restart() ?
     char *msg   = NULL;
     int msgSize = 0;
 
@@ -476,38 +475,9 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, calculateDigest) {
     }
 
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(encryptor)
+    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor)) {
-        RETURN_FALSE;
-    }
-
-    byte digest[encryptor->DigestSize()];
-
-    try {
-        encryptor->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
-    } catch (bool e) {
-        RETURN_FALSE;
-    }
-
-    RETVAL_STRINGL(reinterpret_cast<char*>(digest), encryptor->DigestSize(), 1);
-}
-/* }}} */
-
-/* {{{ proto void AuthenticatedSymmetricCipherAbstract::update(string data)
-   Adds data to the current incremental MAC */
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, update) {
-    char *msg   = NULL;
-    int msgSize = 0;
-
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) {
-        return;
-    }
-
-    CryptoPP::AuthenticatedSymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(encryptor)
-
-    if (!isCryptoppMacKeyValid(getThis(), encryptor)) {
         RETURN_FALSE;
     }
 
@@ -515,13 +485,35 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, update) {
 }
 /* }}} */
 
-/* {{{ proto string AuthenticatedSymmetricCipherAbstract::finalize(void)
-   Finalize an incremental MAC and return resulting digest */
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalize) {
-    CryptoPP::AuthenticatedSymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(encryptor)
+/* {{{ proto void AuthenticatedSymmetricCipherAbstract::addDecryptionAdditionalData(string data)
+   Adds additional data to authenticate to the decryption. Cannot be called after decrypt() has been called at least one time without a restart. */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditionalData) {
+    // TODO check if decrypt() has been called without restart() ?
+    char *msg   = NULL;
+    int msgSize = 0;
 
-    if (!isCryptoppMacKeyValid(getThis(), encryptor)) {
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &msg, &msgSize)) {
+        return;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipher *decryptor;
+    decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
+
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor)) {
+        RETURN_FALSE;
+    }
+
+    decryptor->Update(reinterpret_cast<byte*>(msg), msgSize);
+}
+/* }}} */
+
+/* {{{ proto string AuthenticatedSymmetricCipherAbstract::finalizeEncryption(void)
+   Finalize encryption and return the generated MAC tag */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption) {
+    CryptoPP::AuthenticatedSymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor)) {
         RETURN_FALSE;
     }
 
@@ -537,20 +529,36 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalize) {
 }
 /* }}} */
 
+/* {{{ proto string AuthenticatedSymmetricCipherAbstract::finalizeDecryption(void)
+   Finalize decryption and return the generated MAC tag */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
+    CryptoPP::AuthenticatedSymmetricCipher *decryptor;
+    decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
+
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor)) {
+        RETURN_FALSE;
+    }
+
+    byte digest[decryptor->DigestSize()];
+
+    try {
+        decryptor->Final(digest);
+    } catch (bool e) {
+        RETURN_FALSE;
+    }
+
+    RETVAL_STRINGL(reinterpret_cast<char*>(digest), decryptor->DigestSize(), 1);
+}
+/* }}} */
+
 /* {{{ proto void AuthenticatedSymmetricCipherAbstract::restart()
-   Reset the initialization vector to its initial state (the one passed in setIv()) */
+   Reset the initialization vector to its initial state (the one passed in setIv()). Also resets the incremental MAC calculation. */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor);
-}
-/* }}} */
-
-/* TODO todel */
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, verify) {
-
 }
 /* }}} */
 

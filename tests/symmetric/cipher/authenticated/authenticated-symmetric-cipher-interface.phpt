@@ -45,29 +45,29 @@ class AuthenticatedCipherInterfaceChild implements Cryptopp\AuthenticatedSymmetr
         return "decrypted";
     }
 
-    public function calculateDigest($data)
+    public function addEncryptionAdditionalData($data)
     {
-        return "digest";
+        return "encryption aad";
     }
 
-    public function update($data)
+    public function addDecryptionAdditionalData($data)
     {
-        return "updated";
+        return "decryption aad";
     }
 
-    public function finalize()
+    public function finalizeEncryption()
     {
-        return "finalized";
+        return "encryption finalized";
+    }
+
+    public function finalizeDecryption()
+    {
+        return "decryption finalized";
     }
 
     public function restart()
     {
         return "restarted";
-    }
-
-    public function verify($a, $b)
-    {
-        // TODO todel
     }
 }
 
@@ -80,13 +80,13 @@ var_dump($o->setKey("keyyy"));
 var_dump($o->setIv("ivvv"));
 var_dump($o->encrypt("a"));
 var_dump($o->decrypt("b"));
-var_dump($o->calculateDigest("azerty"));
-var_dump($o->update("c"));
-var_dump($o->finalize());
+var_dump($o->addEncryptionAdditionalData("c"));
+var_dump($o->addDecryptionAdditionalData("c"));
+var_dump($o->finalizeEncryption());
+var_dump($o->finalizeDecryption());
 var_dump($o->restart());
 
 var_dump(is_a("Cryptopp\AuthenticatedSymmetricCipherInterface", "Cryptopp\SymmetricTransformationInterface", true));
-var_dump(is_a("Cryptopp\AuthenticatedSymmetricCipherInterface", "Cryptopp\MacInterface", true));
 
 ?>
 --EXPECT--
@@ -98,9 +98,9 @@ string(9) "key-keyyy"
 string(7) "iv-ivvv"
 string(9) "encrypted"
 string(9) "decrypted"
-string(6) "digest"
-string(7) "updated"
-string(9) "finalized"
+string(14) "encryption aad"
+string(14) "decryption aad"
+string(20) "encryption finalized"
+string(20) "decryption finalized"
 string(9) "restarted"
-bool(true)
 bool(true)

@@ -53,11 +53,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, calculateDigest);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, update);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalize);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditionalData);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, verify);
 /* }}} */
 
 /* {{{ php cipher classes methods arg info */

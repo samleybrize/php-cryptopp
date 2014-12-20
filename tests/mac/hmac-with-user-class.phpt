@@ -125,7 +125,7 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// TODO
+// bad digest size returned
 echo "- bad digest size:\n";
 class HashUser4 extends HashUser
 {
