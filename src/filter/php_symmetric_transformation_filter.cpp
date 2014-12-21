@@ -238,7 +238,7 @@ void SymmetricTransformationFilter::NextPutModifiable(byte *inString, size_t len
 /* }}} */
 
 /* {{{ arg info */
-ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationFilter___construct, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_SymmetricTransformationFilter___construct, 0, 0, 1)
     ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\SymmetricTransformationInterface, 0)
     ZEND_ARG_OBJ_INFO(0, padding, Cryptopp\\PaddingInterface, 1)
 ZEND_END_ARG_INFO()
