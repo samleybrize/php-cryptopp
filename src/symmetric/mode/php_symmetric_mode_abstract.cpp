@@ -304,7 +304,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName) {
 }
 /* }}} */
 
-/* {{{ proto int SymmetricModeAbstract::getBlockSize()
+/* {{{ proto int SymmetricModeAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
     CryptoPP::SymmetricCipher *encryptor;
@@ -313,7 +313,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
 }
 /* }}} */
 
-/* {{{ proto bool SymmetricModeAbstract::isValidKeyLength()
+/* {{{ proto bool SymmetricModeAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength) {
     int keySize = 0;
@@ -469,7 +469,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt) {
 }
 /* }}} */
 
-/* {{{ proto void SymmetricModeAbstract::restart()
+/* {{{ proto void SymmetricModeAbstract::restart(void)
    Reset the initialization vector to its initial state (the one passed in setIv()) */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart) {
     CryptoPP::SymmetricCipher *encryptor;

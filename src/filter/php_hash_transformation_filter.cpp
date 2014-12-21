@@ -261,7 +261,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
 }
 /* }}} */
 
-/* {{{ proto Cryptopp\HashTransformationInterface HashTransformationFilter::getHash()
+/* {{{ proto Cryptopp\HashTransformationInterface HashTransformationFilter::getHash(void)
        Returns the hash object */
 PHP_METHOD(Cryptopp_HashTransformationFilter, getHash) {
     zval *hashObject;

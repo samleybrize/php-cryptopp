@@ -240,6 +240,7 @@ void SymmetricTransformationFilter::NextPutModifiable(byte *inString, size_t len
 /* {{{ arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationFilter___construct, 0)
     ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\SymmetricTransformationInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, padding, Cryptopp\\PaddingInterface, 1)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationFilter___wakeup, 0)
@@ -418,7 +419,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __wakeup) {
 }
 /* }}} */
 
-/* {{{ proto SymmetricTransformationFilter::__construct(Cryptopp\SymmetricTransformationInterface cipher) */
+/* {{{ proto SymmetricTransformationFilter::__construct(Cryptopp\SymmetricTransformationInterface cipher [, Cryptopp\PaddingInterface padding]) */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
     zval *cipherObject;
     zval *paddingObject = NULL;
@@ -505,7 +506,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
 }
 /* }}} */
 
-/* {{{ proto Cryptopp\SymmetricTransformationInterface SymmetricTransformationFilter::getCipher()
+/* {{{ proto Cryptopp\SymmetricTransformationInterface SymmetricTransformationFilter::getCipher(void)
        Returns the cipher object */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher) {
     zval *cipherObject;
@@ -514,7 +515,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher) {
 }
 /* }}} */
 
-/* {{{ proto Cryptopp\PaddingInterface SymmetricTransformationFilter::getPadding()
+/* {{{ proto Cryptopp\PaddingInterface SymmetricTransformationFilter::getPadding(void)
        Returns the padding object */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getPadding) {
     zval *paddingObject;

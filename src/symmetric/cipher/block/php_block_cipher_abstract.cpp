@@ -176,7 +176,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, getName) {
 }
 /* }}} */
 
-/* {{{ proto int BlockCipherAbstract::getBlockSize()
+/* {{{ proto int BlockCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize) {
     CryptoPP::BlockCipher *encryptor;
@@ -185,7 +185,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize) {
 }
 /* }}} */
 
-/* {{{ proto bool BlockCipherAbstract::isValidKeyLength()
+/* {{{ proto bool BlockCipherAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength) {
     int keySize = 0;

@@ -318,7 +318,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getDigestSize) {
 }
 /* }}} */
 
-/* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidKeyLength(void)
+/* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
     int keySize = 0;
@@ -552,7 +552,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
 }
 /* }}} */
 
-/* {{{ proto void AuthenticatedSymmetricCipherAbstract::restart()
+/* {{{ proto void AuthenticatedSymmetricCipherAbstract::restart(void)
    Reset the initialization vector to its initial state (the one passed in setIv()). Also resets the incremental MAC calculation. */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;

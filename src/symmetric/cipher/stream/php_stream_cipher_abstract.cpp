@@ -236,7 +236,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getName) {
 }
 /* }}} */
 
-/* {{{ proto int StreamCipherAbstract::getBlockSize()
+/* {{{ proto int StreamCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
     CryptoPP::SymmetricCipher *encryptor;
@@ -245,7 +245,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
 }
 /* }}} */
 
-/* {{{ proto bool StreamCipherAbstract::isValidKeyLength()
+/* {{{ proto bool StreamCipherAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
     int keySize = 0;
@@ -391,7 +391,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
 }
 /* }}} */
 
-/* {{{ proto void StreamCipherAbstract::restart()
+/* {{{ proto void StreamCipherAbstract::restart(void)
    Reset the initialization vector to its initial state (the one passed in setIv()) */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart) {
     CryptoPP::SymmetricCipher *encryptor;
