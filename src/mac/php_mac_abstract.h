@@ -41,7 +41,6 @@ PHP_METHOD(Cryptopp_MacAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_MacAbstract, update);
 PHP_METHOD(Cryptopp_MacAbstract, finalize);
 PHP_METHOD(Cryptopp_MacAbstract, restart);
-PHP_METHOD(Cryptopp_MacAbstract, verify);
 /* }}} */
 
 /* {{{ php hash classes methods arg info */

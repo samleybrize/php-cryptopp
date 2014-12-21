@@ -7,7 +7,6 @@ zend_class_entry *cryptopp_ce_MacInterface;
 
 static zend_function_entry cryptopp_methods_MacInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_MacInterface, setKey, arginfo_MacInterface_setKey)
-    PHP_ABSTRACT_ME(Cryptopp_MacInterface, verify, arginfo_MacInterface_verify)
     PHP_FE_END
 };
 

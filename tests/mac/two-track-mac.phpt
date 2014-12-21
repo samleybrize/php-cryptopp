@@ -39,12 +39,6 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
-// check verify()
-echo "- verify:\n";
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34")));
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("b27165d2f7de41c23aabe559cad7cc592fb50194")));
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b33")));
-
 // check values returned by Cryptopp\Mac for this algorithm
 echo "- Cryptopp\Mac:\n";
 var_dump(in_array("two_track_mac", Cryptopp\Mac::getAlgos()));
@@ -119,10 +113,6 @@ string(40) "e64c1b6d1e1b062b57bafabe75816a121c2f7b34"
 string(40) "e64c1b6d1e1b062b57bafabe75816a121c2f7b34"
 - restart:
 string(40) "b3bcefdbee9284259388c565fc4a16a6d7304709"
-- verify:
-bool(true)
-bool(false)
-bool(false)
 - Cryptopp\Mac:
 bool(true)
 string(23) "Cryptopp\MacTwoTrackMac"

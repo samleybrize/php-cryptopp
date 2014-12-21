@@ -44,12 +44,6 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
-// check verify()
-echo "- verify:\n";
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34")));
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("b27165d2f7de41c23aabe559cad7cc592fb50194")));
-var_dump($o->verify(hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b34"), hex2bin("e64c1b6d1e1b062b57bafabe75816a121c2f7b33")));
-
 // check different hash algorithm
 echo "- calculate digest (md5):\n";
 $o = new Cryptopp\MacHmac(new Cryptopp\HashMd5());
@@ -129,10 +123,6 @@ string(40) "b7b39196ab5f9c0cf7863b8e0a0bda37aea2c93e"
 string(40) "b7b39196ab5f9c0cf7863b8e0a0bda37aea2c93e"
 - restart:
 string(40) "7ad59cd33a3a5657638de193a69d68c91019701a"
-- verify:
-bool(true)
-bool(false)
-bool(false)
 - calculate digest (md5):
 string(32) "9294727a3638bb1c13f48ef8158bfc9d"
 - Cryptopp\Mac:

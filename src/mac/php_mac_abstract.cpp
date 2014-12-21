@@ -52,7 +52,6 @@ static zend_function_entry cryptopp_methods_MacAbstract[] = {
     PHP_ME(Cryptopp_MacAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, finalize, arginfo_HashTransformationInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, restart, arginfo_HashTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
-    PHP_ME(Cryptopp_MacAbstract, verify, arginfo_MacInterface_verify, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
 
@@ -284,38 +283,6 @@ PHP_METHOD(Cryptopp_MacAbstract, restart) {
     mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     mac->Restart();
-}
-/* }}} */
-
-/* {{{ proto bool MacAbstract::verify(string a, string b)
-   Verify that a MAC digest match another one */
-PHP_METHOD(Cryptopp_MacAbstract, verify) {
-    char *digest1   = NULL;
-    char *digest2   = NULL;
-    int digest1Size = 0;
-    int digest2Size = 0;
-
-    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ss", &digest1, &digest1Size, &digest2, &digest2Size)) {
-        return;
-    }
-
-    // if one of the two digests is empty, or if their sizes does not match, return false
-    if (0 == digest1Size || 0 == digest2Size || digest1Size != digest2Size) {
-        RETURN_FALSE
-    }
-
-    // compare the digests
-    int status = 0;
-
-    for (int i = 0; i < digest1Size; i++) {
-        status |= digest1[i] ^ digest2[i];
-    }
-
-    if (0 == status) {
-        RETURN_TRUE
-    } else {
-        RETURN_FALSE
-    }
 }
 /* }}} */
 

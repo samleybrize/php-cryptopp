@@ -7,11 +7,6 @@
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_setKey, 0)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
-
-ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_verify, 0)
-    ZEND_ARG_INFO(0, a)
-    ZEND_ARG_INFO(0, b)
-ZEND_END_ARG_INFO()
 /* }}} */
 
 /* inits the MacInterface php interface */
