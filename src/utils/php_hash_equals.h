@@ -4,7 +4,10 @@
 #include "../php_cryptopp.h"
 
 extern const zend_function_entry hash_equals_function[];
+
+#if PHP_API_VERSION < 20131106
 PHP_FUNCTION(hash_equals);
+#endif
 
 #endif /* PHP_HASH_EQUALS_H */
 

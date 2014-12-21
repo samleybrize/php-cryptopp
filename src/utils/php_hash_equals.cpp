@@ -54,6 +54,12 @@ PHP_FUNCTION(hash_equals)
 }
 /* }}} */
 
+#else
+
+const zend_function_entry hash_equals_function[] = {
+    PHP_FE_END
+};
+
 #endif
 
 /*
