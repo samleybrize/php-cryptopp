@@ -83,7 +83,7 @@ try {
 --EXPECT--
 bool(true)
 string(8) "sha3_512"
-int(0)
+int(144)
 int(64)
 - digest calculation:
 string(128) "a11d37ec4d9a4d6030e01faafdf75c4ba7537968e1debd5163fa57f44a847bbc96c8b193b2eb2dc29fac7c661976ede60728e4d794c12e97dac6869063ce252f"
@@ -100,6 +100,6 @@ string(21) "Cryptopp\HashSha3_512"
 - sleep:
 You cannot serialize or unserialize Cryptopp\HashAbstract instances
 - inheritance:
-int(0)
+int(144)
 - inheritance (parent constructor not called):
 Cryptopp\HashAbstract cannot be extended by user classes
