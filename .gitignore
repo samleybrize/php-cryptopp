@@ -3,5 +3,6 @@
 !config.m4
 !config.sh
 !config.py
+!php-stubs
 !src
 !tests
