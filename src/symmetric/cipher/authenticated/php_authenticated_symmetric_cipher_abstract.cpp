@@ -79,6 +79,8 @@ void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D) {
     zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "iv", 2, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "encryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "decryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
@@ -424,7 +426,10 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt) {
     byte output[dataSize];
     encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+
+    // indicate that encryption has started
+    zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 1 TSRMLS_CC);
 }
 /* }}} */
 
@@ -460,14 +465,16 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt) {
     byte output[dataSize];
     decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+
+    // indicate that decryption has started
+    zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "decryptionStarted", 17, 1 TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ proto void AuthenticatedSymmetricCipherAbstract::addEncryptionAdditionalData(string data)
    Adds additional data to authenticate to the encryption. Cannot be called after encrypt() has been called at least one time without a restart. */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData) {
-    // TODO check if encrypt() has been called without restart() ?
     char *msg   = NULL;
     int msgSize = 0;
 
@@ -475,6 +482,18 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditiona
         return;
     }
 
+    // ensure that decryption has not started
+    zval *encryptionStarted;
+    encryptionStarted = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 1 TSRMLS_CC);
+
+    if (1 == Z_BVAL_P(encryptionStarted)) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: additional authenticated data must be added before any encryption", ce->name);
+        RETURN_FALSE
+    }
+
+    // add additional data
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
@@ -489,7 +508,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditiona
 /* {{{ proto void AuthenticatedSymmetricCipherAbstract::addDecryptionAdditionalData(string data)
    Adds additional data to authenticate to the decryption. Cannot be called after decrypt() has been called at least one time without a restart. */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditionalData) {
-    // TODO check if decrypt() has been called without restart() ?
     char *msg   = NULL;
     int msgSize = 0;
 
@@ -497,6 +515,18 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditiona
         return;
     }
 
+    // ensure that decryption has not started
+    zval *decryptionStarted;
+    decryptionStarted = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "decryptionStarted", 17, 1 TSRMLS_CC);
+
+    if (1 == Z_BVAL_P(decryptionStarted)) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: additional authenticated data must be added before any decryption", ce->name);
+        RETURN_FALSE
+    }
+
+    // add additional data
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
@@ -560,6 +590,10 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart) {
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor);
+
+    // indicate that encryption/decryption has not started
+    zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 0 TSRMLS_CC);
+    zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "decryptionStarted", 17, 0 TSRMLS_CC);
 }
 /* }}} */
 

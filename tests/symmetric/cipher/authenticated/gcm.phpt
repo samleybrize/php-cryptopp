@@ -96,6 +96,30 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// encrypt before aad
+echo "- encrypt before aad:\n";
+$o->restart();
+$o->setKey("1234567890123456");
+$o->setIv("1234567890123456");
+
+$o->encrypt("azerty");
+
+try {
+    $o->addEncryptionAdditionalData("qwerty");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// decrypt before aad
+echo "- decrypt before aad:\n";
+$o->decrypt("azerty");
+
+try {
+    $o->addDecryptionAdditionalData("qwerty");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -174,6 +198,10 @@ Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 - invalid iv:
 iv size 3 ok
+- encrypt before aad:
+Cryptopp\AuthenticatedSymmetricCipherGcm: additional authenticated data must be added before any encryption
+- decrypt before aad:
+Cryptopp\AuthenticatedSymmetricCipherGcm: additional authenticated data must be added before any decryption
 - sleep:
 You cannot serialize or unserialize Cryptopp\AuthenticatedSymmetricCipherAbstract instances
 - bad arguments:
