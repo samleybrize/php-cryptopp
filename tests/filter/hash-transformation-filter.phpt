@@ -42,6 +42,11 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->calculateDigestString(array()));
+echo "$php_errormsg\n";
+
 // hash object: constructor not called
 echo "- hash object (parent constructor not called):\n";
 class HashChild extends Cryptopp\HashSha1
@@ -101,6 +106,9 @@ string(40) "8254f31ab6a9b0fae9a47205b71396ecc94775e5"
 string(40) "2e9c4a1885c06bffe3c6e745cf688950e021c7e0"
 - sleep:
 You cannot serialize or unserialize Cryptopp\HashTransformationFilter instances
+- bad arguments:
+NULL
+Cryptopp\HashTransformationFilter::calculateDigestString() expects parameter 1 to be string, array given
 - hash object (parent constructor not called):
 HashChild : parent constructor was not called
 - mac object (parent constructor not called):

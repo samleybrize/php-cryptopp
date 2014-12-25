@@ -70,6 +70,17 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->encrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setKey(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setIv(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\StreamCipherSosemanuk{}
@@ -115,6 +126,15 @@ Cryptopp\StreamCipherSosemanuk : a key is required
 Cryptopp\StreamCipherSosemanuk : 3 is not a valid initialization vector length
 - sleep:
 You cannot serialize or unserialize Cryptopp\StreamCipherAbstract instances
+- bad arguments:
+NULL
+Cryptopp\StreamCipherAbstract::encrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\StreamCipherAbstract::decrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\StreamCipherAbstract::setKey() expects parameter 1 to be string, array given
+NULL
+Cryptopp\StreamCipherAbstract::setIv() expects parameter 1 to be string, array given
 - inheritance:
 int(1)
 - inheritance (parent constructor not called):

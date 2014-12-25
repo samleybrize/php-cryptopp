@@ -51,6 +51,13 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->calculateDigest(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->update(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\HashMd5{}
@@ -74,7 +81,7 @@ try {
 }
 
 ?>
---EXPECT--
+--EXPECTF--
 bool(true)
 string(3) "md5"
 int(64)
@@ -93,6 +100,11 @@ bool(true)
 string(16) "Cryptopp\HashMd5"
 - sleep:
 You cannot serialize or unserialize Cryptopp\HashAbstract instances
+- bad arguments:
+NULL
+Cryptopp\HashAbstract::calculateDigest() expects parameter 1 to be string, array given
+NULL
+Cryptopp\HashAbstract::update() expects parameter 1 to be string, array given
 - inheritance:
 int(64)
 - inheritance (parent constructor not called):

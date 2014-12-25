@@ -56,6 +56,13 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->encryptString(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decryptString(array()));
+echo "$php_errormsg\n";
+
 // mode object: constructor not called
 echo "- mode object (parent constructor not called):\n";
 class ModeChild extends Cryptopp\SymmetricModeEcb
@@ -129,6 +136,11 @@ string(10) "azertyuiop"
 string(10) "azertyuiop"
 - sleep:
 You cannot serialize or unserialize Cryptopp\SymmetricTransformationFilter instances
+- bad arguments:
+NULL
+Cryptopp\SymmetricTransformationFilter::encryptString() expects parameter 1 to be string, array given
+NULL
+Cryptopp\SymmetricTransformationFilter::decryptString() expects parameter 1 to be string, array given
 - mode object (parent constructor not called):
 ModeChild : parent constructor was not called
 - stream cipher object (parent constructor not called):

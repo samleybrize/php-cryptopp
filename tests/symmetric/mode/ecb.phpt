@@ -62,6 +62,17 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->encrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setKey(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setIv(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\SymmetricModeEcb{}
@@ -105,6 +116,15 @@ Cryptopp\SymmetricModeEcb : a key is required
 Cryptopp\SymmetricModeEcb : a key is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\SymmetricModeAbstract instances
+- bad arguments:
+NULL
+Cryptopp\SymmetricModeAbstract::encrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\SymmetricModeAbstract::decrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\SymmetricModeAbstract::setKey() expects parameter 1 to be string, array given
+NULL
+Cryptopp\SymmetricModeAbstract::setIv() expects parameter 1 to be string, array given
 - inheritance:
 int(16)
 - inheritance (parent constructor not called):

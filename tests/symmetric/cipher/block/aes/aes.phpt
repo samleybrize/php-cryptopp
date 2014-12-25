@@ -75,6 +75,19 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->encrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->encryptBlock(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decryptBlock(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setKey(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\BlockCipherAes{}
@@ -117,6 +130,17 @@ Cryptopp\BlockCipherAes : a key is required
 Cryptopp\BlockCipherAes : a key is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\BlockCipherAbstract instances
+- bad arguments:
+NULL
+Cryptopp\BlockCipherAbstract::encrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\BlockCipherAbstract::encryptBlock() expects parameter 1 to be string, array given
+NULL
+Cryptopp\BlockCipherAbstract::decrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\BlockCipherAbstract::decryptBlock() expects parameter 1 to be string, array given
+NULL
+Cryptopp\BlockCipherAbstract::setKey() expects parameter 1 to be string, array given
 - inheritance:
 int(16)
 - inheritance (parent constructor not called):

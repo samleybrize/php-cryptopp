@@ -104,6 +104,21 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$o->encrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->decrypt(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->addEncryptionAdditionalData(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->addDecryptionAdditionalData(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setKey(array()));
+echo "$php_errormsg\n";
+var_dump(@$o->setIv(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\AuthenticatedSymmetricCipherGcm{}
@@ -161,6 +176,19 @@ Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 iv size 3 ok
 - sleep:
 You cannot serialize or unserialize Cryptopp\AuthenticatedSymmetricCipherAbstract instances
+- bad arguments:
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::encrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::decrypt() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::addEncryptionAdditionalData() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::addDecryptionAdditionalData() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::setKey() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherAbstract::setIv() expects parameter 1 to be string, array given
 - inheritance:
 int(1)
 - inheritance (parent constructor not called):

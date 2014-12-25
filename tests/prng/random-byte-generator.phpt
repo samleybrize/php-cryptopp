@@ -29,6 +29,11 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$rbg->generate(array()));
+echo "$php_errormsg\n";
+
 // test inheritance
 echo "- inheritance:\n";
 class Child extends Cryptopp\RandomByteGenerator{}
@@ -61,6 +66,9 @@ bool(true)
 - errors:
 Size must be a positive integer, 0 given
 Size must be a positive integer, -1 given
+- bad arguments:
+NULL
+Cryptopp\RandomByteGenerator::generate() expects parameter 1 to be long, array given
 - inheritance:
 int(2)
 - inheritance (parent constructor not called):

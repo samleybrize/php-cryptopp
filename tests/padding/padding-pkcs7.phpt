@@ -65,6 +65,17 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// bad arguments
+echo "- bad arguments:\n";
+var_dump(@$padding->pad(array(), 4));
+echo "$php_errormsg\n";
+var_dump(@$padding->pad("azerty", array()));
+echo "$php_errormsg\n";
+var_dump(@$padding->unpad(array(), 4));
+echo "$php_errormsg\n";
+var_dump(@$padding->unpad("azerty", array()));
+echo "$php_errormsg\n";
+
 ?>
 --EXPECT--
 bool(true)
@@ -87,3 +98,12 @@ Cryptopp\PaddingPkcs7 : PKCS #7 padding does not handle block sizes higher than 
 Cryptopp\PaddingPkcs7 : data length is not a multiple of block size (block size is 4, data size is 3)
 Cryptopp\PaddingPkcs7 : invalid PKCS #7 block padding found
 Cryptopp\PaddingPkcs7 : invalid PKCS #7 block padding found
+- bad arguments:
+bool(false)
+Cryptopp\PaddingPkcs7::pad() expects parameter 1 to be string, array given
+bool(false)
+Cryptopp\PaddingPkcs7::pad() expects parameter 2 to be long, array given
+bool(false)
+Cryptopp\PaddingPkcs7::unpad() expects parameter 1 to be string, array given
+bool(false)
+Cryptopp\PaddingPkcs7::unpad() expects parameter 2 to be long, array given
