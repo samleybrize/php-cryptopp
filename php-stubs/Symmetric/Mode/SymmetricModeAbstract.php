@@ -2,7 +2,6 @@
 
 namespace Cryptopp;
 
-// TODO comment
 abstract class SymmetricModeAbstract implements SymmetricModeInterface
 {
     /**

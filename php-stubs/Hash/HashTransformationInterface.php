@@ -2,27 +2,35 @@
 
 namespace Cryptopp;
 
-// TODO comment
 interface HashTransformationInterface
 {
-    // TODO comment
-    public function getName() {}
+    /**
+     * Returns algorithm name
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * Returns digest size (in bytes)
+     * @return int
+     */
+    public function getDigestSize();
+
+    /**
+     * Returns block size (in bytes)
+     * @return int
+     */
+    public function getBlockSize();
 
     // TODO comment
-    public function getDigestSize() {}
+    public function calculateDigest($data);
 
     // TODO comment
-    public function getBlockSize() {}
+    public function update($data);
 
     // TODO comment
-    public function calculateDigest($data) {}
+    public function finalize();
 
     // TODO comment
-    public function update($data) {}
-
-    // TODO comment
-    public function finalize() {}
-
-    // TODO comment
-    public function restart() {}
+    public function restart();
 }

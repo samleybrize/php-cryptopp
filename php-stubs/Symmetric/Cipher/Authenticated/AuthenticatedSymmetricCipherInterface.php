@@ -2,21 +2,23 @@
 
 namespace Cryptopp;
 
-// TODO comment
 interface AuthenticatedSymmetricCipherInterface extends SymmetricTransformationInterface
 {
-    // TODO comment
-    public function getDigestSize() {}
+    /**
+     * Returns the size of the generated authentication tag (in bytes)
+     * @return int
+     */
+    public function getDigestSize();
 
     // TODO comment
-    public function addEncryptionAdditionalData($data) {}
+    public function addEncryptionAdditionalData($data);
 
     // TODO comment
-    public function addDecryptionAdditionalData($data) {}
+    public function addDecryptionAdditionalData($data);
 
     // TODO comment
-    public function finalizeEncryption() {}
+    public function finalizeEncryption();
 
     // TODO comment
-    public function finalizeDecryption() {}
+    public function finalizeDecryption();
 }

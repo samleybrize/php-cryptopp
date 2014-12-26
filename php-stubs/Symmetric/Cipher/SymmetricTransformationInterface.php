@@ -2,18 +2,17 @@
 
 namespace Cryptopp;
 
-// TODO comment
 interface SymmetricTransformationInterface extends SymmetricCipherInterface
 {
     // TODO comment
-    public function setIv($iv) {}
+    public function setIv($iv);
 
     // TODO comment
-    public function encrypt($data) {}
+    public function encrypt($data);
 
     // TODO comment
-    public function decrypt($data) {}
+    public function decrypt($data);
 
     // TODO comment
-    public function restart() {}
+    public function restart();
 }

@@ -2,7 +2,6 @@
 
 namespace Cryptopp;
 
-// TODO comment
 class RandomByteGenerator implements RandomByteGeneratorInterface
 {
     /**

@@ -2,9 +2,4 @@
 
 namespace Cryptopp;
 
-// TODO comment
-class BlockCipherAes extends BlockCipherAbstract
-{
-    // TODO comment
-    public function __construct() {}
-}
+class BlockCipherAes extends BlockCipherAbstract {}

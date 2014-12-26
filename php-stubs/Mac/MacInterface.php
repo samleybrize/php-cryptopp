@@ -2,9 +2,11 @@
 
 namespace Cryptopp;
 
-// TODO comment
 interface MacInterface extends HashTransformationInterface
 {
-    // TODO comment
-    public function setKey($key) {}
+    /**
+     * Sets the key
+     * @param string $key
+     */
+    public function setKey($key);
 }

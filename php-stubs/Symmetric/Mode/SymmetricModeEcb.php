@@ -2,7 +2,6 @@
 
 namespace Cryptopp;
 
-// TODO comment
 class SymmetricModeEcb extends SymmetricModeAbstract
 {
     // TODO comment

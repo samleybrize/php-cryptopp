@@ -2,7 +2,6 @@
 
 namespace Cryptopp;
 
-// TODO comment
 abstract class AuthenticatedSymmetricCipherAbstract implements AuthenticatedSymmetricCipherInterface
 {
     /**
@@ -35,7 +34,6 @@ abstract class AuthenticatedSymmetricCipherAbstract implements AuthenticatedSymm
      */
     final public function encrypt($data) {}
 
-    // TODO comment
     /**
      * {@inheritdoc}
      */

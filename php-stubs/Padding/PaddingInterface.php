@@ -2,18 +2,17 @@
 
 namespace Cryptopp;
 
-// TODO comment
 interface PaddingInterface
 {
     // TODO
-    public function pad($data, $blockSize) {}
+    public function pad($data, $blockSize);
 
     // TODO
-    public function unpad($data, $blockSize) {}
+    public function unpad($data, $blockSize);
 
     // TODO
-    public function canPad() {}
+    public function canPad();
 
     // TODO
-    public function canUnpad() {}
+    public function canUnpad();
 }
