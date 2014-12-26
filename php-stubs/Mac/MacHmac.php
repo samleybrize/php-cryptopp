@@ -4,6 +4,9 @@ namespace Cryptopp;
 
 class MacHmac extends MacAbstract
 {
-    // TODO comment
+    /**
+     * Constructor
+     * @param \Cryptopp\HashInterface $hashAlgo hash algorithm to use
+     */
     public function __construct(HashInterface $hashAlgo) {}
 }

@@ -4,18 +4,36 @@ namespace Cryptopp;
 
 class SymmetricTransformationFilter
 {
-    // TODO comment
+    /**
+     * Constructor
+     * @param \Cryptopp\SymmetricTransformationInterface $cipher symmetric cipher to use
+     * @param \Cryptopp\PaddingInterface $padding [optional] padding scheme to use. Defaults to Cryptopp\PaddingPkcs7.
+     */
     public function __construct(SymmetricTransformationInterface $cipher, PaddingInterface $padding = null) {}
 
-    // TODO comment
+    /**
+     * Returns the symmetric cipher used
+     * @return \Cryptopp\SymmetricTransformationInterface
+     */
     final public function getCipher() {}
 
-    // TODO comment
+    /**
+     * Returns the padding scheme used
+     * @return \Cryptopp\PaddingInterface
+     */
     final public function getPadding() {}
 
-    // TODO comment
+    /**
+     * Encrypts data
+     * @param string $data data to encrypt
+     * @return string encrypted data
+     */
     final public function encryptString($data) {}
 
-    // TODO comment
+    /**
+     * Decrypts data
+     * @param string $cipherText data to decrypt
+     * @return string decrypted data
+     */
     final public function decryptString($cipherText) {}
 }

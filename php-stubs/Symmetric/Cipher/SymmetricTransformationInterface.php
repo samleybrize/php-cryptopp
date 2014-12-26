@@ -4,15 +4,28 @@ namespace Cryptopp;
 
 interface SymmetricTransformationInterface extends SymmetricCipherInterface
 {
-    // TODO comment
+    /**
+     * Sets the IV (initialization vector)
+     * @param string $iv
+     */
     public function setIv($iv);
 
-    // TODO comment
+    /**
+     * Encrypts data
+     * @param string $data data to encrypt
+     * @return string encrypted data
+     */
     public function encrypt($data);
 
-    // TODO comment
+    /**
+     * Decrypts data
+     * @param string $data data to decrypt
+     * @return string decrypted data
+     */
     public function decrypt($data);
 
-    // TODO comment
+    /**
+     * Resets encryption/decryption state
+     */
     public function restart();
 }

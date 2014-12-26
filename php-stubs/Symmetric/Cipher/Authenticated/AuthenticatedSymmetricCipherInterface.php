@@ -10,15 +10,27 @@ interface AuthenticatedSymmetricCipherInterface extends SymmetricTransformationI
      */
     public function getDigestSize();
 
-    // TODO comment
+    /**
+     * Adds additional authenticated data (AAD) to encryption MAC calculation. Such data must be added before any encryption has been performed.
+     * @param string $data data to add
+     */
     public function addEncryptionAdditionalData($data);
 
-    // TODO comment
+    /**
+     * Adds additional authenticated data (AAD) to decryption MAC calculation. Such data must be added before any decryption has been performed.
+     * @param string $data data to add
+     */
     public function addDecryptionAdditionalData($data);
 
-    // TODO comment
+    /**
+     * Finalize encryption and return the MAC tag
+     * @return string MAC tag
+     */
     public function finalizeEncryption();
 
-    // TODO comment
+    /**
+     * Finalize decryption and return the MAC tag
+     * @return string MAC tag
+     */
     public function finalizeDecryption();
 }

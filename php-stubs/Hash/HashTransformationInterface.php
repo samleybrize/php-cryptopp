@@ -22,15 +22,27 @@ interface HashTransformationInterface
      */
     public function getBlockSize();
 
-    // TODO comment
+    /**
+     * Calculate the digest of a given string
+     * @param string $data data for which to calculate the digest
+     * @return string digest
+     */
     public function calculateDigest($data);
 
-    // TODO comment
+    /**
+     * Adds data to current incremental digest calculation
+     * @param string $data data to add to current digest calculation
+     */
     public function update($data);
 
-    // TODO comment
+    /**
+     * Finalize current incremental digest calculation and return the resulting digest
+     * @return string digest
+     */
     public function finalize();
 
-    // TODO comment
+    /**
+     * Resets current incremental digest calculation
+     */
     public function restart();
 }

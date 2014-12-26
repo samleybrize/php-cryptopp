@@ -4,12 +4,22 @@ namespace Cryptopp;
 
 class HashTransformationFilter
 {
-    // TODO comment
+    /**
+     * Constructor
+     * @param \Cryptopp\HashTransformationInterface $hash hash algorithm to use
+     */
     public function __construct(HashTransformationInterface $hash) {}
 
-    // TODO comment
+    /**
+     * Returns the hash algorithm used
+     * @return \Cryptopp\HashTransformationInterface
+     */
     final public function getHash() {}
 
-    // TODO comment
+    /**
+     * Calculate the digest of a given string
+     * @param string $data data for which to calculate the digest
+     * @return string digest
+     */
     final public function calculateDigestString($data) {}
 }

@@ -16,9 +16,15 @@ interface SymmetricCipherInterface
      */
     public function getBlockSize();
 
-    // TODO comment
+    /**
+     * Indicates if a given key length is valid for this algorithm
+     * @return bool
+     */
     public function isValidKeyLength($keyLength);
 
-    // TODO comment
+    /**
+     * Sets the key
+     * @param string $key
+     */
     public function setKey($key);
 }
