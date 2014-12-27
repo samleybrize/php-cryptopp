@@ -1,5 +1,11 @@
 --TEST--
 Hash algorithm: HMAC-SHA3-384
+--SKIPIF--
+<?php
+if (!class_exists("Cryptopp\HashSha3_384")) {
+    echo "skip sha3 not available";
+}
+?>
 --FILE--
 <?php
 
