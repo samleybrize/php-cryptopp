@@ -57,6 +57,90 @@ void AuthenticatedEncryptionFilter::LastPut(const byte *inString, size_t length)
 }
 /* }}} */
 
+/* {{{ fork of CryptoPP::HashVerificationFilter to return some protected properties */
+size_t HashVerificationFilter::FirstSize()
+{
+    return m_firstSize;
+}
+
+size_t HashVerificationFilter::LastSize()
+{
+    return m_lastSize;
+}
+/* }}} */
+
+/* {{{ fork of CryptoPP::AuthenticatedDecryptionFilter to support padding schemes as objects */
+AuthenticatedDecryptionFilter::AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed, CryptoPP::word32 flags)
+    : FilterWithBufferedInput(NULL)
+    , m_hashVerifier(c, new CryptoPP::OutputProxy(*this, false))
+    , m_streamFilter(c, paddingObject, cipherMustBeDestructed, true)
+{
+    m_streamFilter.Attach(new CryptoPP::OutputProxy(*this, false));
+
+    // initialization copied from CryptoPP::AuthenticatedDecryptionFilter
+    assert(!c.IsForwardTransformation() || c.IsSelfInverting());
+    IsolatedInitialize(CryptoPP::MakeParameters(CryptoPP::Name::AuthenticatedDecryptionFilterFlags(), flags)(CryptoPP::Name::TruncatedDigestSize(), -1));
+}
+
+void AuthenticatedDecryptionFilter::InitializeDerivedAndReturnNewSizes(const CryptoPP::NameValuePairs &parameters, size_t &firstSize, size_t &blockSize, size_t &lastSize)
+{
+    CryptoPP::word32 flags = parameters.GetValueWithDefault(CryptoPP::Name::AuthenticatedDecryptionFilterFlags(), (CryptoPP::word32)DEFAULT_FLAGS);
+
+    m_hashVerifier.Initialize(CryptoPP::CombinedNameValuePairs(parameters, CryptoPP::MakeParameters(CryptoPP::Name::HashVerificationFilterFlags(), flags)));
+    m_streamFilter.Initialize(parameters);
+
+    firstSize   = m_hashVerifier.FirstSize();
+    blockSize   = 1;
+    lastSize    = m_hashVerifier.LastSize();
+}
+
+byte * AuthenticatedDecryptionFilter::ChannelCreatePutSpace(const std::string &channel, size_t &size)
+{
+    if (channel.empty()) {
+        return m_streamFilter.CreatePutSpace(size);
+    }
+
+    if (channel == CryptoPP::AAD_CHANNEL) {
+        return m_hashVerifier.CreatePutSpace(size);
+    }
+
+    throw InvalidChannelName("AuthenticatedDecryptionFilter", channel);
+}
+
+size_t AuthenticatedDecryptionFilter::ChannelPut2(const std::string &channel, const byte *begin, size_t length, int messageEnd, bool blocking)
+{
+    if (channel.empty()) {
+        if (m_lastSize > 0) {
+            m_hashVerifier.ForceNextPut();
+        }
+
+        return FilterWithBufferedInput::Put2(begin, length, messageEnd, blocking);
+    }
+
+    if (channel == CryptoPP::AAD_CHANNEL) {
+        return m_hashVerifier.Put2(begin, length, 0, blocking);
+    }
+
+    throw InvalidChannelName("AuthenticatedDecryptionFilter", channel);
+}
+
+void AuthenticatedDecryptionFilter::FirstPut(const byte *inString)
+{
+    m_hashVerifier.Put(inString, m_firstSize);
+}
+
+void AuthenticatedDecryptionFilter::NextPutMultiple(const byte *inString, size_t length)
+{
+    m_streamFilter.Put(inString, length);
+}
+
+void AuthenticatedDecryptionFilter::LastPut(const byte *inString, size_t length)
+{
+    m_streamFilter.MessageEnd();
+    m_hashVerifier.PutMessageEnd(inString, length);
+}
+/* }}} */
+
 /* {{{ arg info */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_AuthenticatedSymmetricTransformationFilter___construct, 0, 0, 1)
     ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\AuthenticatedSymmetricCipherInterface, 0)
@@ -80,8 +164,9 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_AuthenticatedSymmetricTransformationFilter_encryp
     ZEND_ARG_INFO(0, aad)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter_decryptString, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_AuthenticatedSymmetricTransformationFilter_decryptString, 0, 0, 0)
     ZEND_ARG_INFO(0, ciphertext)
+    ZEND_ARG_INFO(0, aad)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -291,7 +376,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
 
     try {
         stfEncryptor = new AuthenticatedEncryptionFilter(*symmetricEncryptor, paddingObject, cipherMustBeDestructed);
-//        stfDecryptor = new AuthenticatedDecryptionFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed); // TODO
+        stfDecryptor = new AuthenticatedDecryptionFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed);
     } catch (std::exception &e) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e.what());
         return;
@@ -391,46 +476,66 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString) {
 }
 /* }}} */
 
-// TODO
-/* {{{ proto bool|string AuthenticatedSymmetricTransformationFilter::decryptString(string ciphertext)
+/* {{{ proto bool|string AuthenticatedSymmetricTransformationFilter::decryptString([string ciphertext, [string aad]])
        Decrypts a string */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
-//    char *ciphertext    = NULL;
-//    int ciphertextSize  = 0;
-//
-//    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &ciphertext, &ciphertextSize)) {
-//        return;
-//    }
-//
-//    AuthenticatedDecryptionFilter *stfDecryptor;
-//    stfDecryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
-//
-//    // if the mode object is a native object, ensure that the key/iv is valid
-//    if (!isNativeSymmetricTransformationObjectValid(getThis())) {
-//        RETURN_FALSE
-//    }
-//
-//    // decrypt
-//    try {
-//        stfDecryptor->GetNextMessage();
-//        size_t written = stfDecryptor->Put(reinterpret_cast<byte*>(ciphertext), ciphertextSize);
-//        stfDecryptor->MessageEnd();
-//
-//        CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
-//        restartCipherObject(getThis());
-//
-//        if (retrievable > 0 && retrievable <= ciphertextSize) {
-//            // return plain text
-//            byte plaintext[retrievable];
-//            stfDecryptor->Get(plaintext, retrievable);
-//            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1)
-//        } else {
-//            // something goes wrong
-//            RETURN_FALSE
-//        }
-//    } catch (bool e) {
-//        RETURN_FALSE
-//    }
+    char *ciphertext    = NULL;
+    char *aad           = NULL;
+    int ciphertextSize  = 0;
+    int aadSize         = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ss", &ciphertext, &ciphertextSize, &aad, &aadSize)) {
+        return;
+    }
+
+    AuthenticatedDecryptionFilter *stfDecryptor;
+    stfDecryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
+
+    // if the mode object is a native object, ensure that the key/iv is valid
+    if (!isNativeCipherObjectValid(getThis())) {
+        RETURN_FALSE
+    }
+
+    // ensure that at least one of ciphertext or aad is not null
+    if (0 == ciphertextSize && 0 == aadSize) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : either ciphertext or aad may be empty, not both", cryptopp_ce_AuthenticatedSymmetricTransformationFilter->name);
+        RETURN_FALSE
+    }
+
+    // decrypt
+    try {
+        stfDecryptor->GetNextMessage();
+
+        // add aad
+        if (aadSize > 0) {
+            stfDecryptor->ChannelPut(CryptoPP::AAD_CHANNEL, reinterpret_cast<byte*>(aad), aadSize);
+            stfDecryptor->ChannelMessageEnd(CryptoPP::AAD_CHANNEL);
+        }
+
+        // decrypt data
+        stfDecryptor->ChannelPut(CryptoPP::DEFAULT_CHANNEL, reinterpret_cast<byte*>(ciphertext), ciphertextSize);
+        stfDecryptor->ChannelMessageEnd(CryptoPP::DEFAULT_CHANNEL);
+
+        CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
+        restartCipherObject(getThis());
+
+        if (retrievable > 0 && retrievable <= ciphertextSize) {
+            // return plain text
+            byte plaintext[retrievable];
+            stfDecryptor->Get(plaintext, retrievable);
+            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1)
+        } else {
+            // something goes wrong
+            RETURN_FALSE
+        }
+    } catch (bool e) {
+        RETURN_FALSE
+    } catch (CryptoPP::HashVerificationFilter::HashVerificationFailed &e) {
+        // MAC not valid
+        // TODO specific exception type
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : MAC verification failed", cryptopp_ce_AuthenticatedSymmetricTransformationFilter->name);
+        RETURN_FALSE
+    }
 }
 /* }}} */
 

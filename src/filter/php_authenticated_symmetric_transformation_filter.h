@@ -8,7 +8,7 @@
 
 void init_class_AuthenticatedSymmetricTransformationFilter(TSRMLS_D);
 
-/* {{{ TODO fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
+/* {{{ fork of CryptoPP::AuthenticatedEncryptionFilter to support padding schemes as objects */
 class AuthenticatedEncryptionFilter : public SymmetricTransformationFilter
 {
 public:
@@ -23,10 +23,41 @@ public:
 protected:
     CryptoPP::HashFilter m_hf;
 };
+/* }}} */
 
-class AuthenticatedDecryptionFilter
+/* {{{ fork of CryptoPP::HashVerificationFilter to return some protected properties */
+class HashVerificationFilter : public CryptoPP::HashVerificationFilter
 {
+public:
+    HashVerificationFilter(CryptoPP::HashTransformation &hm, CryptoPP::BufferedTransformation *attachment = NULL, CryptoPP::word32 flags = DEFAULT_FLAGS, int truncatedDigestSize = -1) :
+        CryptoPP::HashVerificationFilter(hm, attachment, flags, truncatedDigestSize) {}
+    size_t FirstSize();
+    size_t LastSize();
+};
+/* }}} */
 
+/* {{{ fork of CryptoPP::AuthenticatedDecryptionFilter to support padding schemes as objects */
+class AuthenticatedDecryptionFilter : public CryptoPP::FilterWithBufferedInput
+{
+public:
+    enum Flags {MAC_AT_END=0, MAC_AT_BEGIN=1, THROW_EXCEPTION=16, DEFAULT_FLAGS = THROW_EXCEPTION};
+
+    /*! See StreamTransformationFilter for documentation on BlockPaddingScheme  */
+    AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed, CryptoPP::word32 flags = DEFAULT_FLAGS);
+
+    std::string AlgorithmName() const {return m_hashVerifier.AlgorithmName();}
+    byte * ChannelCreatePutSpace(const std::string &channel, size_t &size);
+    size_t ChannelPut2(const std::string &channel, const byte *begin, size_t length, int messageEnd, bool blocking);
+    bool GetLastResult() const {return m_hashVerifier.GetLastResult();}
+
+protected:
+    void InitializeDerivedAndReturnNewSizes(const CryptoPP::NameValuePairs &parameters, size_t &firstSize, size_t &blockSize, size_t &lastSize);
+    void FirstPut(const byte *inString);
+    void NextPutMultiple(const byte *inString, size_t length);
+    void LastPut(const byte *inString, size_t length);
+
+    HashVerificationFilter m_hashVerifier;
+    SymmetricTransformationFilter m_streamFilter;
 };
 /* }}} */
 
