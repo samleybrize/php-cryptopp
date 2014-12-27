@@ -8,6 +8,7 @@ class SymmetricTransformationFilter
      * Constructor
      * @param \Cryptopp\SymmetricTransformationInterface $cipher symmetric cipher to use
      * @param \Cryptopp\PaddingInterface $padding [optional] padding scheme to use. Defaults to Cryptopp\PaddingPkcs7.
+     * @throws \Cryptopp\CryptoppException
      */
     public function __construct(SymmetricTransformationInterface $cipher, PaddingInterface $padding = null) {}
 
@@ -27,6 +28,7 @@ class SymmetricTransformationFilter
      * Encrypts data
      * @param string $data data to encrypt
      * @return string encrypted data
+     * @throws \Cryptopp\CryptoppException
      */
     final public function encryptString($data) {}
 
@@ -34,6 +36,7 @@ class SymmetricTransformationFilter
      * Decrypts data
      * @param string $cipherText data to decrypt
      * @return string decrypted data
+     * @throws \Cryptopp\CryptoppException
      */
     final public function decryptString($cipherText) {}
 }

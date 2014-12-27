@@ -26,18 +26,21 @@ interface HashTransformationInterface
      * Calculate the digest of a given string
      * @param string $data data for which to calculate the digest
      * @return string digest
+     * @throws \Cryptopp\CryptoppException
      */
     public function calculateDigest($data);
 
     /**
      * Adds data to current incremental digest calculation
      * @param string $data data to add to current digest calculation
+     * @throws \Cryptopp\CryptoppException
      */
     public function update($data);
 
     /**
      * Finalize current incremental digest calculation and return the resulting digest
      * @return string digest
+     * @throws \Cryptopp\CryptoppException
      */
     public function finalize();
 

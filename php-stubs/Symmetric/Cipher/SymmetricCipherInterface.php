@@ -25,6 +25,7 @@ interface SymmetricCipherInterface
     /**
      * Sets the key
      * @param string $key
+     * @throws \Cryptopp\CryptoppException
      */
     public function setKey($key);
 }

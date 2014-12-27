@@ -7,6 +7,7 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
     /**
      * Sets the IV (initialization vector)
      * @param string $iv
+     * @throws \Cryptopp\CryptoppException
      */
     public function setIv($iv);
 
@@ -14,6 +15,7 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
      * Encrypts data
      * @param string $data data to encrypt
      * @return string encrypted data
+     * @throws \Cryptopp\CryptoppException
      */
     public function encrypt($data);
 
@@ -21,6 +23,7 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
      * Decrypts data
      * @param string $data data to decrypt
      * @return string decrypted data
+     * @throws \Cryptopp\CryptoppException
      */
     public function decrypt($data);
 

@@ -7,6 +7,7 @@ class HashTransformationFilter
     /**
      * Constructor
      * @param \Cryptopp\HashTransformationInterface $hash hash algorithm to use
+     * @throws \Cryptopp\CryptoppException
      */
     public function __construct(HashTransformationInterface $hash) {}
 
@@ -20,6 +21,7 @@ class HashTransformationFilter
      * Calculate the digest of a given string
      * @param string $data data for which to calculate the digest
      * @return string digest
+     * @throws \Cryptopp\CryptoppException
      */
     final public function calculateDigestString($data) {}
 }
