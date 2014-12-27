@@ -11,7 +11,7 @@ void init_class_SymmetricTransformationFilter(TSRMLS_D);
 class SymmetricTransformationFilter : public CryptoPP::FilterWithBufferedInput, public CryptoPP::BlockPaddingSchemeDef, private CryptoPP::FilterPutSpaceHelper
 {
 public:
-    SymmetricTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed);
+    SymmetricTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed, bool allowAuthenticatedSymmetricCipher = false);
     ~SymmetricTransformationFilter();
     std::string AlgorithmName() const {return m_cipher.AlgorithmName();}
 

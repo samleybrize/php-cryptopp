@@ -9,12 +9,11 @@
 #include "php_symmetric_transformation_filter.h"
 #include <exception>
 #include <filters.h>
-#include <misc.h>
 #include <modes.h>
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::StreamTransformationFilter to support padding schemes as objects */
-SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed)
+SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTransformation &cipher, zval *paddingObject, bool cipherMustBeDestructed, bool allowAuthenticatedSymmetricCipher)
     : CryptoPP::FilterWithBufferedInput(NULL)
     , m_cipher(cipher)
     , m_optimalBufferSize(0)
@@ -31,7 +30,7 @@ SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTra
     // initialization copied from CryptoPP::StreamTransformationFilter
     assert(c.MinLastBlockSize() == 0 || c.MinLastBlockSize() > c.MandatoryBlockSize());
 
-    if (dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&cipher) != 0) {
+    if (!allowAuthenticatedSymmetricCipher && dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&cipher) != 0) {
         // TODO
         throw CryptoPP::InvalidArgument("SymmetricTransformationFilter: please use AuthenticatedEncryptionFilter and AuthenticatedDecryptionFilter for AuthenticatedSymmetricCipher");
     }
@@ -547,7 +546,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString) {
     // encrypt
     try {
         stfEncryptor->GetNextMessage();
-        size_t written  = stfEncryptor->Put(reinterpret_cast<byte*>(data), dataSize);
+        stfEncryptor->Put(reinterpret_cast<byte*>(data), dataSize);
         stfEncryptor->MessageEnd();
 
         CryptoPP::lword retrievable = stfEncryptor->MaxRetrievable();
@@ -589,7 +588,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, decryptString) {
     // decrypt
     try {
         stfDecryptor->GetNextMessage();
-        size_t written  = stfDecryptor->Put(reinterpret_cast<byte*>(ciphertext), ciphertextSize);
+        size_t written = stfDecryptor->Put(reinterpret_cast<byte*>(ciphertext), ciphertextSize);
         stfDecryptor->MessageEnd();
 
         CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();

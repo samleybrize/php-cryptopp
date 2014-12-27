@@ -1,0 +1,444 @@
+#include "../php_cryptopp.h"
+#include "../exception/php_exception.h"
+#include "../padding/php_padding_interface.h"
+#include "../padding/php_pkcs7.h"
+#include "php_authenticated_symmetric_transformation_filter.h"
+#include <exception>
+#include <filters.h>
+#include <zend_exceptions.h>
+
+/* {{{ fork of CryptoPP::AuthenticatedEncryptionFilter to support padding schemes as objects */
+AuthenticatedEncryptionFilter::AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed)
+    : SymmetricTransformationFilter(c, paddingObject, cipherMustBeDestructed, true)
+    , m_hf(c, new CryptoPP::OutputProxy(*this, false), false, -1, CryptoPP::DEFAULT_CHANNEL, CryptoPP::DEFAULT_CHANNEL)
+{
+    // initialization copied from CryptoPP::AuthenticatedEncryptionFilter
+    assert(c.IsForwardTransformation());
+}
+/* }}} */
+
+/* {{{ copied from CryptoPP::AuthenticatedEncryptionFilter */
+void AuthenticatedEncryptionFilter::IsolatedInitialize(const CryptoPP::NameValuePairs &parameters)
+{
+    m_hf.IsolatedInitialize(parameters);
+    SymmetricTransformationFilter::IsolatedInitialize(parameters);
+}
+
+byte * AuthenticatedEncryptionFilter::ChannelCreatePutSpace(const std::string &channel, size_t &size)
+{
+    if (channel.empty()) {
+        return SymmetricTransformationFilter::CreatePutSpace(size);
+    }
+
+    if (channel == CryptoPP::AAD_CHANNEL) {
+        return m_hf.CreatePutSpace(size);
+    }
+
+    throw InvalidChannelName("AuthenticatedEncryptionFilter", channel);
+}
+
+size_t AuthenticatedEncryptionFilter::ChannelPut2(const std::string &channel, const byte *begin, size_t length, int messageEnd, bool blocking)
+{
+    if (channel.empty()) {
+        return SymmetricTransformationFilter::Put2(begin, length, messageEnd, blocking);
+    }
+
+    if (channel == CryptoPP::AAD_CHANNEL) {
+        return m_hf.Put2(begin, length, 0, blocking);
+    }
+
+    throw InvalidChannelName("AuthenticatedEncryptionFilter", channel);
+}
+
+void AuthenticatedEncryptionFilter::LastPut(const byte *inString, size_t length)
+{
+    SymmetricTransformationFilter::LastPut(inString, length);
+    m_hf.MessageEnd();
+}
+/* }}} */
+
+/* {{{ arg info */
+ZEND_BEGIN_ARG_INFO_EX(arginfo_AuthenticatedSymmetricTransformationFilter___construct, 0, 0, 1)
+    ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\AuthenticatedSymmetricCipherInterface, 0)
+    ZEND_ARG_OBJ_INFO(0, padding, Cryptopp\\PaddingInterface, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter___wakeup, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter___sleep, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter_getCipher, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter_getPadding, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_AuthenticatedSymmetricTransformationFilter_encryptString, 0, 0, 0)
+    ZEND_ARG_INFO(0, data)
+    ZEND_ARG_INFO(0, aad)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricTransformationFilter_decryptString, 0)
+    ZEND_ARG_INFO(0, ciphertext)
+ZEND_END_ARG_INFO()
+/* }}} */
+
+/* {{{ custom object create/free handler */
+zend_object_handlers AuthenticatedSymmetricTransformationFilter_object_handlers;
+
+void AuthenticatedSymmetricTransformationFilter_free_storage(void *object TSRMLS_DC) {
+    AuthenticatedSymmetricTransformationFilterContainer *obj = static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(object);
+    delete obj->stfEncryptor;
+    delete obj->stfDecryptor;
+    zend_object_std_dtor(&obj->std TSRMLS_CC);
+    efree(obj);
+}
+
+zend_object_value AuthenticatedSymmetricTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC) {
+    zend_object_value retval;
+
+    AuthenticatedSymmetricTransformationFilterContainer *obj = static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(emalloc(sizeof(AuthenticatedSymmetricTransformationFilterContainer)));
+    memset(obj, 0, sizeof(AuthenticatedSymmetricTransformationFilterContainer));
+
+    zend_object_std_init(&obj->std, type TSRMLS_CC);
+
+    #if PHP_VERSION_ID < 50399
+        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
+    #else
+        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
+    #endif
+
+    retval.handle   = zend_objects_store_put(obj, NULL, AuthenticatedSymmetricTransformationFilter_free_storage, NULL TSRMLS_CC);
+    retval.handlers = &AuthenticatedSymmetricTransformationFilter_object_handlers;
+
+    return retval;
+}
+/* }}} */
+
+/* {{{ PHP class declaration */
+zend_class_entry *cryptopp_ce_AuthenticatedSymmetricTransformationFilter;
+
+static zend_function_entry cryptopp_methods_AuthenticatedSymmetricTransformationFilter[] = {
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct, arginfo_AuthenticatedSymmetricTransformationFilter___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, __sleep, arginfo_AuthenticatedSymmetricTransformationFilter___sleep, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, __wakeup, arginfo_AuthenticatedSymmetricTransformationFilter___wakeup, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, getCipher, arginfo_AuthenticatedSymmetricTransformationFilter_getCipher, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, getPadding, arginfo_AuthenticatedSymmetricTransformationFilter_getPadding, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString, arginfo_AuthenticatedSymmetricTransformationFilter_encryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString, arginfo_AuthenticatedSymmetricTransformationFilter_decryptString, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_FE_END
+};
+
+void init_class_AuthenticatedSymmetricTransformationFilter(TSRMLS_D) {
+    zend_class_entry ce;
+    INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "AuthenticatedSymmetricTransformationFilter", cryptopp_methods_AuthenticatedSymmetricTransformationFilter);
+    cryptopp_ce_AuthenticatedSymmetricTransformationFilter = zend_register_internal_class(&ce TSRMLS_CC);
+
+    cryptopp_ce_AuthenticatedSymmetricTransformationFilter->create_object = AuthenticatedSymmetricTransformationFilter_create_handler;
+    memcpy(&AuthenticatedSymmetricTransformationFilter_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    AuthenticatedSymmetricTransformationFilter_object_handlers.clone_obj = NULL;
+
+    zend_declare_property_null(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, "cipher", 6, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_null(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, "padding", 7, ZEND_ACC_PRIVATE TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ get the pointer to the native stf encryptor object of the php class */
+static AuthenticatedEncryptionFilter *getCryptoppAuthenticatedSymmetricTransformationFilterEncryptorPtr(zval *this_ptr TSRMLS_DC) {
+    AuthenticatedEncryptionFilter *stf;
+    stf = static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor;
+
+    if (NULL == stf) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricTransformationFilter : constructor was not called");
+    }
+
+    return stf;
+}
+/* }}} */
+
+/* {{{ get the pointer to the native stf decryptor object of the php class */
+static AuthenticatedDecryptionFilter *getCryptoppAuthenticatedSymmetricTransformationFilterDecryptorPtr(zval *this_ptr TSRMLS_DC) {
+    AuthenticatedDecryptionFilter *stf;
+    stf = static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor;
+
+    if (NULL == stf) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricTransformationFilter : constructor was not called");
+    }
+
+    return stf;
+}
+/* }}} */
+
+/* {{{ set the pointer to the native stf encryptor object of the php class */
+static void setCryptoppAuthenticatedSymmetricTransformationFilterEncryptorPtr(zval *this_ptr, AuthenticatedEncryptionFilter *nativePtr TSRMLS_DC) {
+    static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor = nativePtr;
+}
+/* }}} */
+
+/* {{{ set the pointer to the native stf decryptor object of the php class */
+static void setCryptoppAuthenticatedSymmetricTransformationFilterDecryptorPtr(zval *this_ptr, AuthenticatedDecryptionFilter *nativePtr TSRMLS_DC) {
+    static_cast<AuthenticatedSymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor = nativePtr;
+}
+/* }}} */
+
+/* {{{ indicates if the native cipher object holded by a stf object is valid */
+static bool isNativeCipherObjectValid(zval *stfObject) {
+    zval *cipherObject;
+    cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
+
+    if (IS_OBJECT != Z_TYPE_P(cipherObject)) {
+        // not an object
+        return false;
+    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract)) {
+        // AuthenticatedSymmetricCipherAbstract
+        CryptoPP::AuthenticatedSymmetricCipher *cipherEncryptor;
+        cipherEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject);
+
+        if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(cipherObject, cipherEncryptor) || !isCryptoppAuthenticatedSymmetricCipherIvValid(cipherObject, cipherEncryptor)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+/* }}} */
+
+/* {{{ restart the cipher holded by a AuthenticatedSymmetricTransformationFilter php object */
+static void restartCipherObject(zval *stfObject) {
+    zval *cipherObject;
+    cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
+
+    zval *funcName;
+    MAKE_STD_ZVAL(funcName)
+    ZVAL_STRING(funcName, "restart", 1);
+    call_user_function(NULL, &cipherObject, funcName, funcName, 0, NULL TSRMLS_CC);
+    zval_dtor(funcName);
+}
+/* }}} */
+
+/* {{{ proto void AuthenticatedSymmetricTransformationFilter::__sleep(void)
+   Prevents serialization of a AuthenticatedSymmetricTransformationFilter instance */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __sleep) {
+    zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize Cryptopp\\AuthenticatedSymmetricTransformationFilter instances");
+}
+/* }}} */
+
+/* {{{ proto void AuthenticatedSymmetricTransformationFilter::__wakeup(void)
+   Prevents use of a AuthenticatedSymmetricTransformationFilter instance that has been unserialized */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __wakeup) {
+    zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"You cannot serialize or unserialize Cryptopp\\AuthenticatedSymmetricTransformationFilter instances");
+}
+/* }}} */
+
+/* {{{ proto AuthenticatedSymmetricTransformationFilter::__construct(Cryptopp\AuthenticatedSymmetricCipherInterface cipher [, Cryptopp\PaddingInterface padding]) */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
+    zval *cipherObject;
+    zval *paddingObject = NULL;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &cipherObject, cryptopp_ce_SymmetricTransformationInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
+        return;
+    }
+
+    // if no padding object, pick the default one
+    bool createdPadding = false;
+
+    if (NULL == paddingObject) {
+        MAKE_STD_ZVAL(paddingObject);
+        object_init_ex(paddingObject, cryptopp_ce_PaddingPkcs7);
+        createdPadding = true;
+    }
+
+    // retrieve native cipher object
+    CryptoPP::AuthenticatedSymmetricCipher *symmetricEncryptor;
+    CryptoPP::AuthenticatedSymmetricCipher *symmetricDecryptor;
+    bool parentConstructorError = false;
+    bool cipherMustBeDestructed = false;
+
+    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract)) {
+        // retrieve native mode objects
+        symmetricEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject);
+        symmetricDecryptor = getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(cipherObject);
+
+        if (NULL == symmetricEncryptor || NULL == symmetricDecryptor) {
+            parentConstructorError = true;
+        }
+    } else {
+        // TODO create a proxy to the user php object
+//        try {
+//            symmetricEncryptor      = new SymmetricTransformationProxy::Encryption(cipherObject);
+//            symmetricDecryptor      = new SymmetricTransformationProxy::Decryption(cipherObject);
+//            cipherMustBeDestructed  = true;
+//        } catch (bool e) {
+//            return;
+//        } catch (const char *e) {
+//            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e);
+//            return;
+//        }
+    }
+
+    if (parentConstructorError) {
+        zend_class_entry *ce;
+        ce  = zend_get_class_entry(cipherObject TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
+        return;
+    }
+
+    // create native authenticated symmetric transformation filter
+    AuthenticatedEncryptionFilter *stfEncryptor;
+    AuthenticatedDecryptionFilter *stfDecryptor;
+
+    try {
+        stfEncryptor = new AuthenticatedEncryptionFilter(*symmetricEncryptor, paddingObject, cipherMustBeDestructed);
+//        stfDecryptor = new AuthenticatedDecryptionFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed); // TODO
+    } catch (std::exception &e) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e.what());
+        return;
+    }
+
+    setCryptoppAuthenticatedSymmetricTransformationFilterEncryptorPtr(getThis(), stfEncryptor TSRMLS_CC);
+    setCryptoppAuthenticatedSymmetricTransformationFilterDecryptorPtr(getThis(), stfDecryptor TSRMLS_CC);
+
+    // hold the cipher mode object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
+    // same for padding
+    zend_update_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
+    zend_update_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, getThis(), "padding", 7, paddingObject TSRMLS_CC);
+
+    if (createdPadding) {
+        Z_DELREF_P(paddingObject);
+    }
+}
+/* }}} */
+
+/* {{{ proto Cryptopp\AuthenticatedSymmetricCipherInterface AuthenticatedSymmetricTransformationFilter::getCipher(void)
+       Returns the cipher object */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, getCipher) {
+    zval *cipherObject;
+    cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, getThis(), "cipher", 6, 0 TSRMLS_CC);
+    RETURN_ZVAL(cipherObject, 1, 0)
+}
+/* }}} */
+
+/* {{{ proto Cryptopp\PaddingInterface AuthenticatedSymmetricTransformationFilter::getPadding(void)
+       Returns the padding object */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, getPadding) {
+    zval *paddingObject;
+    paddingObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, getThis(), "padding", 7, 0 TSRMLS_CC);
+    RETURN_ZVAL(paddingObject, 1, 0)
+}
+/* }}} */
+
+// TODO method encrypt/decrypt: accept an input and output object (return boolean)
+
+/* {{{ proto bool|string AuthenticatedSymmetricTransformationFilter::encryptString([string data, [string aad]])
+       Encrypts and authenticate a string */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString) {
+    char *data      = NULL;
+    char *aad       = NULL;
+    int dataSize    = 0;
+    int aadSize     = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "|ss", &data, &dataSize, &aad, &aadSize)) {
+        return;
+    }
+
+    AuthenticatedEncryptionFilter *stfEncryptor;
+    stfEncryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(stfEncryptor)
+
+    // if the cipher object is a native object, ensure that the key/iv is valid
+    if (!isNativeCipherObjectValid(getThis())) {
+        RETURN_FALSE
+    }
+
+    // ensure that at least one of data or aad is not null
+    if (0 == dataSize && 0 == aadSize) {
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : either data or aad may be empty, not both", cryptopp_ce_AuthenticatedSymmetricTransformationFilter->name);
+        RETURN_FALSE
+    }
+
+    // encrypt
+    try {
+        stfEncryptor->GetNextMessage();
+
+        // add aad
+        if (aadSize > 0) {
+            stfEncryptor->ChannelPut(CryptoPP::AAD_CHANNEL, reinterpret_cast<byte*>(aad), aadSize);
+            stfEncryptor->ChannelMessageEnd(CryptoPP::AAD_CHANNEL);
+        }
+
+        // encrypt data
+        stfEncryptor->ChannelPut(CryptoPP::DEFAULT_CHANNEL, reinterpret_cast<byte*>(data), dataSize);
+        stfEncryptor->ChannelMessageEnd(CryptoPP::DEFAULT_CHANNEL);
+
+        // retrieve encrypted data and tag
+        // the tag is right after encrypted data
+        CryptoPP::lword retrievable = stfEncryptor->MaxRetrievable();
+        restartCipherObject(getThis());
+
+        if (retrievable > dataSize) {
+            // return ciphertext
+            byte ciphertext[retrievable];
+            stfEncryptor->Get(ciphertext, retrievable);
+            RETURN_STRINGL(reinterpret_cast<char*>(ciphertext), retrievable, 1)
+        } else {
+            // something goes wrong
+            RETURN_FALSE
+        }
+    } catch (bool e) {
+        RETURN_FALSE
+    }
+}
+/* }}} */
+
+// TODO
+/* {{{ proto bool|string AuthenticatedSymmetricTransformationFilter::decryptString(string ciphertext)
+       Decrypts a string */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
+//    char *ciphertext    = NULL;
+//    int ciphertextSize  = 0;
+//
+//    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &ciphertext, &ciphertextSize)) {
+//        return;
+//    }
+//
+//    AuthenticatedDecryptionFilter *stfDecryptor;
+//    stfDecryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
+//
+//    // if the mode object is a native object, ensure that the key/iv is valid
+//    if (!isNativeSymmetricTransformationObjectValid(getThis())) {
+//        RETURN_FALSE
+//    }
+//
+//    // decrypt
+//    try {
+//        stfDecryptor->GetNextMessage();
+//        size_t written = stfDecryptor->Put(reinterpret_cast<byte*>(ciphertext), ciphertextSize);
+//        stfDecryptor->MessageEnd();
+//
+//        CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
+//        restartCipherObject(getThis());
+//
+//        if (retrievable > 0 && retrievable <= ciphertextSize) {
+//            // return plain text
+//            byte plaintext[retrievable];
+//            stfDecryptor->Get(plaintext, retrievable);
+//            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1)
+//        } else {
+//            // something goes wrong
+//            RETURN_FALSE
+//        }
+//    } catch (bool e) {
+//        RETURN_FALSE
+//    }
+}
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: sw=4 ts=4 expandtab fdm=marker
+ * vim<600: sw=4 ts=4 expandtab
+ */
