@@ -2,8 +2,8 @@ CFLAGS="$CFLAGS -Wall"
 dnl CXXFLAGS+=" -std=c++0x "
 
 PHP_ARG_ENABLE(cryptopp,
-    [Whether to enable the "cryptopp" extension],
-    [ --enable-cryptopp Enable "cryptopp" extension support])
+    [Whether to enable the "crypto++" extension],
+    [ --enable-cryptopp Enable "crypto++" extension support])
 
 if test $PHP_CRYPTOPP != "no"; then
     dnl search for cryptopp headers

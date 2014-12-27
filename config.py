@@ -27,6 +27,16 @@ if not os.path.isfile("config.m4"):
     print("ERROR: cannot find 'config.m4' file")
     sys.exit(1)
 
+# check crypto++ library version
+cryptoppConfig          = open(cryptoppDir + "/config.h").read()
+cryptoppVersionIndex    = cryptoppConfig.index("CRYPTOPP_VERSION") + len("CRYPTOPP_VERSION")
+cryptoppVersionIndex2   = cryptoppConfig.index("\n", cryptoppVersionIndex)
+cryptoppVersion         = cryptoppConfig[cryptoppVersionIndex:cryptoppVersionIndex2].strip()
+
+if cryptoppVersion < "561":
+    print("Crypto++ library version is lower than 5.6.1")
+    sys.exit(1)
+
 # config file list
 configFileList = []
 configFileList.append("src/exception/config/exception.py")
