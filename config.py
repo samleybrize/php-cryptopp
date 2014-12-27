@@ -30,6 +30,7 @@ if not os.path.isfile("config.m4"):
 # config file list
 configFileList = []
 configFileList.append("src/exception/config/exception.py")
+configFileList.append("src/exception/config/mac_verification_failed_exception.py")
 
 configFileList.append("src/hash/config/hash.py")
 configFileList.append("src/hash/config/hash_transformation_interface.py")

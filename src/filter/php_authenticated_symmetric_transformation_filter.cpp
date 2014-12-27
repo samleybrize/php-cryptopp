@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../exception/php_mac_verification_failed_exception.h"
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
 #include "php_authenticated_symmetric_transformation_filter.h"
@@ -532,8 +533,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
         RETURN_FALSE
     } catch (CryptoPP::HashVerificationFilter::HashVerificationFailed &e) {
         // MAC not valid
-        // TODO specific exception type
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : MAC verification failed", cryptopp_ce_AuthenticatedSymmetricTransformationFilter->name);
+        zend_throw_exception_ex(getCryptoppMacVerificationFailedException(), 0 TSRMLS_CC, (char*)"%s : MAC verification failed", cryptopp_ce_AuthenticatedSymmetricTransformationFilter->name);
         RETURN_FALSE
     }
 }
