@@ -75,7 +75,7 @@ PHP_METHOD(Cryptopp_Hash, getAlgos) {
 /* }}} */
 
 /* {{{ proto array Hash::getClassname(string algoName)
-   Get the the name of the class that implements a hash algorithm */
+   Get the name of the class that implements a hash algorithm */
 PHP_METHOD(Cryptopp_Hash, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;

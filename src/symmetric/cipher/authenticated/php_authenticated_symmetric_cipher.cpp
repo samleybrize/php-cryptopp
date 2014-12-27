@@ -76,7 +76,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getAlgos) {
 /* }}} */
 
 /* {{{ proto array AuthenticatedSymmetricCipher::getClassname(string algoName)
-   Get the the name of the class that implements an authenticated symmetric cipher */
+   Get the name of the class that implements an authenticated symmetric cipher */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;

@@ -10,8 +10,8 @@ using namespace std;
 static vector<string> modeNameList;
 static vector<string> modeClassList;
 
-void addSymmetricMode(const string algoName, const string modeClassname) {
-    modeNameList.push_back(algoName);
+void addSymmetricMode(const string modeName, const string modeClassname) {
+    modeNameList.push_back(modeName);
     modeClassList.push_back(modeClassname);
 }
 
@@ -21,8 +21,8 @@ vector<string> getSymmetricModeList() {
     return _algos;
 }
 
-string getSymmetricModeClass(const string &algoName) {
-    vector<string>::iterator iterator = find(modeNameList.begin(), modeNameList.end(), algoName);
+string getSymmetricModeClass(const string &modeName) {
+    vector<string>::iterator iterator = find(modeNameList.begin(), modeNameList.end(), modeName);
 
     if (iterator == modeNameList.end()) {
         // symmetric mode not found
@@ -41,7 +41,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricMode_getModes, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricMode_getClassname, 0)
-    ZEND_ARG_INFO(0, algoName)
+    ZEND_ARG_INFO(0, modeName)
 ZEND_END_ARG_INFO()
 /* }}} */
 
@@ -74,8 +74,8 @@ PHP_METHOD(Cryptopp_SymmetricMode, getModes) {
 }
 /* }}} */
 
-/* {{{ proto array SymmetricMode::getClassname(string algoName)
-   Get the the name of the class that implements a symmetric mode */
+/* {{{ proto array SymmetricMode::getClassname(string modeName)
+   Get the name of the class that implements a symmetric mode */
 PHP_METHOD(Cryptopp_SymmetricMode, getClassname) {
     char *modeName      = NULL;
     int modeNameSize    = 0;

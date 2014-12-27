@@ -75,7 +75,7 @@ PHP_METHOD(Cryptopp_BlockCipher, getAlgos) {
 /* }}} */
 
 /* {{{ proto array BlockCipher::getClassname(string algoName)
-   Get the the name of the class that implements a block cipher */
+   Get the name of the class that implements a block cipher */
 PHP_METHOD(Cryptopp_BlockCipher, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;

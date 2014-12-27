@@ -75,7 +75,7 @@ PHP_METHOD(Cryptopp_StreamCipher, getAlgos) {
 /* }}} */
 
 /* {{{ proto array StreamCipher::getClassname(string algoName)
-   Get the the name of the class that implements a stream cipher */
+   Get the name of the class that implements a stream cipher */
 PHP_METHOD(Cryptopp_StreamCipher, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;

@@ -75,7 +75,7 @@ PHP_METHOD(Cryptopp_Mac, getAlgos) {
 /* }}} */
 
 /* {{{ proto array Mac::getClassname(string algoName)
-   Get the the name of the class that implements a mac algorithm */
+   Get the name of the class that implements a mac algorithm */
 PHP_METHOD(Cryptopp_Mac, getClassname) {
     char *algoName      = NULL;
     int algoNameSize    = 0;
