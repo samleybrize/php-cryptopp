@@ -79,6 +79,7 @@ configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_s
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_gcm.py")
+configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_proxy.py")
 
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")

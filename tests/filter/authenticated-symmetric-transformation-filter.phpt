@@ -94,7 +94,7 @@ var_dump(@$o->decryptString("e", array()));
 echo "$php_errormsg\n";
 
 // mode object: constructor not called
-echo "- mode object (parent constructor not called):\n";
+echo "- cipher object (parent constructor not called):\n";
 class AuthenticatedChild extends Cryptopp\AuthenticatedSymmetricCipherGcm
 {
     public function __construct(){}
@@ -167,7 +167,7 @@ NULL
 Cryptopp\AuthenticatedSymmetricTransformationFilter::decryptString() expects parameter 1 to be string, array given
 NULL
 Cryptopp\AuthenticatedSymmetricTransformationFilter::decryptString() expects parameter 2 to be string, array given
-- mode object (parent constructor not called):
+- cipher object (parent constructor not called):
 AuthenticatedChild : parent constructor was not called
 - inheritance (parent constructor not called):
 Cryptopp\AuthenticatedSymmetricTransformationFilter : constructor was not called

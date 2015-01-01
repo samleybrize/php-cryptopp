@@ -3,6 +3,9 @@
 #include "../exception/php_mac_verification_failed_exception.h"
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
+#include "../symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_interface.h"
+#include "../symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_abstract.h"
+#include "../symmetric/cipher/authenticated/authenticated_symmetric_cipher_proxy.h"
 #include "php_authenticated_symmetric_transformation_filter.h"
 #include <exception>
 #include <filters.h>
@@ -351,17 +354,17 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
             parentConstructorError = true;
         }
     } else {
-        // TODO create a proxy to the user php object
-//        try {
-//            symmetricEncryptor      = new SymmetricTransformationProxy::Encryption(cipherObject);
-//            symmetricDecryptor      = new SymmetricTransformationProxy::Decryption(cipherObject);
-//            cipherMustBeDestructed  = true;
-//        } catch (bool e) {
-//            return;
-//        } catch (const char *e) {
-//            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e);
-//            return;
-//        }
+        // create a proxy to the user php object
+        try {
+            symmetricEncryptor      = new AuthenticatedSymmetricCipherProxy::Encryption(cipherObject);
+            symmetricDecryptor      = new AuthenticatedSymmetricCipherProxy::Decryption(cipherObject);
+            cipherMustBeDestructed  = true;
+        } catch (bool e) {
+            return;
+        } catch (const char *e) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e);
+            return;
+        }
     }
 
     if (parentConstructorError) {
