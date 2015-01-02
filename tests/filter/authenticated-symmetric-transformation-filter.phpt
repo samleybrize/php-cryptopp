@@ -93,7 +93,7 @@ echo "$php_errormsg\n";
 var_dump(@$o->decryptString("e", array()));
 echo "$php_errormsg\n";
 
-// mode object: constructor not called
+// cipher object: constructor not called
 echo "- cipher object (parent constructor not called):\n";
 class AuthenticatedChild extends Cryptopp\AuthenticatedSymmetricCipherGcm
 {
