@@ -80,6 +80,7 @@ void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D) {
     zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "iv", 2, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "encryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "decryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "isKeyRequired", 13, 1, ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
@@ -248,20 +249,23 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
     // get key and iv of the php object
     zval *zKey;
     zval *zIv;
-    zKey        = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
-    zIv         = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
-    int keySize = Z_STRLEN_P(zKey);
-    int ivSize  = Z_STRLEN_P(zIv);
+    zval *zIsKeyRequired;
+    zKey                = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zIv                 = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    zIsKeyRequired      = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "isKeyRequired", 13, 1 TSRMLS_CC);
+    int keySize         = Z_STRLEN_P(zKey);
+    int ivSize          = Z_STRLEN_P(zIv);
+    bool isKeyRequired  = Z_BVAL_P(zIsKeyRequired);
 
     // set the key and the iv (if applicable) of native cipher objects
-    if (keySize > 0 && !encryptor->IsResynchronizable()) {
+    if ((keySize > 0 || !isKeyRequired) && !encryptor->IsResynchronizable()) {
         // an iv is not required
         // set key
         byte *key;
         key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
         encryptor->SetKey(key, keySize);
         decryptor->SetKey(key, keySize);
-    } else if (keySize > 0 && ivSize > 0 && encryptor->IsResynchronizable()) {
+    } else if ((keySize > 0 || !isKeyRequired) && ivSize > 0 && encryptor->IsResynchronizable()) {
         // set key and iv
         byte *key;
         byte *iv;

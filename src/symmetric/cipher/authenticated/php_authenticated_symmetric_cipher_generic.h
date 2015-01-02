@@ -6,7 +6,12 @@
 void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct);
 
-// TODO
+/* {{{ methods declarations */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getCipher);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getMac);
+/* }}} */
+
+/* {{{ AuthenticatedSymmetricCipher that take an instance of CryptoPP::SymmetricCipher and an instance of CryptoPP::MessageAuthenticationCode */
 class AuthenticatedSymmetricCipherGeneric
 {
 public:
@@ -14,32 +19,33 @@ public:
     class Base : public CryptoPP::AuthenticatedSymmetricCipher
     {
     public:
-        unsigned int MandatoryBlockSize() const;
-        unsigned int OptimalBlockSize() const;
         void ProcessData(byte *outString, const byte *inString, size_t length);
-        unsigned int MinLastBlockSize() const;
-        void Update(const byte *input, size_t length);
-        void TruncatedFinal(byte *digest, size_t digestSize);
-        unsigned int DigestSize() const;
-        std::string AlgorithmName() const {return "generic";};
-        void Restart(const byte *iv, int ivLength);
+        void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
+        void Resynchronize(const byte *iv, int ivLength=-1);
 
+        std::string AlgorithmName() const {return "generic";}
+
+        unsigned int MandatoryBlockSize() const {return m_cipher->MandatoryBlockSize();}
+        unsigned int OptimalBlockSize() const  {return m_cipher->OptimalBlockSize();}
+        unsigned int MinLastBlockSize() const {return m_cipher->MinLastBlockSize();}
         unsigned int GetOptimalBlockSizeUsed() const {return m_cipher->GetOptimalBlockSizeUsed();}
         unsigned int OptimalDataAlignment() const {return m_cipher->OptimalDataAlignment();}
         void ProcessLastBlock(byte *outString, const byte *inString, size_t length) {m_cipher->ProcessLastBlock(outString, inString, length);}
         bool IsRandomAccess() const {return m_cipher->IsRandomAccess();}
         void Seek(CryptoPP::lword n) {m_cipher->Seek(n);}
         bool IsSelfInverting() const {return m_cipher->IsSelfInverting();}
-        size_t MinKeyLength() const {return m_cipher->MinKeyLength();} // TODO
-        size_t MaxKeyLength() const {return m_cipher->MaxKeyLength();} // TODO
-        size_t DefaultKeyLength() const {return m_cipher->DefaultKeyLength();} // TODO
-        size_t GetValidKeyLength(size_t n) const {return m_cipher->GetValidKeyLength(n);} // TODO
-        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {m_cipher->SetKey(key, length, params);} // TODO
+        size_t MinKeyLength() const {return 0;}
+        size_t MaxKeyLength() const {return 0;}
+        size_t DefaultKeyLength() const {return 0;}
+        size_t GetValidKeyLength(size_t n) const {return 0;}
+        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {};
         IV_Requirement IVRequirement() const {return m_cipher->IVRequirement();}
-        void Resynchronize(const byte *iv, int ivLength=-1) {m_cipher->Resynchronize(iv, ivLength); m_mac->Restart();};
         void GetNextIV(CryptoPP::RandomNumberGenerator &rng, byte *IV) {m_cipher->GetNextIV(rng, IV);}
 
+        unsigned int DigestSize() const {return m_mac->DigestSize();}
+        void Update(const byte *input, size_t length) {m_mac->Update(input, length);}
         void Final(byte *digest) {TruncatedFinal(digest, DigestSize());}
+        void TruncatedFinal(byte *digest, size_t digestSize) {m_mac->TruncatedFinal(digest, digestSize);}
         void CalculateDigest(byte *digest, const byte *input, size_t length) {Update(input, length); Final(digest);}
         bool Verify(const byte *digest) {return TruncatedVerify(digest, DigestSize());}
         bool VerifyDigest(const byte *digest, const byte *input, size_t length) {Update(input, length); return Verify(digest);}
@@ -86,6 +92,7 @@ public:
     };
     /* }}} */
 };
+/* }}} */
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GENERIC_H */
 
