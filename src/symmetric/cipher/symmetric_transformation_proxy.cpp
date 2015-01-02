@@ -35,7 +35,7 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     zval_dtor(funcName);
     zval_dtor(zBlockSize);
 
-    // create a zval with the php method name to call for ProcessData()
+    // create zvals with php method names
     MAKE_STD_ZVAL(m_processDataFuncname);
     ZVAL_STRING(m_processDataFuncname, processDataFuncname, 1);
 

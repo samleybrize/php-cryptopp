@@ -66,7 +66,7 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
     zval_dtor(funcName);
     zval_dtor(zName);
 
-    // create a zval with the php method names to call
+    // create zvals with php method names
     MAKE_STD_ZVAL(m_funcnameProcessData);
     MAKE_STD_ZVAL(m_funcnameUpdate);
     MAKE_STD_ZVAL(m_funcnameFinalize);

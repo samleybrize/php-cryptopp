@@ -50,7 +50,7 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     zval_dtor(funcName);
     zval_dtor(zName);
 
-    // create a zval with the php method name to call for AdvancedProcessBlocks()
+    // create zvals with php method names
     MAKE_STD_ZVAL(m_funcnameProcessData);
     MAKE_STD_ZVAL(m_funcnameProcessBlock);
     MAKE_STD_ZVAL(m_funcnameIsValidKeyLength);
