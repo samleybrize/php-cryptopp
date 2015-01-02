@@ -57,7 +57,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct) {
     delete authenticatedCipherName;
 
     // hold the cipher object. if not, it can be deleted and associated encryptor/decryptor objects will be deleted too
-    zend_update_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
+    zend_update_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
 }
 /* }}} */
 
