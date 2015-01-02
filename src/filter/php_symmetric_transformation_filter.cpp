@@ -3,6 +3,7 @@
 #include "../padding/php_padding_interface.h"
 #include "../padding/php_pkcs7.h"
 #include "../symmetric/cipher/php_symmetric_transformation_interface.h"
+#include "../symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_interface.h"
 #include "../symmetric/cipher/stream/php_stream_cipher_abstract.h"
 #include "../symmetric/cipher/symmetric_transformation_proxy.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
@@ -29,12 +30,6 @@ SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTra
 
     // initialization copied from CryptoPP::StreamTransformationFilter
     assert(c.MinLastBlockSize() == 0 || c.MinLastBlockSize() > c.MandatoryBlockSize());
-
-    // TODO detection does not work + unit test
-    if (!allowAuthenticatedSymmetricCipher && dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&cipher) != 0) {
-        php_error_docref(NULL, E_NOTICE, "SymmetricTransformationFilter: instances of AuthenticatedSymmetricCipher should be used with AuthenticatedSymmetricTransformationFilter");
-    }
-
     IsolatedInitialize(MakeParameters(CryptoPP::Name::BlockPaddingScheme(), NO_PADDING, false));
 }
 
@@ -425,6 +420,11 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O|O", &cipherObject, cryptopp_ce_SymmetricTransformationInterface, &paddingObject, cryptopp_ce_PaddingInterface)) {
         return;
+    }
+
+    // produce a notice if the cipher object is an authenticated cipher
+    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherInterface)) {
+        php_error_docref(NULL, E_NOTICE, "SymmetricTransformationFilter: instances of AuthenticatedSymmetricCipher should be used with AuthenticatedSymmetricTransformationFilter");
     }
 
     // if no padding object, pick the default one

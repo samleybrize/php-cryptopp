@@ -4,7 +4,8 @@ Symmetric transformation filter with authenticated cipher
 <?php
 
 $a = new Cryptopp\AuthenticatedSymmetricCipherGcm(new Cryptopp\BlockCipherAes());
-$o = new Cryptopp\SymmetricTransformationFilter($a);
+$o = @new Cryptopp\SymmetricTransformationFilter($a);
+var_dump($php_errormsg);
 var_dump($o->getCipher()->getName());
 
 // encryptString
@@ -23,6 +24,7 @@ var_dump($o->decryptString(hex2bin("f1dc86cae503cab4f002de")));
 
 ?>
 --EXPECT--
+string(190) "Cryptopp\SymmetricTransformationFilter::__construct(): SymmetricTransformationFilter: instances of AuthenticatedSymmetricCipher should be used with AuthenticatedSymmetricTransformationFilter"
 string(8) "gcm(aes)"
 - encryptString:
 string(20) "e7de80cef314ceaefb14"
