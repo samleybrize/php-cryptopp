@@ -30,9 +30,9 @@ SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTra
     // initialization copied from CryptoPP::StreamTransformationFilter
     assert(c.MinLastBlockSize() == 0 || c.MinLastBlockSize() > c.MandatoryBlockSize());
 
+    // TODO detection does not work + unit test
     if (!allowAuthenticatedSymmetricCipher && dynamic_cast<CryptoPP::AuthenticatedSymmetricCipher *>(&cipher) != 0) {
-        // TODO
-        throw CryptoPP::InvalidArgument("SymmetricTransformationFilter: please use AuthenticatedEncryptionFilter and AuthenticatedDecryptionFilter for AuthenticatedSymmetricCipher");
+        php_error_docref(NULL, E_NOTICE, "SymmetricTransformationFilter: instances of AuthenticatedSymmetricCipher should be used with AuthenticatedSymmetricTransformationFilter");
     }
 
     IsolatedInitialize(MakeParameters(CryptoPP::Name::BlockPaddingScheme(), NO_PADDING, false));
