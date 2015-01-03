@@ -167,6 +167,11 @@ void AuthenticatedSymmetricCipherProxy::Base::TruncatedFinal(byte *digest, size_
     zval_dtor(zOutput);
 }
 
+void AuthenticatedSymmetricCipherProxy::Base::Resynchronize(const byte *iv, int ivLength)
+{
+    Restart();
+}
+
 void AuthenticatedSymmetricCipherProxy::Base::Restart()
 {
     zval *zOutput;

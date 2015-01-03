@@ -20,8 +20,10 @@ public:
         void Update(const byte *input, size_t length);
         void TruncatedFinal(byte *digest, size_t digestSize);
         unsigned int DigestSize() const;
-        std::string AlgorithmName() const {return m_name;};
+        void Resynchronize(const byte *iv, int ivLength = -1);
         void Restart();
+
+        std::string AlgorithmName() const {return m_name;};
 
         // unused
         CryptoPP::lword MaxHeaderLength() const {return 0;}
@@ -42,7 +44,6 @@ public:
         size_t GetValidKeyLength(size_t n) const {return 8;}
         void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {}
         IV_Requirement IVRequirement() const {return RANDOM_IV;}
-        void Resynchronize(const byte *iv, int ivLength=-1) {throw CryptoPP::NotImplemented(GetAlgorithm().AlgorithmName() + ": this object doesn't support resynchronization");}
         void GetNextIV(CryptoPP::RandomNumberGenerator &rng, byte *IV) {}
         byte * CreateUpdateSpace(size_t &size) {return NULL;}
         void Final(byte *digest) {TruncatedFinal(digest, DigestSize());}

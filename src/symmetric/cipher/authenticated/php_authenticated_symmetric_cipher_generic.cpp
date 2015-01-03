@@ -12,18 +12,22 @@
 #include <zend_exceptions.h>
 
 /* {{{ AuthenticatedSymmetricCipher that take an instance of CryptoPP::SymmetricCipher and an instance of CryptoPP::MessageAuthenticationCode */
-AuthenticatedSymmetricCipherGeneric::Base::Base(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac)
+AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac)
 {
+    m_zCipher   = zCipher;
     m_cipher    = cipher;
     m_mac       = mac;
+
+    MAKE_STD_ZVAL(m_funcnameRestart);
+    ZVAL_STRING(m_funcnameRestart, "restart", 1);
 }
 
-AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(cipher, mac)
+AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(zCipher, cipher, mac)
 {
     assert(cipher->IsForwardTransformation());
 }
 
-AuthenticatedSymmetricCipherGeneric::Decryption::Decryption(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(cipher, mac)
+AuthenticatedSymmetricCipherGeneric::Decryption::Decryption(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(zCipher, cipher, mac)
 {
     assert(!cipher->IsForwardTransformation());
 }
@@ -43,14 +47,19 @@ void AuthenticatedSymmetricCipherGeneric::Base::ProcessData(byte *outString, con
 
 void AuthenticatedSymmetricCipherGeneric::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
-    m_cipher->SetKeyWithIV(key, 0, iv, ivLength);
-    m_mac->Restart();
+    Restart();
 }
 
 void AuthenticatedSymmetricCipherGeneric::Base::Resynchronize(const byte *iv, int ivLength)
 {
-    m_cipher->Resynchronize(iv, ivLength);
-    m_mac->Restart();
+    Restart();
+}
+
+void AuthenticatedSymmetricCipherGeneric::Base::Restart()
+{
+    zval *zOutput;
+    MAKE_STD_ZVAL(zOutput);
+    call_user_function(NULL, &m_zCipher, m_funcnameRestart, zOutput, 0, NULL TSRMLS_CC);
 }
 /* }}} */
 
@@ -191,8 +200,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct) {
     // instanciate authenticated cipher encryptor/decryptor
     AuthenticatedSymmetricCipherGeneric::Encryption *encryptor;
     AuthenticatedSymmetricCipherGeneric::Decryption *decryptor;
-    encryptor = new AuthenticatedSymmetricCipherGeneric::Encryption(cipherEncryptor, mac);
-    decryptor = new AuthenticatedSymmetricCipherGeneric::Decryption(cipherDecryptor, mac);
+    encryptor = new AuthenticatedSymmetricCipherGeneric::Encryption(cipherObject, cipherEncryptor, mac);
+    decryptor = new AuthenticatedSymmetricCipherGeneric::Decryption(cipherObject, cipherDecryptor, mac);
     setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
@@ -202,10 +211,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct) {
     // hold the cipher/mac objects
     zend_update_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, cipherObject TSRMLS_CC);
     zend_update_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, getThis(), "mac", 3, macObject TSRMLS_CC);
-
-    // disable key verification on the authenticated wrapper
-    // key must be set independently on the underlying cipher and mac
-    zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "isKeyRequired", 13, 0 TSRMLS_CC);
 }
 /* }}} */
 

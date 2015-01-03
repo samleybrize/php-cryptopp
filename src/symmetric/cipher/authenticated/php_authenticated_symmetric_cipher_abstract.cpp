@@ -5,6 +5,7 @@
 #include "php_authenticated_symmetric_cipher.h"
 #include "php_authenticated_symmetric_cipher_interface.h"
 #include "php_authenticated_symmetric_cipher_abstract.h"
+#include "php_authenticated_symmetric_cipher_generic.h"
 #include <zend_exceptions.h>
 #include <string>
 
@@ -80,7 +81,6 @@ void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D) {
     zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "iv", 2, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "encryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
     zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "decryptionStarted", 17, 0, ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, "isKeyRequired", 13, 1, ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
@@ -250,22 +250,20 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
     zval *zKey;
     zval *zIv;
     zval *zIsKeyRequired;
-    zKey                = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
-    zIv                 = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
-    zIsKeyRequired      = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "isKeyRequired", 13, 1 TSRMLS_CC);
-    int keySize         = Z_STRLEN_P(zKey);
-    int ivSize          = Z_STRLEN_P(zIv);
-    bool isKeyRequired  = Z_BVAL_P(zIsKeyRequired);
+    zKey        = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zIv         = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    int keySize = Z_STRLEN_P(zKey);
+    int ivSize  = Z_STRLEN_P(zIv);
 
     // set the key and the iv (if applicable) of native cipher objects
-    if ((keySize > 0 || !isKeyRequired) && !encryptor->IsResynchronizable()) {
+    if (keySize > 0 && !encryptor->IsResynchronizable()) {
         // an iv is not required
         // set key
         byte *key;
         key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
         encryptor->SetKey(key, keySize);
         decryptor->SetKey(key, keySize);
-    } else if ((keySize > 0 || !isKeyRequired) && ivSize > 0 && encryptor->IsResynchronizable()) {
+    } else if (keySize > 0 && ivSize > 0 && encryptor->IsResynchronizable()) {
         // set key and iv
         byte *key;
         byte *iv;
@@ -273,6 +271,20 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
         iv  = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
         encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
+    }
+}
+/* }}} */
+
+/* {{{ resets the mac and the iv of the cipher to their initial state */
+static void restart(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor) {
+
+    if (instanceof_function(Z_OBJCE_P(object), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
+        // authenticated cipher generic
+        encryptor->Restart();
+        decryptor->Restart();
+    } else {
+        // other authenticated cipher
+        setKeyWithIv(object, encryptor, decryptor);
     }
 }
 /* }}} */
@@ -362,6 +374,15 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
         RETURN_FALSE;
     }
 
+    // set the key only if it is required
+    zval *zIsKeyRequired;
+    zIsKeyRequired = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "isKeyRequired", 13, 1 TSRMLS_CC);
+
+    if (instanceof_function(Z_OBJCE_P(getThis()), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
+        // TODO notice
+        return;
+    }
+
     // set the key on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
@@ -389,6 +410,12 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     } else if (!isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize)) {
         // invalid iv
         RETURN_FALSE;
+    }
+
+    // set the iv only if the key is required
+    if (instanceof_function(Z_OBJCE_P(getThis()), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
+        // TODO notice
+        return;
     }
 
     // set the iv on both the php object and the native cryptopp object
@@ -555,6 +582,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption) {
 
     try {
         encryptor->Final(digest);
+
+        // restart
+        CryptoPP::AuthenticatedSymmetricCipher *decryptor;
+        decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
+        restart(getThis(), encryptor, decryptor);
     } catch (bool e) {
         RETURN_FALSE;
     }
@@ -577,6 +609,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
 
     try {
         decryptor->Final(digest);
+
+        // restart
+        CryptoPP::AuthenticatedSymmetricCipher *encryptor;
+        encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+        restart(getThis(), encryptor, decryptor);
     } catch (bool e) {
         RETURN_FALSE;
     }
@@ -592,7 +629,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart) {
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
-    setKeyWithIv(getThis(), encryptor, decryptor);
+    restart(getThis(), encryptor, decryptor);
 
     // indicate that encryption/decryption has not started
     zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 0 TSRMLS_CC);

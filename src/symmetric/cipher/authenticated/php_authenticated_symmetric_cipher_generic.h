@@ -3,6 +3,7 @@
 
 #include "../../../php_cryptopp.h"
 
+extern zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherGeneric;
 void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct);
 
@@ -22,6 +23,7 @@ public:
         void ProcessData(byte *outString, const byte *inString, size_t length);
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
         void Resynchronize(const byte *iv, int ivLength=-1);
+        void Restart();
 
         std::string AlgorithmName() const {return "generic";}
 
@@ -38,7 +40,8 @@ public:
         size_t MaxKeyLength() const {return 0;}
         size_t DefaultKeyLength() const {return 0;}
         size_t GetValidKeyLength(size_t n) const {return 0;}
-        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {};
+        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {m_cipher->SetKey(key, length, params);}
+        virtual unsigned int IVSize() const {return 0;}
         IV_Requirement IVRequirement() const {return m_cipher->IVRequirement();}
         void GetNextIV(CryptoPP::RandomNumberGenerator &rng, byte *IV) {m_cipher->GetNextIV(rng, IV);}
 
@@ -62,13 +65,15 @@ public:
         bool DecryptAndVerify(byte *message, const byte *mac, size_t macLength, const byte *iv, int ivLength, const byte *header, size_t headerLength, const byte *ciphertext, size_t ciphertextLength) {return true;}
 
     protected:
-        Base(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Base(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
 
         // unused
         const Algorithm & GetAlgorithm() const {return *static_cast<const CryptoPP::MessageAuthenticationCode *>(this);}
         void UncheckedSpecifyDataLengths(CryptoPP::lword headerLength, CryptoPP::lword messageLength, CryptoPP::lword footerLength) {}
         void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {}
 
+        zval *m_zCipher;
+        zval *m_funcnameRestart;
         CryptoPP::SymmetricCipher *m_cipher;
         CryptoPP::MessageAuthenticationCode *m_mac;
     };
@@ -78,7 +83,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Encryption(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
         bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
@@ -87,7 +92,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Decryption(zval *zCipher, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
         bool IsForwardTransformation() const {return false;};
     };
     /* }}} */
