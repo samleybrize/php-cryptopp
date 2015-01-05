@@ -13,6 +13,9 @@ class SymmetricTransformationProxy
         unsigned int MandatoryBlockSize() const;
         unsigned int OptimalBlockSize() const;
         void ProcessData(byte *outString, const byte *inString, size_t length);
+        bool IsValidKeyLength(size_t n) const;
+        bool IsValidKeyLength(size_t n);
+        void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
 
         // unused methods
         IV_Requirement IVRequirement() const {return UNPREDICTABLE_RANDOM_IV;}
@@ -27,9 +30,13 @@ class SymmetricTransformationProxy
 
     protected:
         Base(zval *symmetricTransformationObject, const char* processDataFuncname);
+
         unsigned int m_blockSize;
         zval *m_symmetricTransformationObject;
         zval *m_processDataFuncname;
+        zval *m_funcnameIsValidKeyLength;
+        zval *m_funcnameSetKey;
+        zval *m_funcnameSetIv;
     };
     /* }}} */
 

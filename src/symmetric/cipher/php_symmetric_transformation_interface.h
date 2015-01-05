@@ -8,6 +8,10 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_setIv, 0)
     ZEND_ARG_INFO(0, iv)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_isValidIvLength, 0)
+    ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_encrypt, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()

@@ -49,6 +49,7 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -158,7 +159,8 @@ static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCiphe
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
-    if (cipher->IsResynchronizable() && cipher->IVSize() != ivSize) {
+    if (cipher->IsResynchronizable() &&
+            (ivSize < cipher->MinIVLength() || ivSize > cipher->MaxIVLength())) {
         if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
@@ -261,6 +263,26 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
+    }
+}
+/* }}} */
+
+/* {{{ proto bool StreamCipherAbstract::isValidIvLength(int length)
+   Indicates if an iv length is valid */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
+    int ivSize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &ivSize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    if (ivSize < encryptor->MinIVLength() || ivSize > encryptor->MaxIVLength()) {
+        RETURN_FALSE
+    } else {
+        RETURN_TRUE
     }
 }
 /* }}} */

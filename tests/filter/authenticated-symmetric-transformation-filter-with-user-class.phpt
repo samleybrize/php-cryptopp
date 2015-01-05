@@ -23,6 +23,11 @@ class AuthenticatedSymmetricCipherUser implements Cryptopp\AuthenticatedSymmetri
         return 6 == $keyLength;
     }
 
+    public function isValidIvLength($keyLength)
+    {
+        return 7 == $keyLength;
+    }
+
     public function setKey($key)
     {
     }

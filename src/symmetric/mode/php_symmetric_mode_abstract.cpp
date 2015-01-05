@@ -52,6 +52,7 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, getName, arginfo_SymmetricCipherInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -226,7 +227,8 @@ static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCiph
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
-    if (mode->IsResynchronizable() && mode->IVSize() != ivSize) {
+    if (mode->IsResynchronizable() &&
+            (ivSize < mode->MinIVLength() || ivSize > mode->MaxIVLength())) {
         if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
@@ -329,6 +331,26 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
+    }
+}
+/* }}} */
+
+/* {{{ proto bool SymmetricModeAbstract::isValidIvLength(int length)
+   Indicates if an iv length is valid */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidIvLength) {
+    int ivSize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &ivSize)) {
+        return;
+    }
+
+    CryptoPP::SymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    if (ivSize < encryptor->MinIVLength() || ivSize > encryptor->MaxIVLength()) {
+        RETURN_FALSE
+    } else {
+        RETURN_TRUE
     }
 }
 /* }}} */

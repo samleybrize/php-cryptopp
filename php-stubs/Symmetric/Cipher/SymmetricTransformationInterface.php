@@ -12,6 +12,12 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
     public function setIv($iv);
 
     /**
+     * Indicates if a given iv length is valid for this algorithm
+     * @return bool
+     */
+    public function isValidIvLength($length);
+
+    /**
      * Encrypts data
      * @param string $data data to encrypt
      * @return string encrypted data

@@ -51,6 +51,7 @@ static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherAbstract
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getDigestSize, arginfo_AuthenticatedSymmetricCipherInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -343,6 +344,26 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
+    }
+}
+/* }}} */
+
+/* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidIvLength(int length)
+   Indicates if an iv length is valid */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
+    int ivSize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &ivSize)) {
+        return;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipher *encryptor;
+    encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+
+    if (ivSize < encryptor->MinIVLength() || ivSize > encryptor->MaxIVLength()) {
+        RETURN_FALSE
+    } else {
+        RETURN_TRUE
     }
 }
 /* }}} */

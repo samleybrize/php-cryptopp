@@ -22,6 +22,11 @@ abstract class AuthenticatedSymmetricCipherAbstract implements AuthenticatedSymm
     /**
      * {@inheritdoc}
      */
+    final public function isValidIvLength($length) {}
+
+    /**
+     * {@inheritdoc}
+     */
     final public function setKey($key) {}
 
     /**

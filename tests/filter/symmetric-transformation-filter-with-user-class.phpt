@@ -20,6 +20,11 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
         return 6 == $keyLength;
     }
 
+    public function isValidIvLength($length)
+    {
+        return 7 == $length;
+    }
+
     public function setKey($key)
     {
     }
