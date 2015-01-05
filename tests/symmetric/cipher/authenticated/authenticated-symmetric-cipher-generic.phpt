@@ -1,19 +1,9 @@
 --TEST--
 Authenticated symmetric cipher generic
---SKIPIF--
-<?php die("disabled"); ?>
 --FILE--
 <?php
 
 var_dump(is_a("Cryptopp\AuthenticatedSymmetricCipherGeneric", "Cryptopp\AuthenticatedSymmetricCipherAbstract", true));
-
-// TODO setKey
-// TODO setIv
-
-// TODO getCipher
-// TODO getMac
-
-// TODO test cipher w/o iv
 
 // check algorithm infos
 $c = new Cryptopp\StreamCipherSosemanuk();
@@ -22,12 +12,14 @@ $o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 var_dump($o->getDigestSize());
+var_dump($o->getCipher()->getName());
+var_dump($o->getMac()->getName());
 
 // encrypt
 echo "- encrypt:\n";
-$m->setKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
-$c->setKey(hex2bin("a7c083feb7"));
-$c->setIv(hex2bin("00112233445566778899aabbccddeeff")); // TODO $c
+$o->setMacKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
+$o->setKey(hex2bin("a7c083feb7"));
+$o->setIv(hex2bin("00112233445566778899aabbccddeeff"));
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 var_dump(bin2hex($o->finalizeEncryption()));
@@ -65,8 +57,8 @@ var_dump(bin2hex($o->finalizeDecryption()));
 
 // encrypt aad only
 echo "- encrypt aad only:\n";
-$c->setKey(hex2bin("77be637089"));
-$c->setIv(hex2bin("e0e00f19fed7ba0136a797f3ed7ba013"));
+$o->setKey(hex2bin("77be637089"));
+$o->setIv(hex2bin("e0e00f19fed7ba0136a797f3ed7ba013"));
 $o->addEncryptionAdditionalData(hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
 var_dump(bin2hex($o->finalizeEncryption()));
 
@@ -86,7 +78,20 @@ try {
 
 try {
     $o->setKey("");
-    echo "empty key ok\n";
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// invalid iv
+echo "- invalid iv:\n";
+try {
+    $o->setIv("123");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+try {
+    $o->setIv("");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -103,11 +108,15 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// invalid iv
-echo "- invalid iv:\n";
+// encrypt without iv
+echo "- no iv:\n";
+$c = new Cryptopp\StreamCipherSosemanuk();
+$m = new Cryptopp\MacHmac(new Cryptopp\HashSha1());
+$o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
+$o->setKey("12345");
+
 try {
-    $o->setIv("123");
-    echo "iv size 3 ok\n";
+    $o->encrypt("123456");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -158,6 +167,8 @@ var_dump(@$o->setKey(array()));
 echo "$php_errormsg\n";
 var_dump(@$o->setIv(array()));
 echo "$php_errormsg\n";
+var_dump(@$o->setMacKey(array()));
+echo "$php_errormsg\n";
 
 // test inheritance
 echo "- inheritance:\n";
@@ -187,6 +198,8 @@ bool(true)
 string(20) "sosemanuk/hmac(sha1)"
 int(1)
 int(20)
+string(9) "sosemanuk"
+string(10) "hmac(sha1)"
 - encrypt:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "be6a431a935cb90e2221ebb7ef502328"
@@ -209,11 +222,14 @@ string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
 string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 33 is not a valid key length
-empty key ok
-- no key:
 Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
 - invalid iv:
-iv size 3 ok
+Cryptopp\AuthenticatedSymmetricCipherGeneric : 3 is not a valid initialization vector length
+Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
+- no key:
+Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
+- no iv:
+Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
 - encrypt before aad:
 Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any encryption
 - decrypt before aad:
@@ -233,6 +249,8 @@ NULL
 Cryptopp\AuthenticatedSymmetricCipherAbstract::setKey() expects parameter 1 to be string, array given
 NULL
 Cryptopp\AuthenticatedSymmetricCipherAbstract::setIv() expects parameter 1 to be string, array given
+NULL
+Cryptopp\AuthenticatedSymmetricCipherGeneric::setMacKey() expects parameter 1 to be string, array given
 - inheritance:
 int(1)
 - inheritance (parent constructor not called):

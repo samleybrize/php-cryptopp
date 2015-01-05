@@ -23,4 +23,18 @@ class AuthenticatedSymmetricCipherGeneric extends AuthenticatedSymmetricCipherAb
      * @return \Cryptopp\MacInterface
      */
     final public function getMac() {}
+
+    /**
+     * Sets the cipher key
+     * @param string $key
+     * @throws \Cryptopp\CryptoppException
+     */
+    final public function setKey($key);
+
+    /**
+     * Sets the MAC key
+     * @param string $key
+     * @throws \Cryptopp\CryptoppException
+     */
+    final public function setMacKey($key) {}
 }

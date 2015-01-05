@@ -212,7 +212,7 @@ bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::Auth
     key         = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
-    return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize);
+    return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher);
 }
 /* }}} */
 
@@ -277,15 +277,7 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
 
 /* {{{ resets the mac and the iv of the cipher to their initial state */
 static void restart(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor) {
-
-    if (instanceof_function(Z_OBJCE_P(object), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
-        // authenticated cipher generic
-        encryptor->Restart();
-        decryptor->Restart();
-    } else {
-        // other authenticated cipher
-        setKeyWithIv(object, encryptor, decryptor);
-    }
+    setKeyWithIv(object, encryptor, decryptor);
 }
 /* }}} */
 
@@ -374,15 +366,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
         RETURN_FALSE;
     }
 
-    // set the key only if it is required
-    zval *zIsKeyRequired;
-    zIsKeyRequired = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "isKeyRequired", 13, 1 TSRMLS_CC);
-
-    if (instanceof_function(Z_OBJCE_P(getThis()), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
-        // TODO notice
-        return;
-    }
-
     // set the key on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
@@ -410,12 +393,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     } else if (!isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize)) {
         // invalid iv
         RETURN_FALSE;
-    }
-
-    // set the iv only if the key is required
-    if (instanceof_function(Z_OBJCE_P(getThis()), cryptopp_ce_AuthenticatedSymmetricCipherGeneric)) {
-        // TODO notice
-        return;
     }
 
     // set the iv on both the php object and the native cryptopp object
