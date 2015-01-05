@@ -44,6 +44,20 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// invalid iv
+echo "- invalid iv:\n";
+try {
+    $o->setIv("123");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+try {
+    $o->setIv("");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // encrypt without key
 echo "- no key:\n";
 $o = new Cryptopp\StreamCipherSosemanuk();
@@ -54,10 +68,13 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// invalid iv
-echo "- invalid iv:\n";
+// encrypt without iv
+echo "- no iv:\n";
+$o = new Cryptopp\StreamCipherSosemanuk();
+$o->setKey("12345");
+
 try {
-    $o->setIv("123");
+    $o->encrypt("123456");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -120,10 +137,13 @@ string(32) "fe81d2162c9a100d04895c454a77515b"
 - invalid key:
 Cryptopp\StreamCipherSosemanuk : 33 is not a valid key length
 Cryptopp\StreamCipherSosemanuk : a key is required
-- no key:
-Cryptopp\StreamCipherSosemanuk : a key is required
 - invalid iv:
 Cryptopp\StreamCipherSosemanuk : 3 is not a valid initialization vector length
+Cryptopp\StreamCipherSosemanuk : an initialization vector is required
+- no key:
+Cryptopp\StreamCipherSosemanuk : a key is required
+- no iv:
+Cryptopp\StreamCipherSosemanuk : an initialization vector is required
 - sleep:
 You cannot serialize or unserialize Cryptopp\StreamCipherAbstract instances
 - bad arguments:
