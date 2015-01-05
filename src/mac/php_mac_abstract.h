@@ -36,6 +36,7 @@ PHP_METHOD(Cryptopp_MacAbstract, __wakeup);
 PHP_METHOD(Cryptopp_MacAbstract, getName);
 PHP_METHOD(Cryptopp_MacAbstract, getDigestSize);
 PHP_METHOD(Cryptopp_MacAbstract, getBlockSize);
+PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_MacAbstract, setKey);
 PHP_METHOD(Cryptopp_MacAbstract, calculateDigest);
 PHP_METHOD(Cryptopp_MacAbstract, update);

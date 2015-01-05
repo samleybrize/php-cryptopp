@@ -10,4 +10,10 @@ interface MacInterface extends HashTransformationInterface
      * @throws \Cryptopp\CryptoppException
      */
     public function setKey($key);
+
+    /**
+     * Indicates if a given key length is valid for this algorithm
+     * @return bool
+     */
+    public function isValidKeyLength($keyLength);
 }

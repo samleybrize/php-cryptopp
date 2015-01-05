@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../mac/mac_proxy.h"
 #include "../../../mac/php_mac_interface.h"
 #include "../../../mac/php_mac_abstract.h"
 #include "../../mode/php_symmetric_mode_abstract.h"
@@ -61,6 +62,11 @@ void AuthenticatedSymmetricCipherGeneric::Base::Resynchronize(const byte *iv, in
 void AuthenticatedSymmetricCipherGeneric::Base::SetMacKey(const byte *key, size_t length)
 {
     m_mac->SetKey(key, length);
+}
+
+bool AuthenticatedSymmetricCipherGeneric::Base::IsValidKeyLength(size_t n) const
+{
+    return m_cipher->IsValidKeyLength(n);
 }
 
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidMacKeyLength(size_t n) const
@@ -140,8 +146,8 @@ static bool getCipherMacElements(
         // retrieve native object
         *mac = static_cast<MacAbstractContainer *>(zend_object_store_get_object(macObject TSRMLS_CC))->mac;
     } else if (instanceof_function(Z_OBJCE_P(macObject), cryptopp_ce_MacInterface)) {
-        // TODO create a proxy to the user php object
-        //*mac = new MacProxy(macObject);
+        // create a proxy to the user php object
+        *mac = new MacProxy(macObject);
     } else {
         // invalid object
         zend_class_entry *ce;

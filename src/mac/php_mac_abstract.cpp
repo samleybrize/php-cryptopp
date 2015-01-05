@@ -47,6 +47,7 @@ static zend_function_entry cryptopp_methods_MacAbstract[] = {
     PHP_ME(Cryptopp_MacAbstract, getName, arginfo_HashTransformationInterface_getName, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, getDigestSize, arginfo_HashTransformationInterface_getDigestSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, getBlockSize, arginfo_HashTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, isValidKeyLength, arginfo_MacInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, calculateDigest, arginfo_HashTransformationInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -165,6 +166,26 @@ PHP_METHOD(Cryptopp_MacAbstract, getBlockSize) {
 
     unsigned int blockSize = mac->BlockSize();
     RETURN_LONG(blockSize);
+}
+/* }}} */
+
+/* {{{ proto bool MacAbstract::isValidKeyLength(int keyLength)
+   Indicates if a key length is valid */
+PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
+    int keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
+        return;
+    }
+
+    CryptoPP::MessageAuthenticationCode *mac;
+    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+
+    if (mac->IsValidKeyLength(keySize)) {
+        RETURN_TRUE
+    } else {
+        RETURN_FALSE
+    }
 }
 /* }}} */
 

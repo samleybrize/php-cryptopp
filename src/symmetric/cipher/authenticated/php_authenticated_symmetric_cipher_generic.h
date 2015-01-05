@@ -26,6 +26,7 @@ public:
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
         void Resynchronize(const byte *iv, int ivLength=-1);
         void SetMacKey(const byte *key, size_t length);
+        bool IsValidKeyLength(size_t n) const;
         bool IsValidMacKeyLength(size_t n) const;
 
         std::string AlgorithmName() const {return "generic";}
