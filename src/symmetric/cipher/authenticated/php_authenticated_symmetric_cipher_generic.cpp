@@ -51,24 +51,25 @@ void AuthenticatedSymmetricCipherGeneric::Base::ProcessData(byte *outString, con
 void AuthenticatedSymmetricCipherGeneric::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
     m_cipher->SetKeyWithIV(key, length, iv, ivLength);
-    m_mac->Restart();
+    Restart();
 }
 
 void AuthenticatedSymmetricCipherGeneric::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     m_cipher->SetKey(key, length, params);
-    m_mac->Restart();
+    Restart();
 }
 
 void AuthenticatedSymmetricCipherGeneric::Base::Resynchronize(const byte *iv, int ivLength)
 {
     m_cipher->Resynchronize(iv, ivLength);
-    m_mac->Restart();
+    Restart();
 }
 
 void AuthenticatedSymmetricCipherGeneric::Base::SetMacKey(const byte *key, size_t length)
 {
     m_mac->SetKey(key, length);
+    Restart();
 }
 
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidKeyLength(size_t n) const
@@ -88,6 +89,15 @@ bool AuthenticatedSymmetricCipherGeneric::Base::IsValidIvLength(size_t n)
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidMacKeyLength(size_t n) const
 {
     return m_mac->IsValidKeyLength(n);
+}
+
+void AuthenticatedSymmetricCipherGeneric::Base::Restart()
+{
+    m_mac->Restart();
+
+    if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(m_cipher)) {
+        dynamic_cast<SymmetricTransformationUserInterface*>(m_cipher)->Restart();
+    }
 }
 /* }}} */
 

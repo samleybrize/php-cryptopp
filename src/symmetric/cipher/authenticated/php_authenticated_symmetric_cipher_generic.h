@@ -30,6 +30,7 @@ public:
         bool IsValidKeyLength(size_t n) const;
         bool IsValidIvLength(size_t n);
         bool IsValidMacKeyLength(size_t n) const;
+        void Restart();
 
         std::string AlgorithmName() const {return "generic";}
 

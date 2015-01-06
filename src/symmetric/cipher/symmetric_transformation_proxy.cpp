@@ -41,11 +41,13 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     MAKE_STD_ZVAL(m_funcnameIsValidIvLength);
     MAKE_STD_ZVAL(m_funcnameSetKey);
     MAKE_STD_ZVAL(m_funcnameSetIv);
+    MAKE_STD_ZVAL(m_funcnameRestart);
     ZVAL_STRING(m_processDataFuncname, processDataFuncname, 1);
     ZVAL_STRING(m_funcnameIsValidKeyLength, "isValidKeyLength", 1);
     ZVAL_STRING(m_funcnameIsValidIvLength, "isValidIvLength", 1);
     ZVAL_STRING(m_funcnameSetKey, "setKey", 1);
     ZVAL_STRING(m_funcnameSetIv, "setIv", 1);
+    ZVAL_STRING(m_funcnameRestart, "restart", 1);
 
     // hold symmetricTransformationObject
     m_symmetricTransformationObject = symmetricTransformationObject;
@@ -147,6 +149,8 @@ void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t le
     zval_dtor(zKey);
     zval_dtor(zIv);
     zval_dtor(output);
+
+    Restart();
 }
 
 void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
@@ -170,6 +174,13 @@ void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, 
     }
 
     SetKeyWithIV(key, length, iv, ivLength);
+}
+
+void SymmetricTransformationProxy::Base::Restart()
+{
+    zval *output;
+    MAKE_STD_ZVAL(output)
+    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameRestart, output, 0, NULL TSRMLS_CC);
 }
 
 /*

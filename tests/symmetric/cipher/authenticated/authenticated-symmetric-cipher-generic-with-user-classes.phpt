@@ -4,7 +4,6 @@ Authenticated symmetric cipher generic with user classes
 <?php
 
 // TODO check that key/iv are set properly
-// TODO restarted
 class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInterface
 {
     public function getName()
@@ -194,6 +193,8 @@ echo "- no key:\n";
 $c = new SymmetricTransformationUser();
 $m = new MacUser();
 $o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
+$o->setIv("1234567");
+$o->setMacKey("123456789");
 
 try {
     $o->encrypt("123456");
@@ -215,10 +216,24 @@ try {
     echo $e->getMessage() . "\n";
 }
 
-// TODO no mac key
+// encrypt without mac key
+echo "- no mac key:\n";
+$c = new SymmetricTransformationUser();
+$m = new MacUser();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
+$o->setKey("123456");
+$o->setIv("1234567");
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
 
 // encrypt before aad
 echo "- encrypt before aad:\n";
+$o->setKey("123456");
+$o->setMacKey("123456789");
 $o->setIv("1234567");
 $o->restart();
 
@@ -248,25 +263,25 @@ int(10)
 string(5) "userc"
 string(5) "userm"
 - encrypt:
-string(16) "ytrewqpoiuytreza"
+restarted restarted restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
 string(16) "wxcvbnmlkjhgfdsq"
-string(10) "4582cb6203"
+restarted restarted restarted restarted string(10) "4582cb6203"
 - decrypt:
-string(16) "azertyuiopqwerty"
+restarted restarted restarted restarted string(16) "azertyuiopqwerty"
 string(16) "qsdfghjklmnbvcxw"
-string(10) "4582cb6203"
+restarted restarted restarted restarted string(10) "4582cb6203"
 - restart:
-string(16) "ytrewqpoiuytreza"
-string(16) "ytrewqpoiuytreza"
-string(10) "dd902ae895"
+restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted restarted restarted string(10) "dd902ae895"
 - encrypt + aad:
-string(10) "18ce872628"
+restarted restarted restarted restarted restarted restarted restarted restarted string(10) "18ce872628"
 - decrypt + aad:
-string(10) "18ce872628"
+restarted restarted restarted restarted restarted restarted restarted restarted string(10) "18ce872628"
 - encrypt aad only:
-string(10) "d3b1071126"
+restarted restarted restarted restarted string(10) "d3b1071126"
 - decrypt aad only:
-string(10) "d3b1071126"
+restarted restarted restarted restarted restarted restarted restarted restarted string(10) "d3b1071126"
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 33 is not a valid key length
 Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
@@ -274,10 +289,12 @@ Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 3 is not a valid initialization vector length
 Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
 - no key:
-Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
+restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
 - no iv:
-Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
+restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
+- no mac key:
+restarted restarted restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : a MAC key is required
 - encrypt before aad:
-Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any encryption
+restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any encryption
 - decrypt before aad:
 Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any decryption

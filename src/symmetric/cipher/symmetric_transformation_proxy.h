@@ -19,6 +19,7 @@ class SymmetricTransformationProxy
         bool IsValidIvLength(size_t n);
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
         void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs);
+        void Restart();
 
         // unused methods
         IV_Requirement IVRequirement() const {return RANDOM_IV;}
@@ -41,6 +42,7 @@ class SymmetricTransformationProxy
         zval *m_funcnameIsValidIvLength;
         zval *m_funcnameSetKey;
         zval *m_funcnameSetIv;
+        zval *m_funcnameRestart;
     };
     /* }}} */
 
