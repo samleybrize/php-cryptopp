@@ -38,10 +38,12 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     // create zvals with php method names
     MAKE_STD_ZVAL(m_processDataFuncname);
     MAKE_STD_ZVAL(m_funcnameIsValidKeyLength);
+    MAKE_STD_ZVAL(m_funcnameIsValidIvLength);
     MAKE_STD_ZVAL(m_funcnameSetKey);
     MAKE_STD_ZVAL(m_funcnameSetIv);
     ZVAL_STRING(m_processDataFuncname, processDataFuncname, 1);
     ZVAL_STRING(m_funcnameIsValidKeyLength, "isValidKeyLength", 1);
+    ZVAL_STRING(m_funcnameIsValidIvLength, "isValidIvLength", 1);
     ZVAL_STRING(m_funcnameSetKey, "setKey", 1);
     ZVAL_STRING(m_funcnameSetIv, "setIv", 1);
 
@@ -55,6 +57,7 @@ SymmetricTransformationProxy::Base::~Base()
     Z_DELREF_P(m_symmetricTransformationObject);
     zval_dtor(m_processDataFuncname);
     zval_dtor(m_funcnameIsValidKeyLength);
+    zval_dtor(m_funcnameIsValidIvLength);
     zval_dtor(m_funcnameSetKey);
     zval_dtor(m_funcnameSetIv);
 }
@@ -111,6 +114,23 @@ bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
     return isValid;
 }
 
+bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
+{
+    zval *zIvSize;
+    zval *output;
+    MAKE_STD_ZVAL(zIvSize)
+    MAKE_STD_ZVAL(output)
+    ZVAL_LONG(zIvSize, static_cast<long>(n));
+    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameIsValidIvLength, output, 1, &zIvSize TSRMLS_CC);
+
+    bool isValid = Z_BVAL_P(output);
+
+    zval_dtor(zIvSize);
+    zval_dtor(output);
+
+    return isValid;
+}
+
 void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
     zval *zKey;
@@ -127,6 +147,29 @@ void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t le
     zval_dtor(zKey);
     zval_dtor(zIv);
     zval_dtor(output);
+}
+
+void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
+{
+    // retrieve IV from parameters
+    CryptoPP::ConstByteArrayParameter ivWithLength;
+    const byte *iv;
+    size_t ivLength = 0;
+    bool found      = false;
+
+    try {
+        found = params.GetValue(CryptoPP::Name::IV(), ivWithLength);
+    } catch (const CryptoPP::NameValuePairs::ValueTypeMismatch &) {
+    }
+
+    if (found) {
+        iv          = ivWithLength.begin();
+        ivLength    = ivWithLength.size();
+    } else {
+        ThrowIfResynchronizable();
+    }
+
+    SetKeyWithIV(key, length, iv, ivLength);
 }
 
 /*

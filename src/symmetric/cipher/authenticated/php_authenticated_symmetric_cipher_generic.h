@@ -19,7 +19,7 @@ class AuthenticatedSymmetricCipherGeneric
 {
 public:
     /* {{{ base class */
-    class Base : public CryptoPP::AuthenticatedSymmetricCipher
+    class Base : public CryptoPP::AuthenticatedSymmetricCipher, public SymmetricTransformationUserInterface
     {
     public:
         void ProcessData(byte *outString, const byte *inString, size_t length);
@@ -27,6 +27,7 @@ public:
         void Resynchronize(const byte *iv, int ivLength=-1);
         void SetMacKey(const byte *key, size_t length);
         bool IsValidKeyLength(size_t n) const;
+        bool IsValidIvLength(size_t n);
         bool IsValidMacKeyLength(size_t n) const;
 
         std::string AlgorithmName() const {return "generic";}

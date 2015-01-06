@@ -128,12 +128,14 @@ void setCryptoppStreamCipherDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCiph
 /* }}} */
 
 /* {{{ verify that a key size is valid for a StreamCipherAbstract instance */
-static bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher, int keySize) {
+static bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher, int keySize, bool throwIfFalse = true) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!cipher->IsValidKeyLength(keySize)) {
-        if (0 == keySize) {
+        if (!throwIfFalse) {
+            return false;
+        } else if (0 == keySize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
         } else {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize);
@@ -155,13 +157,21 @@ bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cip
 /* }}} */
 
 /* {{{ verify that an iv size is valid for a StreamCipherAbstract instance */
-static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher, int ivSize) {
+static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher, int ivSize, bool throwIfFalse = true) {
     zend_class_entry *ce;
-    ce = zend_get_class_entry(object TSRMLS_CC);
+    ce              = zend_get_class_entry(object TSRMLS_CC);
+    bool isValid    = false;
 
-    if (cipher->IsResynchronizable() &&
-            (ivSize < cipher->MinIVLength() || ivSize > cipher->MaxIVLength())) {
-        if (0 == ivSize) {
+    if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
+        isValid = dynamic_cast<SymmetricTransformationUserInterface*>(cipher)->IsValidIvLength(ivSize);
+    } else {
+        isValid = !cipher->IsResynchronizable() || (ivSize >= cipher->MinIVLength() && ivSize <= cipher->MaxIVLength());
+    }
+
+    if (!isValid) {
+        if (!throwIfFalse) {
+            return false;
+        } else if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid initialization vector length", ce->name, ivSize);
@@ -259,7 +269,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
     CryptoPP::SymmetricCipher *encryptor;
     encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
-    if (encryptor->IsValidKeyLength(keySize)) {
+    if (isCryptoppStreamCipherKeyValid(getThis(), encryptor, keySize, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
@@ -279,10 +289,10 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
     CryptoPP::SymmetricCipher *encryptor;
     encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
-    if (ivSize < encryptor->MinIVLength() || ivSize > encryptor->MaxIVLength()) {
-        RETURN_FALSE
-    } else {
+    if (!encryptor->IsResynchronizable() || isCryptoppStreamCipherIvValid(getThis(), encryptor, ivSize, false)) {
         RETURN_TRUE
+    } else {
+        RETURN_FALSE
     }
 }
 /* }}} */

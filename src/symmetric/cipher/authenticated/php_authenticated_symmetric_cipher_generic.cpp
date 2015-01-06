@@ -7,6 +7,7 @@
 #include "../stream/php_stream_cipher_abstract.h"
 #include "../php_symmetric_transformation_interface.h"
 #include "../symmetric_transformation_proxy.h"
+#include "../symmetric_transformation_user_interface.h"
 #include "php_authenticated_symmetric_cipher_interface.h"
 #include "php_authenticated_symmetric_cipher_abstract.h"
 #include "php_authenticated_symmetric_cipher_generic.h"
@@ -67,6 +68,15 @@ void AuthenticatedSymmetricCipherGeneric::Base::SetMacKey(const byte *key, size_
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidKeyLength(size_t n) const
 {
     return m_cipher->IsValidKeyLength(n);
+}
+
+bool AuthenticatedSymmetricCipherGeneric::Base::IsValidIvLength(size_t n)
+{
+    if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(m_cipher)) {
+        return dynamic_cast<SymmetricTransformationUserInterface*>(m_cipher)->IsValidIvLength(n);
+    } else {
+        return m_cipher->IsResynchronizable() && n >= m_cipher->MinIVLength() && n <= m_cipher->MaxIVLength();
+    }
 }
 
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidMacKeyLength(size_t n) const

@@ -4,6 +4,7 @@ Authenticated symmetric cipher generic with user classes
 <?php
 
 // TODO check that key/iv are set properly
+// TODO restarted
 class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInterface
 {
     public function getName()
@@ -13,7 +14,7 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
 
     public function getBlockSize()
     {
-        return 5;
+        return 8;
     }
 
     public function isValidKeyLength($keyLength)
@@ -61,7 +62,7 @@ class MacUser implements Cryptopp\MacInterface
 
     public function getDigestSize()
     {
-        return 8;
+        return 10;
     }
 
     public function getBlockSize()
@@ -71,7 +72,7 @@ class MacUser implements Cryptopp\MacInterface
 
     public function isValidKeyLength($l)
     {
-        return 8 == $l;
+        return 9 == $l;
     }
 
     public function setKey($key)
@@ -80,7 +81,7 @@ class MacUser implements Cryptopp\MacInterface
 
     public function calculateDigest($data)
     {
-        return substr(strrev($data), 0, $this->getDigestSize());
+        return substr(md5($data), 0, $this->getDigestSize());
     }
 
     public function update($data)
@@ -111,54 +112,54 @@ var_dump($o->getMac()->getName());
 
 // encrypt
 echo "- encrypt:\n";
-$o->setMacKey("12345678");
+$o->setMacKey("123456789");
 $o->setKey("123456");
-$o->setIv("12345");
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->finalizeEncryption()));
+$o->setIv("1234567");
+var_dump($o->encrypt("azertyuiopqwerty"));
+var_dump($o->encrypt("qsdfghjklmnbvcxw"));
+var_dump($o->finalizeEncryption());
 
 // decrypt
 echo "- decrypt:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
-var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
-var_dump(bin2hex($o->finalizeDecryption()));
+var_dump($o->decrypt("ytrewqpoiuytreza"));
+var_dump($o->decrypt("wxcvbnmlkjhgfdsq"));
+var_dump($o->finalizeDecryption());
 
 // restart
 echo "- restart:\n";
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump($o->encrypt("azertyuiopqwerty"));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->finalizeEncryption()));
+var_dump($o->encrypt("azertyuiopqwerty"));
+var_dump($o->finalizeEncryption());
 
 // encrypt data + aad
 echo "- encrypt + aad:\n";
 $o->restart();
-$o->addEncryptionAdditionalData(hex2bin("feedfacedeadbeeffeedfacedeadbeefabaddad2"));
-$o->encrypt(hex2bin("00000000000000000000000000000000"));
-$o->encrypt(hex2bin("00000000000000000000000000000000"));
-var_dump(bin2hex($o->finalizeEncryption()));
+$o->addEncryptionAdditionalData("feedfacedead");
+$o->encrypt("azertyuiopqwerty");
+$o->encrypt("qsdfghjklmnbvcxw");
+var_dump($o->finalizeEncryption());
 
 // decrypt data + aad
 echo "- decrypt + aad:\n";
 $o->restart();
-$o->addDecryptionAdditionalData(hex2bin("feedfacedeadbeeffeedfacedeadbeefabaddad2"));
-$o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"));
-$o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"));
-var_dump(bin2hex($o->finalizeDecryption()));
+$o->addDecryptionAdditionalData("feedfacedead");
+$o->decrypt("ytrewqpoiuytreza");
+$o->decrypt("wxcvbnmlkjhgfdsq");
+var_dump($o->finalizeDecryption());
 
 // encrypt aad only
 echo "- encrypt aad only:\n";
-$o->addEncryptionAdditionalData(hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
-var_dump(bin2hex($o->finalizeEncryption()));
+$o->addEncryptionAdditionalData("feedfacedead");
+var_dump($o->finalizeEncryption());
 
 // decrypt aad only
 echo "- decrypt aad only:\n";
 $o->restart();
-$o->addDecryptionAdditionalData(hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
-var_dump(bin2hex($o->finalizeDecryption()));
+$o->addDecryptionAdditionalData("feedfacedead");
+var_dump($o->finalizeDecryption());
 
 // invalid key
 echo "- invalid key:\n";
@@ -238,30 +239,30 @@ try {
 ?>
 --EXPECT--
 string(11) "userc/userm"
-int(5)
 int(8)
+int(10)
 string(5) "userc"
 string(5) "userm"
 - encrypt:
-string(32) "fe81d2162c9a100d04895c454a77515b"
-string(32) "be6a431a935cb90e2221ebb7ef502328"
-string(40) "15cbfe20bb447711c2700b5eddada57323007973"
+string(16) "ytrewqpoiuytreza"
+string(16) "wxcvbnmlkjhgfdsq"
+string(10) "4582cb6203"
 - decrypt:
-string(32) "00000000000000000000000000000000"
-string(32) "00000000000000000000000000000000"
-string(40) "15cbfe20bb447711c2700b5eddada57323007973"
+string(16) "azertyuiopqwerty"
+string(16) "qsdfghjklmnbvcxw"
+string(10) "4582cb6203"
 - restart:
-string(32) "fe81d2162c9a100d04895c454a77515b"
-string(32) "fe81d2162c9a100d04895c454a77515b"
-string(40) "16bb821c7ba92cc135b931716b30410d13869fa8"
+string(16) "ytrewqpoiuytreza"
+string(16) "ytrewqpoiuytreza"
+string(10) "dd902ae895"
 - encrypt + aad:
-string(40) "ccc6f4a1ccb0c3e03a0b3e103613bef65d5f61de"
+string(10) "18ce872628"
 - decrypt + aad:
-string(40) "ccc6f4a1ccb0c3e03a0b3e103613bef65d5f61de"
+string(10) "18ce872628"
 - encrypt aad only:
-string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
+string(10) "d3b1071126"
 - decrypt aad only:
-string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
+string(10) "d3b1071126"
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 33 is not a valid key length
 Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required

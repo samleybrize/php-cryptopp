@@ -2,11 +2,12 @@
 #define PHP_SYMMETRIC_TRANSFORMATION_PROXY_H
 
 #include "../../php_cryptopp.h"
+#include "symmetric_transformation_user_interface.h"
 
 class SymmetricTransformationProxy
 {
     /* {{{ base class */
-    class Base : public CryptoPP::SymmetricCipher
+    class Base : public CryptoPP::SymmetricCipher, public SymmetricTransformationUserInterface
     {
     public:
         ~Base();
@@ -15,10 +16,12 @@ class SymmetricTransformationProxy
         void ProcessData(byte *outString, const byte *inString, size_t length);
         bool IsValidKeyLength(size_t n) const;
         bool IsValidKeyLength(size_t n);
+        bool IsValidIvLength(size_t n);
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
+        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs);
 
         // unused methods
-        IV_Requirement IVRequirement() const {return UNPREDICTABLE_RANDOM_IV;}
+        IV_Requirement IVRequirement() const {return RANDOM_IV;}
         bool IsRandomAccess() const {return false;}
         bool IsSelfInverting() const {return false;}
 
@@ -35,6 +38,7 @@ class SymmetricTransformationProxy
         zval *m_symmetricTransformationObject;
         zval *m_processDataFuncname;
         zval *m_funcnameIsValidKeyLength;
+        zval *m_funcnameIsValidIvLength;
         zval *m_funcnameSetKey;
         zval *m_funcnameSetIv;
     };
