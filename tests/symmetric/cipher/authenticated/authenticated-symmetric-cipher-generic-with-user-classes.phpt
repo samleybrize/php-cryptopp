@@ -3,9 +3,11 @@ Authenticated symmetric cipher generic with user classes
 --FILE--
 <?php
 
-// TODO check that key/iv are set properly
 class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInterface
 {
+    public $key;
+    public $iv;
+
     public function getName()
     {
         return "userc";
@@ -28,10 +30,12 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
 
     public function setKey($key)
     {
+        $this->key = $key;
     }
 
     public function setIv($iv)
     {
+        $this->iv = $iv;
     }
 
     public function encrypt($data)
@@ -52,6 +56,7 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
 
 class MacUser implements Cryptopp\MacInterface
 {
+    public $key;
     private $buffer = "";
 
     public function getName()
@@ -76,6 +81,7 @@ class MacUser implements Cryptopp\MacInterface
 
     public function setKey($key)
     {
+        $this->key = $key;
     }
 
     public function calculateDigest($data)
@@ -108,6 +114,16 @@ var_dump($o->getBlockSize());
 var_dump($o->getDigestSize());
 var_dump($o->getCipher()->getName());
 var_dump($o->getMac()->getName());
+
+// check that key/iv are set properly
+echo "- key/iv:\n";
+$o->setMacKey("123456789");
+$o->setKey("123456");
+$o->setIv("1234567");
+echo "\n";
+var_dump($c->key);
+var_dump($c->iv);
+var_dump($m->key);
 
 // encrypt
 echo "- encrypt:\n";
@@ -262,8 +278,13 @@ int(8)
 int(10)
 string(5) "userc"
 string(5) "userm"
+- key/iv:
+restarted restarted restarted restarted restarted restarted
+string(6) "123456"
+string(7) "1234567"
+string(9) "123456789"
 - encrypt:
-restarted restarted restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
 string(16) "wxcvbnmlkjhgfdsq"
 restarted restarted restarted restarted string(10) "4582cb6203"
 - decrypt:
