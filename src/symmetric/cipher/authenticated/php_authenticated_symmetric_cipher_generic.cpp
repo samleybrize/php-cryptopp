@@ -54,6 +54,12 @@ void AuthenticatedSymmetricCipherGeneric::Base::SetKeyWithIV(const byte *key, si
     m_mac->Restart();
 }
 
+void AuthenticatedSymmetricCipherGeneric::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
+{
+    m_cipher->SetKey(key, length, params);
+    m_mac->Restart();
+}
+
 void AuthenticatedSymmetricCipherGeneric::Base::Resynchronize(const byte *iv, int ivLength)
 {
     m_cipher->Resynchronize(iv, ivLength);

@@ -24,6 +24,7 @@ public:
     public:
         void ProcessData(byte *outString, const byte *inString, size_t length);
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
+        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs);
         void Resynchronize(const byte *iv, int ivLength=-1);
         void SetMacKey(const byte *key, size_t length);
         bool IsValidKeyLength(size_t n) const;
@@ -45,7 +46,6 @@ public:
         size_t MaxKeyLength() const {return m_cipher->MaxKeyLength();}
         size_t DefaultKeyLength() const {return m_cipher->DefaultKeyLength();}
         size_t GetValidKeyLength(size_t n) const {return m_cipher->GetValidKeyLength(n);}
-        void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs) {m_cipher->SetKey(key, length, params);}
         unsigned int IVSize() const {return m_cipher->IVSize();}
         unsigned int MinIVLength() const {return m_cipher->MinIVLength();}
         unsigned int MaxIVLength() const {return m_cipher->MaxIVLength();}

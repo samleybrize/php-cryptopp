@@ -206,7 +206,8 @@ echo "- no iv:\n";
 $c = new SymmetricTransformationUser();
 $m = new MacUser();
 $o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
-$o->setKey("12345");
+$o->setKey("123456");
+$o->setMacKey("123456789");
 
 try {
     $o->encrypt("123456");
@@ -214,11 +215,14 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// TODO no mac key
+
 // encrypt before aad
 echo "- encrypt before aad:\n";
+$o->setIv("1234567");
 $o->restart();
 
-$o->encrypt("azerty");
+$o->encrypt("azertyui");
 
 try {
     $o->addEncryptionAdditionalData("qwerty");
@@ -228,7 +232,7 @@ try {
 
 // decrypt before aad
 echo "- decrypt before aad:\n";
-$o->decrypt("azerty");
+$o->decrypt("azertyui");
 
 try {
     $o->addDecryptionAdditionalData("qwerty");
