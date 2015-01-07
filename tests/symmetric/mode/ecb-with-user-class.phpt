@@ -78,7 +78,6 @@ var_dump(bin2hex($c->getKey()));
 
 // encrypt
 echo "- encrypt:\n";
-$o->setIv("1234567");
 var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
 var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
 
@@ -105,6 +104,14 @@ try {
 
 try {
     $o->setKey("");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// invalid iv
+echo "- invalid iv:\n";
+try {
+    $o->setIv("123");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -161,6 +168,8 @@ string(12) "5ca3461cc830"
 - invalid key:
 Cryptopp\SymmetricModeEcb : 33 is not a valid key length
 Cryptopp\SymmetricModeEcb : a key is required
+- invalid iv:
+Cryptopp\SymmetricModeEcb : no initialization vector needed
 - no key:
 Cryptopp\SymmetricModeEcb : a key is required
 - block size 0:

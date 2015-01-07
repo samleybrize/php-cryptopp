@@ -164,6 +164,8 @@ static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCiphe
 
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
         isValid = dynamic_cast<SymmetricTransformationUserInterface*>(cipher)->IsValidIvLength(ivSize);
+    } else if(!cipher->IsResynchronizable()) {
+        isValid = (0 == ivSize);
     } else {
         isValid = ivSize >= cipher->MinIVLength() && ivSize <= cipher->MaxIVLength();
     }
@@ -171,6 +173,8 @@ static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCiphe
     if (!isValid) {
         if (!throwIfFalse) {
             return false;
+        } else if (!cipher->IsResynchronizable()) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : no initialization vector needed", ce->name, ivSize);
         } else if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
@@ -338,10 +342,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
     encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!encryptor->IsResynchronizable()) {
-        // an initialization vector is not required
-        return;
-    } else if (!isCryptoppStreamCipherIvValid(getThis(), encryptor, ivSize)) {
+    if (!isCryptoppStreamCipherIvValid(getThis(), encryptor, ivSize)) {
         // invalid iv
         RETURN_FALSE;
     }

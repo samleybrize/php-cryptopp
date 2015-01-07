@@ -232,6 +232,8 @@ static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCiph
 
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(mode)) {
         isValid = dynamic_cast<SymmetricTransformationUserInterface*>(mode)->IsValidIvLength(ivSize);
+    } else if(!mode->IsResynchronizable()) {
+        isValid = (0 == ivSize);
     } else {
         isValid = ivSize >= mode->MinIVLength() && ivSize <= mode->MaxIVLength();
     }
@@ -239,6 +241,8 @@ static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCiph
     if (!isValid) {
         if (!throwIfFalse) {
             return false;
+        } else if (!mode->IsResynchronizable()) {
+            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : no initialization vector needed", ce->name, ivSize);
         } else if (0 == ivSize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
         } else {
@@ -406,10 +410,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!encryptor->IsResynchronizable()) {
-        // an initialization vector is not required
-        return;
-    } else if (!isCryptoppSymmetricModeIvValid(getThis(), encryptor, ivSize)) {
+    if (!isCryptoppSymmetricModeIvValid(getThis(), encryptor, ivSize)) {
         // invalid iv
         RETURN_FALSE;
     }
