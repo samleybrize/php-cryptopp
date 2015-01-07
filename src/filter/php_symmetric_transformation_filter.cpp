@@ -170,9 +170,8 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
         zval_dtor(zOutput);
         Z_DELREF_P(zBlockSize);
 
-        // TODO delref
         if (NULL != zInput) {
-            zval_dtor(zInput);
+            Z_DELREF_P(zInput);
         }
 
         throw e;
@@ -183,9 +182,8 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
     zval_dtor(zOutput);
     Z_DELREF_P(zBlockSize);
 
-    // TODO delref
     if (NULL != zInput) {
-        zval_dtor(zInput);
+        Z_DELREF_P(zInput);
     }
 }
 /* }}} */
