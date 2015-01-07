@@ -120,13 +120,13 @@ void AuthenticatedSymmetricCipherProxy::Base::ProcessData(byte *outString, const
     call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameProcessData, output, 1, &input TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(output)) {
-        zval_dtor(input);
+        Z_DELREF_P(input);
         zval_dtor(output);
         throw false;
     }
 
     memcpy(outString, Z_STRVAL_P(output), Z_STRLEN_P(output));
-    zval_dtor(input);
+    Z_DELREF_P(input);
     zval_dtor(output);
 }
 
@@ -139,7 +139,7 @@ void AuthenticatedSymmetricCipherProxy::Base::Update(const byte *input, size_t l
     ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
     call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameUpdate, zOutput, 1, &zInput TSRMLS_CC);
 
-    zval_dtor(zInput);
+    Z_DELREF_P(zInput);
     zval_dtor(zOutput);
 }
 

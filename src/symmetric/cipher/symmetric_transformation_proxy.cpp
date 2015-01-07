@@ -90,7 +90,7 @@ void SymmetricTransformationProxy::Base::ProcessData(byte *outString, const byte
     }
 
     memcpy(outString, Z_STRVAL_P(output), Z_STRLEN_P(output));
-    zval_dtor(input);
+    Z_DELREF_P(input);
     zval_dtor(output);
 }
 
@@ -110,7 +110,7 @@ bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
 
     bool isValid = Z_BVAL_P(output);
 
-    zval_dtor(zKeySize);
+    Z_DELREF_P(zKeySize);
     zval_dtor(output);
 
     return isValid;
@@ -127,7 +127,7 @@ bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
 
     bool isValid = Z_BVAL_P(output);
 
-    zval_dtor(zIvSize);
+    Z_DELREF_P(zIvSize);
     zval_dtor(output);
 
     return isValid;
@@ -146,8 +146,8 @@ void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t le
     call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameSetKey, output, 1, &zKey TSRMLS_CC);
     call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameSetIv, output, 1, &zIv TSRMLS_CC);
 
-    zval_dtor(zKey);
-    zval_dtor(zIv);
+    Z_DELREF_P(zKey);
+    Z_DELREF_P(zIv);
     zval_dtor(output);
 
     Restart();

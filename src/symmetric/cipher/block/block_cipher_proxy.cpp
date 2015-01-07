@@ -95,7 +95,7 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 
     bool isValid = Z_BVAL_P(output);
 
-    zval_dtor(zKeySize);
+    Z_DELREF_P(zKeySize);
     zval_dtor(output);
 
     return isValid;
@@ -110,7 +110,7 @@ void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const Crypto
     ZVAL_STRINGL(zKey, reinterpret_cast<const char*>(key), length, 1);
     call_user_function(NULL, &m_blockCipherObject, m_funcnameSetKey, output, 1, &zKey TSRMLS_CC);
 
-    zval_dtor(zKey);
+    Z_DELREF_P(zKey);
     zval_dtor(output);
 }
 
@@ -132,7 +132,7 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
     call_user_function(NULL, &m_blockCipherObject, m_funcnameProcessBlock, zProcessedBlock, 1, &zInBlock TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zProcessedBlock)) {
-        zval_dtor(zInBlock);
+        Z_DELREF_P(zInBlock);
         zval_dtor(zProcessedBlock);
         throw false;
     }
@@ -146,7 +146,7 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
         }
     }
 
-    zval_dtor(zInBlock);
+    Z_DELREF_P(zInBlock);
     zval_dtor(zProcessedBlock);
 }
 

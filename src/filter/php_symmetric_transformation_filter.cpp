@@ -110,7 +110,7 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
             ZVAL_STRING(funcName, "pad", 1);
             ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(inString), length, 1);
             call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
-            zval_dtor(zInput);
+            Z_DELREF_P(zInput);
             zInput = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
@@ -149,7 +149,7 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
             ZVAL_STRING(funcName, "unpad", 1);
             ZVAL_STRINGL(zInput, reinterpret_cast<char*>(plain), length, 1);
             call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
-            zval_dtor(zInput);
+            Z_DELREF_P(zInput);
             zInput = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
@@ -168,8 +168,9 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
         // free zvals whatever happen
         zval_dtor(funcName);
         zval_dtor(zOutput);
-        zval_dtor(zBlockSize);
+        Z_DELREF_P(zBlockSize);
 
+        // TODO delref
         if (NULL != zInput) {
             zval_dtor(zInput);
         }
@@ -180,8 +181,9 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
     // free zvals
     zval_dtor(funcName);
     zval_dtor(zOutput);
-    zval_dtor(zBlockSize);
+    Z_DELREF_P(zBlockSize);
 
+    // TODO delref
     if (NULL != zInput) {
         zval_dtor(zInput);
     }

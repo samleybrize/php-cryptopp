@@ -125,7 +125,7 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
     call_user_function(NULL, &m_hashObject, m_funcnameCalculateDigest, zOutput, 1, &zInput TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
-        zval_dtor(zInput);
+        Z_DELREF_P(zInput);
         zval_dtor(zOutput);
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
@@ -134,13 +134,13 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
         ce  = zend_get_class_entry(m_hashObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
-        zval_dtor(zInput);
+        Z_DELREF_P(zInput);
         zval_dtor(zOutput);
         throw false;
     }
 
     memcpy(digest, Z_STRVAL_P(zOutput), Z_STRLEN_P(zOutput));
-    zval_dtor(zInput);
+    Z_DELREF_P(zInput);
     zval_dtor(zOutput);
 }
 
@@ -152,7 +152,7 @@ void HashProxy::Update(const byte *input, size_t length) {
     ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
     call_user_function(NULL, &m_hashObject, m_funcnameUpdate, zOutput, 1, &zInput TSRMLS_CC);
 
-    zval_dtor(zInput);
+    Z_DELREF_P(zInput);
     zval_dtor(zOutput);
 }
 
