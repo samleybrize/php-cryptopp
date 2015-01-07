@@ -120,7 +120,6 @@ echo "- key/iv:\n";
 $o->setMacKey("123456789");
 $o->setKey("123456");
 $o->setIv("1234567");
-echo "\n";
 var_dump($c->key);
 var_dump($c->iv);
 var_dump($m->key);
@@ -279,30 +278,29 @@ int(10)
 string(5) "userc"
 string(5) "userm"
 - key/iv:
-restarted restarted restarted restarted restarted restarted
-string(6) "123456"
+restarted restarted string(6) "123456"
 string(7) "1234567"
 string(9) "123456789"
 - encrypt:
-restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
 string(16) "wxcvbnmlkjhgfdsq"
-restarted restarted restarted restarted string(10) "4582cb6203"
+restarted restarted string(10) "4582cb6203"
 - decrypt:
-restarted restarted restarted restarted string(16) "azertyuiopqwerty"
+restarted restarted string(16) "azertyuiopqwerty"
 string(16) "qsdfghjklmnbvcxw"
-restarted restarted restarted restarted string(10) "4582cb6203"
+restarted restarted string(10) "4582cb6203"
 - restart:
-restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
-restarted restarted restarted restarted string(16) "ytrewqpoiuytreza"
-restarted restarted restarted restarted string(10) "dd902ae895"
+restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted string(10) "dd902ae895"
 - encrypt + aad:
-restarted restarted restarted restarted restarted restarted restarted restarted string(10) "18ce872628"
+restarted restarted restarted restarted string(10) "18ce872628"
 - decrypt + aad:
-restarted restarted restarted restarted restarted restarted restarted restarted string(10) "18ce872628"
+restarted restarted restarted restarted string(10) "18ce872628"
 - encrypt aad only:
-restarted restarted restarted restarted string(10) "d3b1071126"
+restarted restarted string(10) "d3b1071126"
 - decrypt aad only:
-restarted restarted restarted restarted restarted restarted restarted restarted string(10) "d3b1071126"
+restarted restarted restarted restarted string(10) "d3b1071126"
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 33 is not a valid key length
 Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
@@ -310,12 +308,12 @@ Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
 Cryptopp\AuthenticatedSymmetricCipherGeneric : 3 is not a valid initialization vector length
 Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
 - no key:
-restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
+Cryptopp\AuthenticatedSymmetricCipherGeneric : a key is required
 - no iv:
-restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
+Cryptopp\AuthenticatedSymmetricCipherGeneric : an initialization vector is required
 - no mac key:
-restarted restarted restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : a MAC key is required
+restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric : a MAC key is required
 - encrypt before aad:
-restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any encryption
+restarted restarted restarted restarted restarted restarted Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any encryption
 - decrypt before aad:
 Cryptopp\AuthenticatedSymmetricCipherGeneric: additional authenticated data must be added before any decryption
