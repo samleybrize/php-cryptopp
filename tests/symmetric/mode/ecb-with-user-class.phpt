@@ -65,7 +65,11 @@ var_dump($o->isValidKeyLength(3));
 var_dump($o->isValidKeyLength(2));
 var_dump($o->isValidKeyLength(4));
 
-// TODO iv length check
+// iv length check
+echo "- iv length check:\n";
+var_dump($o->isValidIvLength(0));
+var_dump($o->isValidIvLength(2));
+var_dump($o->isValidIvLength(4));
 
 // set key
 echo "- set key:\n";
@@ -136,6 +140,10 @@ try {
 string(9) "ecb(user)"
 int(6)
 - key length check:
+bool(true)
+bool(false)
+bool(false)
+- iv length check:
 bool(true)
 bool(false)
 bool(false)

@@ -68,7 +68,13 @@ var_dump($o->isValidKeyLength(3));
 var_dump($o->isValidKeyLength(2));
 var_dump($o->isValidKeyLength(4));
 
-// TODO iv length check
+// iv length check
+echo "- iv length check:\n";
+var_dump($o->isValidIvLength(0));
+var_dump($o->isValidIvLength(2));
+var_dump($o->isValidIvLength(4));
+var_dump($o->isValidIvLength(56));
+var_dump($o->isValidIvLength(1256));
 
 // encrypt
 echo "- encrypt:\n";
@@ -140,6 +146,12 @@ int(1)
 bool(true)
 bool(false)
 bool(false)
+- iv length check:
+bool(false)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
 - encrypt:
 string(12) "556de8609b18"
 string(12) "5d45eda64796"

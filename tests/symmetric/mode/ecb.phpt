@@ -16,7 +16,11 @@ var_dump($o->isValidKeyLength(16));
 var_dump($o->isValidKeyLength(15));
 var_dump($o->isValidKeyLength(17));
 
-// TODO iv length check
+// iv length check
+echo "- iv length check:\n";
+var_dump($o->isValidIvLength(0));
+var_dump($o->isValidIvLength(2));
+var_dump($o->isValidIvLength(4));
 
 // encrypt
 echo "- encrypt:\n";
@@ -109,6 +113,10 @@ bool(true)
 string(8) "ecb(aes)"
 int(16)
 - key length check:
+bool(true)
+bool(false)
+bool(false)
+- iv length check:
 bool(true)
 bool(false)
 bool(false)

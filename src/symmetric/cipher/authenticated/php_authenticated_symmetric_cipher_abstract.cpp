@@ -229,7 +229,7 @@ static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
         isValid = dynamic_cast<SymmetricTransformationUserInterface*>(cipher)->IsValidIvLength(ivSize);
     } else {
-        isValid = !cipher->IsResynchronizable() || (ivSize >= cipher->MinIVLength() && ivSize <= cipher->MaxIVLength());
+        isValid = ivSize >= cipher->MinIVLength() && ivSize <= cipher->MaxIVLength();
     }
 
     if(!isValid) {
@@ -370,8 +370,9 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
 
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
-    if (!encryptor->IsResynchronizable() || isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize, false)) {
+    if (isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE

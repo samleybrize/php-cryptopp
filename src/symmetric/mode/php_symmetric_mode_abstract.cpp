@@ -233,7 +233,7 @@ static bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCiph
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(mode)) {
         isValid = dynamic_cast<SymmetricTransformationUserInterface*>(mode)->IsValidIvLength(ivSize);
     } else {
-        isValid = !mode->IsResynchronizable() || (ivSize >= mode->MinIVLength() && ivSize <= mode->MaxIVLength());
+        isValid = ivSize >= mode->MinIVLength() && ivSize <= mode->MaxIVLength();
     }
 
     if (!isValid) {
@@ -356,8 +356,9 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidIvLength) {
 
     CryptoPP::SymmetricCipher *encryptor;
     encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
-    if (!encryptor->IsResynchronizable() || isCryptoppSymmetricModeIvValid(getThis(), encryptor, ivSize, false)) {
+    if (isCryptoppSymmetricModeIvValid(getThis(), encryptor, ivSize, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
