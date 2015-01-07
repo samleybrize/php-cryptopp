@@ -10,6 +10,16 @@ $o = new Cryptopp\StreamCipherSosemanuk();
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(23));
+var_dump($o->isValidKeyLength(9));
+var_dump($o->isValidKeyLength(0));
+var_dump($o->isValidKeyLength(33));
+
+// TODO iv length check
+
 // encrypt
 echo "- encrypt:\n";
 $o->setKey(hex2bin("a7c083feb7"));
@@ -125,6 +135,12 @@ try {
 bool(true)
 string(9) "sosemanuk"
 int(1)
+- key length check:
+bool(true)
+bool(true)
+bool(true)
+bool(false)
+bool(false)
 - encrypt:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "be6a431a935cb90e2221ebb7ef502328"

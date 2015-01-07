@@ -11,6 +11,12 @@ var_dump($o->getName());
 var_dump($o->getDigestSize());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(20));
+var_dump($o->isValidKeyLength(19));
+var_dump($o->isValidKeyLength(21));
+
 // check digest calculation
 echo "- digest calculation:\n";
 $o->setKey(hex2bin("00112233445566778899aabbccddeeff01234567"));
@@ -113,6 +119,10 @@ bool(true)
 string(13) "two_track_mac"
 int(20)
 int(64)
+- key length check:
+bool(true)
+bool(false)
+bool(false)
 - digest calculation:
 string(40) "e64c1b6d1e1b062b57bafabe75816a121c2f7b34"
 string(40) "b27165d2f7de41c23aabe559cad7cc592fb50194"

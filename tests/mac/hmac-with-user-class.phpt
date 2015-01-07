@@ -59,6 +59,14 @@ var_dump($o->getName());
 var_dump($o->getDigestSize());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(3));
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(23));
+var_dump($o->isValidKeyLength(125));
+var_dump($o->isValidKeyLength(0));
+
 // check digest calculation
 echo "- calculate digest:\n";
 $o->setKey("123456");
@@ -142,6 +150,12 @@ try {
 string(10) "hmac(user)"
 int(12)
 int(0)
+- key length check:
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
 - calculate digest:
 string(24) "363671776572747975696f70"
 string(24) "363636363636617a65727479"

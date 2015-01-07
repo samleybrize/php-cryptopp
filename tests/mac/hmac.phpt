@@ -16,6 +16,14 @@ var_dump($o->getName());
 var_dump($o->getDigestSize());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(3));
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(23));
+var_dump($o->isValidKeyLength(125));
+var_dump($o->isValidKeyLength(0));
+
 // check digest calculation
 echo "- digest calculation (sha1):\n";
 $o->setKey(hex2bin("0102030405060708090a0b0c0d0e0f10111213141516171819"));
@@ -123,6 +131,12 @@ int(0)
 string(10) "hmac(sha1)"
 int(20)
 int(0)
+- key length check:
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
 - digest calculation (sha1):
 string(40) "b7b39196ab5f9c0cf7863b8e0a0bda37aea2c93e"
 string(40) "286d11632a144649124bf912f2826ee80887206f"

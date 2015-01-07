@@ -10,6 +10,14 @@ $o = new Cryptopp\SymmetricModeEcb(new Cryptopp\BlockCipherAes());
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(15));
+var_dump($o->isValidKeyLength(17));
+
+// TODO iv length check
+
 // encrypt
 echo "- encrypt:\n";
 $o->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
@@ -100,6 +108,10 @@ try {
 bool(true)
 string(8) "ecb(aes)"
 int(16)
+- key length check:
+bool(true)
+bool(false)
+bool(false)
 - encrypt:
 string(64) "3ad77bb40d7a3660a89ecaf32466ef97f5d3d58503b9699de785895a96fdbaaf"
 string(64) "43b1cd7f598ece23881b00e3ed0306887b0c785e27e8ad3f8223207104725dd4"

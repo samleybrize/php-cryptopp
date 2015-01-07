@@ -11,6 +11,14 @@ var_dump($o->getName());
 var_dump($o->getBlockSize());
 var_dump($o->getDigestSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(15));
+var_dump($o->isValidKeyLength(17));
+
+// TODO iv length check
+
 // encrypt
 echo "- encrypt:\n";
 $o->setKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
@@ -171,6 +179,10 @@ bool(true)
 string(8) "gcm(aes)"
 int(1)
 int(16)
+- key length check:
+bool(true)
+bool(false)
+bool(false)
 - encrypt:
 string(64) "42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e"
 string(64) "21d514b25466931c7d8f6a5aac84aa051ba30b396a0aac973d58e091473f5985"

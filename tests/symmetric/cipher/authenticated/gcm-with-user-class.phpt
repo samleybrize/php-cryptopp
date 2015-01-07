@@ -62,6 +62,14 @@ var_dump($o->getBlockSize());
 $o->setKey(hex2bin("2b7e15"));
 $o->setIv("1234567");
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(3));
+var_dump($o->isValidKeyLength(2));
+var_dump($o->isValidKeyLength(4));
+
+// TODO iv length check
+
 // encrypt
 echo "- encrypt:\n";
 var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
@@ -128,6 +136,10 @@ try {
 --EXPECT--
 string(9) "gcm(user)"
 int(1)
+- key length check:
+bool(true)
+bool(false)
+bool(false)
 - encrypt:
 string(12) "556de8609b18"
 string(12) "5d45eda64796"

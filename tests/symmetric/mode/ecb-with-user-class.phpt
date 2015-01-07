@@ -59,6 +59,14 @@ $o = new Cryptopp\SymmetricModeEcb($c);
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(3));
+var_dump($o->isValidKeyLength(2));
+var_dump($o->isValidKeyLength(4));
+
+// TODO iv length check
+
 // set key
 echo "- set key:\n";
 $o->setKey(hex2bin("2b7e15"));
@@ -127,6 +135,10 @@ try {
 --EXPECT--
 string(9) "ecb(user)"
 int(6)
+- key length check:
+bool(true)
+bool(false)
+bool(false)
 - set key:
 string(6) "2b7e15"
 - encrypt:
