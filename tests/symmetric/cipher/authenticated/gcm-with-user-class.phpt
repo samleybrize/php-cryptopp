@@ -59,9 +59,6 @@ $o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 
-$o->setKey(hex2bin("2b7e15"));
-$o->setIv("1234567");
-
 // key length check
 echo "- key length check:\n";
 var_dump($o->isValidKeyLength(3));
@@ -76,12 +73,17 @@ var_dump($o->isValidIvLength(4));
 var_dump($o->isValidIvLength(56));
 var_dump($o->isValidIvLength(1256));
 
+// set key
+echo "- set key:\n";
+$o->setKey(hex2bin("2b7e15"));
+$o->setIv("1234567");
+var_dump(bin2hex($c->getKey()));
+
 // encrypt
 echo "- encrypt:\n";
 var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
 var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
 var_dump(bin2hex($o->finalizeEncryption()));
-var_dump(bin2hex($c->getKey()));
 
 // decrypt
 echo "- decrypt:\n";
@@ -152,11 +154,12 @@ bool(true)
 bool(true)
 bool(true)
 bool(true)
+- set key:
+string(6) "2b7e15"
 - encrypt:
 string(12) "556de8609b18"
 string(12) "5d45eda64796"
 string(32) "252755fd5f304d61cbc3aeb98b7a2274"
-string(6) "2b7e15"
 - decrypt:
 string(12) "6bc1bee22e40"
 string(12) "30c81c46a35c"
