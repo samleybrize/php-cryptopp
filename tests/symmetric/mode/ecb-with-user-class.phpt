@@ -87,12 +87,19 @@ $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("402ee2bec16b"))));
 var_dump(bin2hex($o->decrypt(hex2bin("5ca3461cc830"))));
 
-// restart
-echo "- restart:\n";
+// restart encryption
+echo "- restart encryption:\n";
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
+
+// restart decryption
+echo "- restart decryption:\n";
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("402ee2bec16b"))));
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("5ca3461cc830"))));
 
 // invalid key
 echo "- invalid key:\n";
@@ -162,9 +169,12 @@ string(12) "5ca3461cc830"
 - decrypt:
 string(12) "6bc1bee22e40"
 string(12) "30c81c46a35c"
-- restart:
+- restart encryption:
 string(12) "402ee2bec16b"
 string(12) "5ca3461cc830"
+- restart decryption:
+string(12) "6bc1bee22e40"
+string(12) "30c81c46a35c"
 - invalid key:
 Cryptopp\SymmetricModeEcb : 33 is not a valid key length
 Cryptopp\SymmetricModeEcb : a key is required

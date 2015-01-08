@@ -31,13 +31,21 @@ var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
 var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 var_dump(bin2hex($o->finalizeDecryption()));
 
-// restart
-echo "- restart:\n";
+// restart encryption
+echo "- restart encryption:\n";
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 var_dump(bin2hex($o->finalizeEncryption()));
+
+// restart decryption
+echo "- restart decryption:\n";
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
+var_dump(bin2hex($o->finalizeDecryption()));
 
 // encrypt data + aad
 echo "- encrypt + aad:\n";
@@ -208,10 +216,14 @@ string(40) "15cbfe20bb447711c2700b5eddada57323007973"
 string(32) "00000000000000000000000000000000"
 string(32) "00000000000000000000000000000000"
 string(40) "15cbfe20bb447711c2700b5eddada57323007973"
-- restart:
+- restart encryption:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(40) "9fc9456bb645743c404a85619a2f0f6fe754791b"
+- restart decryption:
+string(32) "00000000000000000000000000000000"
+string(32) "40eb910cbfc6a90326a8b7f2a5277273"
+string(40) "f044210a699da578851f2a700205218fc03a6e9d"
 - encrypt + aad:
 string(40) "ccc6f4a1ccb0c3e03a0b3e103613bef65d5f61de"
 - decrypt + aad:

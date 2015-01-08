@@ -37,12 +37,19 @@ $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
 var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 
-// restart
-echo "- restart:\n";
+// restart encryption
+echo "- restart encryption:\n";
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+
+// restart decryption
+echo "- restart decryption:\n";
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
+$o->restart();
+var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 
 // invalid key
 echo "- invalid key:\n";
@@ -155,9 +162,12 @@ string(32) "be6a431a935cb90e2221ebb7ef502328"
 - decrypt:
 string(32) "00000000000000000000000000000000"
 string(32) "00000000000000000000000000000000"
-- restart:
+- restart encryption:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "fe81d2162c9a100d04895c454a77515b"
+- restart decryption:
+string(32) "00000000000000000000000000000000"
+string(32) "40eb910cbfc6a90326a8b7f2a5277273"
 - invalid key:
 Cryptopp\StreamCipherSosemanuk : 33 is not a valid key length
 Cryptopp\StreamCipherSosemanuk : a key is required

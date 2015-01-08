@@ -140,13 +140,21 @@ var_dump($o->decrypt("ytrewqpoiuytreza"));
 var_dump($o->decrypt("wxcvbnmlkjhgfdsq"));
 var_dump($o->finalizeDecryption());
 
-// restart
-echo "- restart:\n";
+// restart encryption
+echo "- restart encryption:\n";
 $o->restart();
 var_dump($o->encrypt("azertyuiopqwerty"));
 $o->restart();
 var_dump($o->encrypt("azertyuiopqwerty"));
 var_dump($o->finalizeEncryption());
+
+// restart decryption
+echo "- restart decryption:\n";
+$o->restart();
+var_dump($o->decrypt("ytrewqpoiuytreza"));
+$o->restart();
+var_dump($o->decrypt("ytrewqpoiuytreza"));
+var_dump($o->finalizeDecryption());
 
 // encrypt data + aad
 echo "- encrypt + aad:\n";
@@ -289,9 +297,13 @@ restarted restarted string(10) "4582cb6203"
 restarted restarted string(16) "azertyuiopqwerty"
 string(16) "qsdfghjklmnbvcxw"
 restarted restarted string(10) "4582cb6203"
-- restart:
+- restart encryption:
 restarted restarted string(16) "ytrewqpoiuytreza"
 restarted restarted string(16) "ytrewqpoiuytreza"
+restarted restarted string(10) "dd902ae895"
+- restart decryption:
+restarted restarted string(16) "azertyuiopqwerty"
+restarted restarted string(16) "azertyuiopqwerty"
 restarted restarted string(10) "dd902ae895"
 - encrypt + aad:
 restarted restarted restarted restarted string(10) "18ce872628"
