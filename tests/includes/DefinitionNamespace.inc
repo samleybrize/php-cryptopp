@@ -35,10 +35,11 @@ class DefinitionNamespace
             }
 
             // add definition
-            $generator      = new DefinitionClass($class);
-            $definition[]   = $generator->getDefinition();
+            $generator          = new DefinitionClass($class);
+            $definition[$class] = $generator->getDefinition();
         }
 
+        ksort($definition);
         return $definition;
     }
 

@@ -22,7 +22,7 @@ abstract class MacAbstract implements MacInterface
     /**
      * {@inheritdoc}
      */
-    final public function isValidKeyLength($keyLength);
+    final public function isValidKeyLength($keyLength) {}
 
     /**
      * {@inheritdoc}
