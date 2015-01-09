@@ -2,4 +2,10 @@
 
 namespace Cryptopp;
 
-class HashSha1 extends HashAbstract {}
+class HashSha1 extends HashAbstract
+{
+    /**
+     * Constructor
+     */
+    public function __construct() {}
+}

@@ -2,4 +2,10 @@
 
 namespace Cryptopp;
 
-class BlockCipherAes extends BlockCipherAbstract {}
+class BlockCipherAes extends BlockCipherAbstract
+{
+    /**
+     * Constructor
+     */
+    public function __construct() {}
+}

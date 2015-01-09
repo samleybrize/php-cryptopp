@@ -2,4 +2,10 @@
 
 namespace Cryptopp;
 
-class MacTwoTrackMac extends MacAbstract {}
+class MacTwoTrackMac extends MacAbstract
+{
+    /**
+     * Constructor
+     */
+    public function __construct() {}
+}

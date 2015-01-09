@@ -24,4 +24,14 @@ class HashTransformationFilter
      * @throws \Cryptopp\CryptoppException
      */
     final public function calculateDigestString($data) {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

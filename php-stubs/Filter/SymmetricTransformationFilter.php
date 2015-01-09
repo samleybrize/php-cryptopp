@@ -34,9 +34,19 @@ class SymmetricTransformationFilter
 
     /**
      * Decrypts data
-     * @param string $cipherText data to decrypt
+     * @param string $ciphertext data to decrypt
      * @return string decrypted data
      * @throws \Cryptopp\CryptoppException
      */
-    final public function decryptString($cipherText) {}
+    final public function decryptString($ciphertext) {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

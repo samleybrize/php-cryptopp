@@ -48,4 +48,14 @@ abstract class StreamCipherAbstract implements StreamCipherInterface
      * {@inheritdoc}
      */
     final public function restart() {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

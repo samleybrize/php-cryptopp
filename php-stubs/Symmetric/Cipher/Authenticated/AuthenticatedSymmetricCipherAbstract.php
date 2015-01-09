@@ -73,4 +73,14 @@ abstract class AuthenticatedSymmetricCipherAbstract implements AuthenticatedSymm
      * {@inheritdoc}
      */
     final public function finalizeDecryption() {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

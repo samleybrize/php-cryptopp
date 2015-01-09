@@ -37,11 +37,21 @@ class AuthenticatedSymmetricTransformationFilter
     /**
      * Decrypts data.
      * Although $ciphertext and $aad are optional, at least one of them is required.
-     * @param string $cipherText [optional] data to decrypt. The MAC tag must be at the end.
+     * @param string $ciphertext [optional] data to decrypt. The MAC tag must be at the end.
      * @param string $aad [optional] additional authenticated data
      * @return string decrypted data
      * @throws \Cryptopp\CryptoppException
      * @throws \Cryptopp\CryptoppMacVerificationFailedException
      */
-    final public function decryptString($cipherText = null, $aad = null) {}
+    final public function decryptString($ciphertext = null, $aad = null) {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

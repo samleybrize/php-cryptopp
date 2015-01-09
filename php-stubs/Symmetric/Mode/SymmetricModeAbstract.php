@@ -48,4 +48,14 @@ abstract class SymmetricModeAbstract implements SymmetricModeInterface
      * {@inheritdoc}
      */
     final public function restart() {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

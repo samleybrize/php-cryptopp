@@ -29,7 +29,7 @@ class AuthenticatedSymmetricCipherGeneric extends AuthenticatedSymmetricCipherAb
      * @param string $key
      * @throws \Cryptopp\CryptoppException
      */
-    final public function setKey($key);
+    final public function setKey($key) {}
 
     /**
      * Sets the MAC key

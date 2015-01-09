@@ -5,7 +5,22 @@ namespace Cryptopp;
 class RandomByteGenerator implements RandomByteGeneratorInterface
 {
     /**
+     * Constructor
+     */
+    public function __construct() {}
+
+    /**
      * {@inheritdoc}
      */
-    public function generate($size) {}
+    final public function generate($size) {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }

@@ -43,4 +43,14 @@ abstract class BlockCipherAbstract implements BlockCipherInterface
      * {@inheritdoc}
      */
     final public function decryptBlock($block) {}
+
+    /**
+     * Disables object serialization
+     */
+    final public function __sleep() {}
+    
+    /**
+     * Disables object serialization
+     */
+    final public function __wakeup() {}
 }
