@@ -9,6 +9,7 @@ static zend_function_entry cryptopp_methods_SymmetricCipherInterface[] = {
     PHP_ABSTRACT_ME(Cryptopp_SymmetricCipherInterface, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricCipherInterface, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength)
     PHP_ABSTRACT_ME(Cryptopp_SymmetricCipherInterface, setKey, arginfo_SymmetricCipherInterface_setKey)
+    PHP_ABSTRACT_ME(Cryptopp_SymmetricCipherInterface, getKey, arginfo_SymmetricCipherInterface_getKey)
     PHP_FE_END
 };
 

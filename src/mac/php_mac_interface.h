@@ -8,6 +8,9 @@ ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_setKey, 0)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_getKey, 0)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_isValidKeyLength, 0)
     ZEND_ARG_INFO(0, keyLength)
 ZEND_END_ARG_INFO()
