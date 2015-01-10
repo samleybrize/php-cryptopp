@@ -35,6 +35,16 @@ class TransformationInterfaceChild implements Cryptopp\SymmetricTransformationIn
         return "iv-$iv";
     }
 
+    public function getKey()
+    {
+        return "thekey";
+    }
+
+    public function getIv()
+    {
+        return "theiv";
+    }
+
     public function encrypt($data)
     {
         return "encrypted";
@@ -58,6 +68,8 @@ var_dump($o->isValidKeyLength(13));
 var_dump($o->isValidIvLength(17));
 var_dump($o->setKey("keyyy"));
 var_dump($o->setIv("ivvv"));
+var_dump($o->getKey());
+var_dump($o->getIv());
 var_dump($o->encrypt("a"));
 var_dump($o->decrypt("b"));
 var_dump($o->restart());
@@ -72,6 +84,8 @@ bool(false)
 bool(true)
 string(9) "key-keyyy"
 string(7) "iv-ivvv"
+string(6) "thekey"
+string(5) "theiv"
 string(9) "encrypted"
 string(9) "decrypted"
 string(9) "restarted"

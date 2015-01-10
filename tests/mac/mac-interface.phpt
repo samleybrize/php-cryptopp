@@ -30,6 +30,11 @@ class MacInterfaceChild implements Cryptopp\MacInterface
         return $key;
     }
 
+    public function getKey()
+    {
+        return "thekey";
+    }
+
     public function calculateDigest($data)
     {
         return "d!gest";
@@ -57,6 +62,7 @@ var_dump($o->getDigestSize());
 var_dump($o->getBlockSize());
 var_dump($o->isValidKeyLength(12));
 var_dump($o->setKey("keyyy"));
+var_dump($o->getKey());
 var_dump($o->calculateDigest("a"));
 var_dump($o->update("b"));
 var_dump($o->finalize());
@@ -71,6 +77,7 @@ int(12)
 int(5)
 bool(true)
 string(5) "keyyy"
+string(6) "thekey"
 string(6) "d!gest"
 string(7) "updated"
 string(9) "finalized"

@@ -11,6 +11,11 @@ var_dump($o->isValidKeyLength(24));
 var_dump($o->isValidKeyLength(23));
 var_dump($o->isValidKeyLength(25));
 
+// set key
+echo "- set key:\n";
+$o->setKey("azertyuiopqsdfghjklmwxcv");
+var_dump($o->getKey());
+
 // encryptBlock
 echo "- encrypt block:\n";
 $o->setKey(hex2bin("8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b"));
@@ -38,6 +43,8 @@ var_dump(bin2hex($o->decrypt(hex2bin("ef7afd2270e2e60adce0ba2face6444e9a4b41ba73
 bool(true)
 bool(false)
 bool(false)
+- set key:
+string(24) "azertyuiopqsdfghjklmwxcv"
 - encrypt block:
 string(32) "bd334f1d6e45f25ff712a214571fa5cc"
 string(32) "974104846d0ad3ad7734ecb3ecee4eef"

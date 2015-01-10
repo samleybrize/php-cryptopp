@@ -5,6 +5,9 @@ Symmetric transformation filter with user class
 
 class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInterface
 {
+    private $key;
+    private $iv;
+
     public function getName()
     {
         return "user";
@@ -27,10 +30,22 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
 
     public function setKey($key)
     {
+        $this->key = $key;
     }
 
     public function setIv($iv)
     {
+        $this->iv = $iv;
+    }
+
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    public function getIv()
+    {
+        return $this->iv;
     }
 
     public function encrypt($data)

@@ -5,8 +5,8 @@ Authenticated symmetric cipher generic with user classes
 
 class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInterface
 {
-    public $key;
-    public $iv;
+    private $key;
+    private $iv;
 
     public function getName()
     {
@@ -38,6 +38,16 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
         $this->iv = $iv;
     }
 
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    public function getIv()
+    {
+        return $this->iv;
+    }
+
     public function encrypt($data)
     {
         return strrev($data);
@@ -56,7 +66,7 @@ class SymmetricTransformationUser implements Cryptopp\SymmetricTransformationInt
 
 class MacUser implements Cryptopp\MacInterface
 {
-    public $key;
+    private $key;
     private $buffer = "";
 
     public function getName()
@@ -82,6 +92,11 @@ class MacUser implements Cryptopp\MacInterface
     public function setKey($key)
     {
         $this->key = $key;
+    }
+
+    public function getKey()
+    {
+        return $this->key;
     }
 
     public function calculateDigest($data)
@@ -120,9 +135,9 @@ echo "- key/iv:\n";
 $o->setMacKey("123456789");
 $o->setKey("123456");
 $o->setIv("1234567");
-var_dump($c->key);
-var_dump($c->iv);
-var_dump($m->key);
+var_dump($c->getKey());
+var_dump($c->getIv());
+var_dump($m->getKey());
 
 // encrypt
 echo "- encrypt:\n";

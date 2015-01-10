@@ -24,6 +24,11 @@ var_dump($o->isValidKeyLength(23));
 var_dump($o->isValidKeyLength(125));
 var_dump($o->isValidKeyLength(0));
 
+// set key
+echo "- set key:\n";
+$o->setKey("qsdfgh");
+var_dump($o->getKey());
+
 // check digest calculation
 echo "- digest calculation (sha1):\n";
 $o->setKey(hex2bin("0102030405060708090a0b0c0d0e0f10111213141516171819"));
@@ -137,6 +142,8 @@ bool(true)
 bool(true)
 bool(true)
 bool(true)
+- set key:
+string(6) "qsdfgh"
 - digest calculation (sha1):
 string(40) "b7b39196ab5f9c0cf7863b8e0a0bda37aea2c93e"
 string(40) "286d11632a144649124bf912f2826ee80887206f"

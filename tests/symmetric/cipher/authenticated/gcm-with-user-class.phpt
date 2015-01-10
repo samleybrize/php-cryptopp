@@ -27,6 +27,11 @@ class BlockCipherUser implements Cryptopp\BlockCipherInterface
         $this->key = (string) $key;
     }
 
+    public function getKey()
+    {
+        return $this->key;
+    }
+
     public function encryptBlock($data)
     {
         return md5($data, true);
@@ -45,11 +50,6 @@ class BlockCipherUser implements Cryptopp\BlockCipherInterface
     public function decrypt($data)
     {
         return md5($data, true);
-    }
-
-    public function getKey()
-    {
-        return $this->key;
     }
 }
 

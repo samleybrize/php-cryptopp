@@ -24,6 +24,16 @@ var_dump($o->isValidIvLength(16));
 var_dump($o->isValidIvLength(15));
 var_dump($o->isValidIvLength(17));
 
+// set key
+echo "- set key:\n";
+$o->setKey("azertyuiopqsdfgh");
+var_dump($o->getKey());
+
+// set iv
+echo "- set iv:\n";
+$o->setIv("qsdfghjklmazerty");
+var_dump($o->getIv());
+
 // encrypt
 echo "- encrypt:\n";
 $o->setKey(hex2bin("a7c083feb7"));
@@ -156,6 +166,10 @@ bool(false)
 bool(true)
 bool(false)
 bool(false)
+- set key:
+string(16) "azertyuiopqsdfgh"
+- set iv:
+string(16) "qsdfghjklmazerty"
 - encrypt:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "be6a431a935cb90e2221ebb7ef502328"
