@@ -49,6 +49,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, getName);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey);
+PHP_METHOD(Cryptopp_BlockCipherAbstract, getKey);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock);
 PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt);

@@ -52,6 +52,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getIv);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData);

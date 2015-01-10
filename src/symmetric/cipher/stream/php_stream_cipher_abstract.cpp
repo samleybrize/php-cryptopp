@@ -52,6 +52,8 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
     PHP_ME(Cryptopp_StreamCipherAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, getKey, arginfo_SymmetricCipherInterface_getKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_StreamCipherAbstract, getIv, arginfo_SymmetricTransformationInterface_getIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_StreamCipherAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -350,6 +352,24 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto string StreamCipherAbstract::getKey(void)
+   Returns the key */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getKey) {
+    zval *key;
+    key = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    RETURN_ZVAL(key, 1, 0)
+}
+/* }}} */
+
+/* {{{ proto string StreamCipherAbstract::getIv(void)
+   Returns the initialization vector */
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getIv) {
+    zval *iv;
+    iv = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
 

@@ -51,6 +51,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getKey);
+PHP_METHOD(Cryptopp_StreamCipherAbstract, getIv);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt);
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart);

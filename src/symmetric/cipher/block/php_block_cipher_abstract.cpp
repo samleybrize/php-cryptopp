@@ -49,6 +49,7 @@ static zend_function_entry cryptopp_methods_BlockCipherAbstract[] = {
     PHP_ME(Cryptopp_BlockCipherAbstract, getBlockSize, arginfo_SymmetricCipherInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, isValidKeyLength, arginfo_SymmetricCipherInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_BlockCipherAbstract, getKey, arginfo_SymmetricCipherInterface_getKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, encryptBlock, arginfo_BlockCipherInterface_encryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, decryptBlock, arginfo_BlockCipherInterface_decryptBlock, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_BlockCipherAbstract, encrypt, arginfo_BlockCipherInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -230,6 +231,15 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
     encryptor->SetKey(bKey, keySize);
     decryptor->SetKey(bKey, keySize);
     zend_update_property_stringl(cryptopp_ce_BlockCipherAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto string BlockCipherAbstract::getKey(void)
+   Returns the key */
+PHP_METHOD(Cryptopp_BlockCipherAbstract, getKey) {
+    zval *key;
+    key = zend_read_property(cryptopp_ce_BlockCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    RETURN_ZVAL(key, 1, 0)
 }
 /* }}} */
 

@@ -55,6 +55,8 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
     PHP_ME(Cryptopp_SymmetricModeAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, getKey, arginfo_SymmetricCipherInterface_getKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_SymmetricModeAbstract, getIv, arginfo_SymmetricTransformationInterface_getIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_SymmetricModeAbstract, restart, arginfo_SymmetricTransformationInterface_restart, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -418,6 +420,24 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto string SymmetricModeAbstract::getKey(void)
+   Returns the key */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, getKey) {
+    zval *key;
+    key = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    RETURN_ZVAL(key, 1, 0)
+}
+/* }}} */
+
+/* {{{ proto string SymmetricModeAbstract::getIv(void)
+   Returns the initialization vector */
+PHP_METHOD(Cryptopp_SymmetricModeAbstract, getIv) {
+    zval *iv;
+    iv = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
 

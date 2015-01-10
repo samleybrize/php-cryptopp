@@ -49,6 +49,7 @@ static zend_function_entry cryptopp_methods_MacAbstract[] = {
     PHP_ME(Cryptopp_MacAbstract, getBlockSize, arginfo_HashTransformationInterface_getBlockSize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, isValidKeyLength, arginfo_MacInterface_isValidKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, setKey, arginfo_MacInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_MacAbstract, getKey, arginfo_MacInterface_getKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, calculateDigest, arginfo_HashTransformationInterface_calculateDigest, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, update, arginfo_HashTransformationInterface_update, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_MacAbstract, finalize, arginfo_HashTransformationInterface_finalize, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -222,6 +223,15 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
     mac->SetKey(reinterpret_cast<byte*>(key), keySize);
     mac->Restart();
     zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
+}
+/* }}} */
+
+/* {{{ proto string MacAbstract::getKey(void)
+   Returns the key */
+PHP_METHOD(Cryptopp_MacAbstract, getKey) {
+    zval *key;
+    key = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    RETURN_ZVAL(key, 1, 0)
 }
 /* }}} */
 

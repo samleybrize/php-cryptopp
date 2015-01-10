@@ -55,6 +55,8 @@ static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherAbstract
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength, arginfo_SymmetricTransformationInterface_isValidIvLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey, arginfo_SymmetricCipherInterface_setKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv, arginfo_SymmetricTransformationInterface_setIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey, arginfo_SymmetricCipherInterface_getKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, getIv, arginfo_SymmetricTransformationInterface_getIv, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt, arginfo_SymmetricTransformationInterface_encrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt, arginfo_SymmetricTransformationInterface_decrypt, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditionalData, arginfo_AuthenticatedSymmetricCipherInterface_addEncryptionAdditionalData, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
@@ -432,6 +434,24 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
     setKeyWithIv(getThis(), encryptor, decryptor);
+}
+/* }}} */
+
+/* {{{ proto string AuthenticatedSymmetricCipherAbstract::getKey(void)
+   Returns the key */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey) {
+    zval *key;
+    key = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    RETURN_ZVAL(key, 1, 0)
+}
+/* }}} */
+
+/* {{{ proto string AuthenticatedSymmetricCipherAbstract::getIv(void)
+   Returns the initialization vector */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getIv) {
+    zval *iv;
+    iv = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
 
