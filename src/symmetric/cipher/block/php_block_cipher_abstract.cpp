@@ -70,6 +70,7 @@ void init_class_BlockCipherAbstract(TSRMLS_D) {
     zend_class_implements(cryptopp_ce_BlockCipherAbstract TSRMLS_CC, 1, cryptopp_ce_BlockCipherInterface);
 
     zend_declare_property_string(cryptopp_ce_BlockCipherAbstract, "name", 4, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
+    zend_declare_property_string(cryptopp_ce_BlockCipherAbstract, "key", 3, "",  ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
