@@ -32,6 +32,11 @@ abstract class MacAbstract implements MacInterface
     /**
      * {@inheritdoc}
      */
+    final public function getKey() {}
+
+    /**
+     * {@inheritdoc}
+     */
     final public function calculateDigest($data) {}
 
     /**

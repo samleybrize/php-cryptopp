@@ -27,6 +27,11 @@ abstract class BlockCipherAbstract implements BlockCipherInterface
     /**
      * {@inheritdoc}
      */
+    final public function getKey() {}
+
+    /**
+     * {@inheritdoc}
+     */
     final public function encrypt($data) {}
 
     /**

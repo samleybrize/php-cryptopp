@@ -12,6 +12,12 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
     public function setIv($iv);
 
     /**
+     * Returns the IV (initialization vector)
+     * @return string
+     */
+    public function getIv();
+
+    /**
      * Indicates if a given iv length is valid for this algorithm
      * @return bool
      */

@@ -28,4 +28,10 @@ interface SymmetricCipherInterface
      * @throws \Cryptopp\CryptoppException
      */
     public function setKey($key);
+
+    /**
+     * Returns the key
+     * @return string
+     */
+    public function getKey();
 }

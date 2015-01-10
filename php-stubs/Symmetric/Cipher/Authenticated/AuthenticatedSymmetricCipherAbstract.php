@@ -37,6 +37,16 @@ abstract class AuthenticatedSymmetricCipherAbstract implements AuthenticatedSymm
     /**
      * {@inheritdoc}
      */
+    final public function getKey() {}
+
+    /**
+     * {@inheritdoc}
+     */
+    final public function getIv() {}
+
+    /**
+     * {@inheritdoc}
+     */
     final public function encrypt($data) {}
 
     /**
