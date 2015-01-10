@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../utils/zval_utils.h"
 #include "hash_proxy.h"
 #include "php_hash_transformation_interface.h"
 #include <zend_exceptions.h>
@@ -15,12 +16,8 @@ HashProxy::HashProxy(zval *hashObject)
     }
 
     // retrieve block size once
-    zval *funcName;
-    zval *zBlockSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zBlockSize);
-    ZVAL_STRING(funcName, "getBlockSize", 1);
-    call_user_function(NULL, &hashObject, funcName, zBlockSize, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getBlockSize");
+    zval *zBlockSize    = call_user_method(hashObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
         zend_class_entry *ce;
@@ -37,11 +34,8 @@ HashProxy::HashProxy(zval *hashObject)
     zval_dtor(zBlockSize);
 
     // retrieve digest size once
-    zval *zDigestSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zDigestSize);
-    ZVAL_STRING(funcName, "getDigestSize", 1);
-    call_user_function(NULL, &hashObject, funcName, zDigestSize, 0, NULL TSRMLS_CC);
+    funcName            = makeZval("getDigestSize");
+    zval *zDigestSize   = call_user_method(hashObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zDigestSize)) {
         zend_class_entry *ce;
@@ -58,14 +52,10 @@ HashProxy::HashProxy(zval *hashObject)
     zval_dtor(zDigestSize);
 
     // create zvals with php method names
-    MAKE_STD_ZVAL(m_funcnameCalculateDigest);
-    MAKE_STD_ZVAL(m_funcnameUpdate);
-    MAKE_STD_ZVAL(m_funcnameFinal);
-    MAKE_STD_ZVAL(m_funcnameRestart);
-    ZVAL_STRING(m_funcnameCalculateDigest, "calculateDigest", 1);
-    ZVAL_STRING(m_funcnameUpdate, "update", 1);
-    ZVAL_STRING(m_funcnameFinal, "finalize", 1);
-    ZVAL_STRING(m_funcnameRestart, "restart", 1);
+    m_funcnameCalculateDigest   = makeZval("calculateDigest");
+    m_funcnameUpdate            = makeZval("update");
+    m_funcnameFinal             = makeZval("finalize");
+    m_funcnameRestart           = makeZval("restart");
 
     // hold hashObject
     m_hashObject = hashObject;
@@ -94,9 +84,7 @@ unsigned int HashProxy::OptimalBlockSize() const {
 }
 
 void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
-    zval *zOutput;
-    MAKE_STD_ZVAL(zOutput)
-    call_user_function(NULL, &m_hashObject, m_funcnameFinal, zOutput, 0, NULL TSRMLS_CC);
+    zval *zOutput = call_user_method(m_hashObject, m_funcnameFinal TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         zval_dtor(zOutput);
@@ -117,12 +105,8 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
 }
 
 void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
-    zval *zInput;
-    zval *zOutput;
-    MAKE_STD_ZVAL(zInput)
-    MAKE_STD_ZVAL(zOutput)
-    ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
-    call_user_function(NULL, &m_hashObject, m_funcnameCalculateDigest, zOutput, 1, &zInput TSRMLS_CC);
+    zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
+    zval *zOutput   = call_user_method(m_hashObject, m_funcnameCalculateDigest, zInput TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         Z_DELREF_P(zInput);
@@ -145,12 +129,8 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
 }
 
 void HashProxy::Update(const byte *input, size_t length) {
-    zval *zInput;
-    zval *zOutput;
-    MAKE_STD_ZVAL(zInput)
-    MAKE_STD_ZVAL(zOutput)
-    ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
-    call_user_function(NULL, &m_hashObject, m_funcnameUpdate, zOutput, 1, &zInput TSRMLS_CC);
+    zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
+    zval *zOutput   = call_user_method(m_hashObject, m_funcnameUpdate, zInput TSRMLS_CC);
 
     Z_DELREF_P(zInput);
     zval_dtor(zOutput);
@@ -161,10 +141,7 @@ void HashProxy::Final(byte *digest) {
 }
 
 void HashProxy::Restart() {
-    zval *zOutput;
-    MAKE_STD_ZVAL(zOutput)
-    call_user_function(NULL, &m_hashObject, m_funcnameRestart, zOutput, 0, NULL TSRMLS_CC);
-
+    zval *zOutput = call_user_method(m_hashObject, m_funcnameRestart TSRMLS_CC);
     zval_dtor(zOutput);
 }
 

@@ -7,6 +7,7 @@
 #include "../symmetric/cipher/stream/php_stream_cipher_abstract.h"
 #include "../symmetric/cipher/symmetric_transformation_proxy.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
+#include "../utils/zval_utils.h"
 #include "php_symmetric_transformation_filter.h"
 #include <exception>
 #include <filters.h>
@@ -42,13 +43,9 @@ SymmetricTransformationFilter::~SymmetricTransformationFilter()
 
 bool SymmetricTransformationFilter::PaddingObjectCanUnpad()
 {
-    zval *canUnpad;
-    zval *funcName;
-    MAKE_STD_ZVAL(canUnpad);
-    MAKE_STD_ZVAL(funcName);
-    ZVAL_STRING(funcName, "canUnpad", 1);
-    call_user_function(NULL, &m_paddingObject, funcName, canUnpad, 0, NULL TSRMLS_CC);
-    bool result = false;
+    zval *funcName  = makeZval("canUnpad");
+    zval *canUnpad  = call_user_method(m_paddingObject, funcName TSRMLS_CC);
+    bool result     = false;
 
     if (IS_BOOL == Z_TYPE_P(canUnpad) && 1 == Z_BVAL_P(canUnpad)) {
         result = true;
@@ -92,26 +89,19 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
     unsigned int blockSize  = m_cipher.MandatoryBlockSize();
     byte *output            = NULL;
 
-    zval *funcName;
-    zval *zInput;
-    zval *zOutput;
-    zval *zBlockSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zInput);
-    MAKE_STD_ZVAL(zOutput);
-    MAKE_STD_ZVAL(zBlockSize);
-
-    ZVAL_LONG(zBlockSize, blockSize);
-    zval *params[] = {zInput, zBlockSize};
+    zval *zInput        = NULL;
+    zval *funcName      = NULL;
+    zval *zOutput       = NULL;
+    zval *zBlockSize    = makeZval(blockSize);
 
     try {
         if (m_cipher.IsForwardTransformation()) {
             // pad
-            ZVAL_STRING(funcName, "pad", 1);
-            ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(inString), length, 1);
-            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
+            funcName    = makeZval("pad");
+            zInput      = makeZval(reinterpret_cast<const char*>(inString), length);
+            zOutput     = call_user_method(m_paddingObject, funcName, zInput, zBlockSize TSRMLS_CC);
             Z_DELREF_P(zInput);
-            zInput = NULL;
+            zInput      = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
                 throw false;
@@ -146,11 +136,11 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
             byte plain[length];
             m_cipher.ProcessData(plain, inString, length);
 
-            ZVAL_STRING(funcName, "unpad", 1);
-            ZVAL_STRINGL(zInput, reinterpret_cast<char*>(plain), length, 1);
-            call_user_function(NULL, &m_paddingObject, funcName, zOutput, 2, params TSRMLS_CC);
+            funcName    = makeZval("unpad");
+            zInput      = makeZval(reinterpret_cast<const char*>(plain), length);
+            zOutput     = call_user_method(m_paddingObject, funcName, zInput, zBlockSize TSRMLS_CC);
             Z_DELREF_P(zInput);
-            zInput = NULL;
+            zInput      = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
                 throw false;
@@ -166,9 +156,40 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
         }
     } catch (const std::exception &e) {
         // free zvals whatever happen
-        zval_dtor(funcName);
-        zval_dtor(zOutput);
         Z_DELREF_P(zBlockSize);
+
+        if (NULL != zInput) {
+            Z_DELREF_P(zInput);
+        }
+
+        if (NULL != funcName) {
+            zval_dtor(funcName);
+        }
+
+        if (NULL != zOutput) {
+            zval_dtor(zOutput);
+        }
+
+        if (NULL != zInput) {
+            Z_DELREF_P(zInput);
+        }
+
+        throw e;
+    } catch (bool e) {
+        // free zvals whatever happen
+        Z_DELREF_P(zBlockSize);
+
+        if (NULL != zInput) {
+            Z_DELREF_P(zInput);
+        }
+
+        if (NULL != funcName) {
+            zval_dtor(funcName);
+        }
+
+        if (NULL != zOutput) {
+            zval_dtor(zOutput);
+        }
 
         if (NULL != zInput) {
             Z_DELREF_P(zInput);
@@ -178,9 +199,19 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
     }
 
     // free zvals
-    zval_dtor(funcName);
-    zval_dtor(zOutput);
     Z_DELREF_P(zBlockSize);
+
+    if (NULL != zInput) {
+        Z_DELREF_P(zInput);
+    }
+
+    if (NULL != funcName) {
+        zval_dtor(funcName);
+    }
+
+    if (NULL != zOutput) {
+        zval_dtor(zOutput);
+    }
 
     if (NULL != zInput) {
         Z_DELREF_P(zInput);
@@ -391,10 +422,8 @@ static void restartSymmetricCipherObject(zval *stfObject) {
     zval *cipherObject;
     cipherObject = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
-    zval *funcName;
-    MAKE_STD_ZVAL(funcName)
-    ZVAL_STRING(funcName, "restart", 1);
-    call_user_function(NULL, &cipherObject, funcName, funcName, 0, NULL TSRMLS_CC);
+    zval *funcName = makeZval("restart");
+    call_user_method(cipherObject, funcName TSRMLS_CC);
     zval_dtor(funcName);
 }
 /* }}} */

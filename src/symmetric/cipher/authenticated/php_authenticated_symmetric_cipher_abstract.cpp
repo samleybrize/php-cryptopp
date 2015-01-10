@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../utils/zval_utils.h"
 #include "../php_symmetric_cipher_interface.h"
 #include "../php_symmetric_transformation_interface.h"
 #include "../symmetric_transformation_user_interface.h"
@@ -173,12 +174,8 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     }
 
     // retrieve the name of the cipher
-    zval *zCipherName;
-    zval *funcName;
-    MAKE_STD_ZVAL(zCipherName);
-    MAKE_STD_ZVAL(funcName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &cipherObject, funcName, zCipherName, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getName");
+    zval *zCipherName   = call_user_method(cipherObject, funcName TSRMLS_CC);
 
     // build authenticated cipher name with cipher name
     *authenticatedCipherFullName = new std::string(authenticatedCipherName);

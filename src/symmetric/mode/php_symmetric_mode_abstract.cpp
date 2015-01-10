@@ -1,5 +1,6 @@
 #include "../../php_cryptopp.h"
 #include "../../exception/php_exception.h"
+#include "../../utils/zval_utils.h"
 #include "../cipher/php_symmetric_cipher_interface.h"
 #include "../cipher/php_symmetric_transformation_interface.h"
 #include "../cipher/block/block_cipher_proxy.h"
@@ -178,11 +179,8 @@ bool cryptoppSymmetricModeGetCipherElements(
 
     // retrieve the name of the cipher
     zval *zCipherName;
-    zval *funcName;
-    MAKE_STD_ZVAL(zCipherName);
-    MAKE_STD_ZVAL(funcName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &cipherObject, funcName, zCipherName, 0, NULL TSRMLS_CC);
+    zval *funcname  = makeZval("getName");
+    zCipherName     = call_user_method(cipherObject, funcname TSRMLS_CC);
 
     // build mode name with cipher name
     *modeFullName = new std::string(modeName);
@@ -191,7 +189,7 @@ bool cryptoppSymmetricModeGetCipherElements(
     (*modeFullName)->append(")");
 
     zval_dtor(zCipherName);
-    zval_dtor(funcName);
+    zval_dtor(funcname);
 
     return true;
 }

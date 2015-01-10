@@ -6,6 +6,7 @@
 #include "../symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_interface.h"
 #include "../symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_abstract.h"
 #include "../symmetric/cipher/authenticated/authenticated_symmetric_cipher_proxy.h"
+#include "../utils/zval_utils.h"
 #include "php_authenticated_symmetric_transformation_filter.h"
 #include <exception>
 #include <filters.h>
@@ -299,10 +300,8 @@ static void restartCipherObject(zval *stfObject) {
     zval *cipherObject;
     cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
-    zval *funcName;
-    MAKE_STD_ZVAL(funcName)
-    ZVAL_STRING(funcName, "restart", 1);
-    call_user_function(NULL, &cipherObject, funcName, funcName, 0, NULL TSRMLS_CC);
+    zval *funcName = makeZval("restart");
+    call_user_method(cipherObject, funcName TSRMLS_CC);
     zval_dtor(funcName);
 }
 /* }}} */

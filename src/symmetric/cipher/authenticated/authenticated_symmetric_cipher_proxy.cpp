@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../utils/zval_utils.h"
 #include "authenticated_symmetric_cipher_proxy.h"
 #include "php_authenticated_symmetric_cipher_interface.h"
 #include <zend_exceptions.h>
@@ -13,12 +14,8 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
     }
 
     // retrieve block size once
-    zval *funcName;
-    zval *zBlockSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zBlockSize);
-    ZVAL_STRING(funcName, "getBlockSize", 1);
-    call_user_function(NULL, &authenticatedCipherObject, funcName, zBlockSize, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getBlockSize");
+    zval *zBlockSize    = call_user_method(authenticatedCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
         zend_class_entry *ce;
@@ -32,12 +29,11 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
 
     m_blockSize = static_cast<unsigned int>(Z_LVAL_P(zBlockSize));
     zval_dtor(zBlockSize);
+    zval_dtor(funcName);
 
     // retrieve digest size once
-    zval *zDigestSize;
-    MAKE_STD_ZVAL(zDigestSize);
-    ZVAL_STRING(funcName, "getDigestSize", 1);
-    call_user_function(NULL, &authenticatedCipherObject, funcName, zDigestSize, 0, NULL TSRMLS_CC);
+    funcName            = makeZval("getDigestSize");
+    zval *zDigestSize   = call_user_method(authenticatedCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zDigestSize)) {
         zend_class_entry *ce;
@@ -51,12 +47,11 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
 
     m_digestSize = static_cast<unsigned int>(Z_LVAL_P(zDigestSize));
     zval_dtor(zDigestSize);
+    zval_dtor(funcName);
 
     // retrieve algo name once
-    zval *zName;
-    MAKE_STD_ZVAL(zName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &authenticatedCipherObject, funcName, zName, 0, NULL TSRMLS_CC);
+    funcName    = makeZval("getName");
+    zval *zName = call_user_method(authenticatedCipherObject, funcName TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zName)) {
         ZVAL_STRING(zName, "User", 1);
@@ -67,14 +62,10 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
     zval_dtor(zName);
 
     // create zvals with php method names
-    MAKE_STD_ZVAL(m_funcnameProcessData);
-    MAKE_STD_ZVAL(m_funcnameUpdate);
-    MAKE_STD_ZVAL(m_funcnameFinalize);
-    MAKE_STD_ZVAL(m_funcnameRestart);
-    ZVAL_STRING(m_funcnameProcessData, processDataFuncname, 1);
-    ZVAL_STRING(m_funcnameUpdate, updateFuncname, 1);
-    ZVAL_STRING(m_funcnameFinalize, finalizeFuncname, 1);
-    ZVAL_STRING(m_funcnameRestart, "restart", 1);
+    m_funcnameProcessData   = makeZval(processDataFuncname);
+    m_funcnameUpdate        = makeZval(updateFuncname);
+    m_funcnameFinalize      = makeZval(finalizeFuncname);
+    m_funcnameRestart       = makeZval("restart");
 
     // hold authenticatedCipherObject
     m_authenticatedCipherObject = authenticatedCipherObject;
@@ -112,12 +103,8 @@ unsigned int AuthenticatedSymmetricCipherProxy::Base::MinLastBlockSize() const
 
 void AuthenticatedSymmetricCipherProxy::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
-    zval *input;
-    zval *output;
-    MAKE_STD_ZVAL(input)
-    MAKE_STD_ZVAL(output)
-    ZVAL_STRINGL(input, reinterpret_cast<const char*>(inString), length, 1);
-    call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameProcessData, output, 1, &input TSRMLS_CC);
+    zval *input     = makeZval(reinterpret_cast<const char*>(inString), length);
+    zval *output    = call_user_method(m_authenticatedCipherObject, m_funcnameProcessData, input TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(output)) {
         Z_DELREF_P(input);
@@ -132,12 +119,8 @@ void AuthenticatedSymmetricCipherProxy::Base::ProcessData(byte *outString, const
 
 void AuthenticatedSymmetricCipherProxy::Base::Update(const byte *input, size_t length)
 {
-    zval *zInput;
-    zval *zOutput;
-    MAKE_STD_ZVAL(zInput)
-    MAKE_STD_ZVAL(zOutput)
-    ZVAL_STRINGL(zInput, reinterpret_cast<const char*>(input), length, 1);
-    call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameUpdate, zOutput, 1, &zInput TSRMLS_CC);
+    zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
+    zval *zOutput   = call_user_method(m_authenticatedCipherObject, m_funcnameUpdate, zInput TSRMLS_CC);
 
     Z_DELREF_P(zInput);
     zval_dtor(zOutput);
@@ -145,9 +128,7 @@ void AuthenticatedSymmetricCipherProxy::Base::Update(const byte *input, size_t l
 
 void AuthenticatedSymmetricCipherProxy::Base::TruncatedFinal(byte *digest, size_t digestSize)
 {
-    zval *zOutput;
-    MAKE_STD_ZVAL(zOutput)
-    call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameFinalize, zOutput, 0, NULL TSRMLS_CC);
+    zval *zOutput = call_user_method(m_authenticatedCipherObject, m_funcnameFinalize TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         zval_dtor(zOutput);
@@ -174,8 +155,6 @@ void AuthenticatedSymmetricCipherProxy::Base::Resynchronize(const byte *iv, int 
 
 void AuthenticatedSymmetricCipherProxy::Base::Restart()
 {
-    zval *zOutput;
-    MAKE_STD_ZVAL(zOutput)
-    call_user_function(NULL, &m_authenticatedCipherObject, m_funcnameRestart, zOutput, 0, NULL TSRMLS_CC);
+    zval *zOutput = call_user_method(m_authenticatedCipherObject, m_funcnameRestart TSRMLS_CC);
     zval_dtor(zOutput);
 }

@@ -1,5 +1,6 @@
 #include "../../php_cryptopp.h"
 #include "../../exception/php_exception.h"
+#include "../../utils/zval_utils.h"
 #include "php_symmetric_transformation_interface.h"
 #include "symmetric_transformation_proxy.h"
 #include <zend_exceptions.h>
@@ -14,12 +15,8 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     }
 
     // retrieve block size once
-    zval *funcName;
-    zval *zBlockSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zBlockSize);
-    ZVAL_STRING(funcName, "getBlockSize", 1);
-    call_user_function(NULL, &symmetricTransformationObject, funcName, zBlockSize, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getBlockSize");
+    zval *zBlockSize    = call_user_method(symmetricTransformationObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
         zend_class_entry *ce;
@@ -36,18 +33,12 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     zval_dtor(zBlockSize);
 
     // create zvals with php method names
-    MAKE_STD_ZVAL(m_processDataFuncname);
-    MAKE_STD_ZVAL(m_funcnameIsValidKeyLength);
-    MAKE_STD_ZVAL(m_funcnameIsValidIvLength);
-    MAKE_STD_ZVAL(m_funcnameSetKey);
-    MAKE_STD_ZVAL(m_funcnameSetIv);
-    MAKE_STD_ZVAL(m_funcnameRestart);
-    ZVAL_STRING(m_processDataFuncname, processDataFuncname, 1);
-    ZVAL_STRING(m_funcnameIsValidKeyLength, "isValidKeyLength", 1);
-    ZVAL_STRING(m_funcnameIsValidIvLength, "isValidIvLength", 1);
-    ZVAL_STRING(m_funcnameSetKey, "setKey", 1);
-    ZVAL_STRING(m_funcnameSetIv, "setIv", 1);
-    ZVAL_STRING(m_funcnameRestart, "restart", 1);
+    m_processDataFuncname       = makeZval(processDataFuncname);
+    m_funcnameIsValidKeyLength  = makeZval("isValidKeyLength");
+    m_funcnameIsValidIvLength   = makeZval("isValidIvLength");
+    m_funcnameSetKey            = makeZval("setKey");
+    m_funcnameSetIv             = makeZval("setIv");
+    m_funcnameRestart           = makeZval("restart");
 
     // hold symmetricTransformationObject
     m_symmetricTransformationObject = symmetricTransformationObject;
@@ -76,12 +67,8 @@ unsigned int SymmetricTransformationProxy::Base::OptimalBlockSize() const
 
 void SymmetricTransformationProxy::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
-    zval *input;
-    zval *output;
-    MAKE_STD_ZVAL(input)
-    MAKE_STD_ZVAL(output)
-    ZVAL_STRINGL(input, reinterpret_cast<const char*>(inString), length, 1);
-    call_user_function(NULL, &m_symmetricTransformationObject, m_processDataFuncname, output, 1, &input TSRMLS_CC);
+    zval *input     = makeZval(reinterpret_cast<const char*>(inString), length);
+    zval *output    = call_user_method(m_symmetricTransformationObject, m_processDataFuncname, input TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(output)) {
         zval_dtor(input);
@@ -101,14 +88,9 @@ bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n) const
 
 bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
 {
-    zval *zKeySize;
-    zval *output;
-    MAKE_STD_ZVAL(zKeySize)
-    MAKE_STD_ZVAL(output)
-    ZVAL_LONG(zKeySize, static_cast<long>(n));
-    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameIsValidKeyLength, output, 1, &zKeySize TSRMLS_CC);
-
-    bool isValid = Z_BVAL_P(output);
+    zval *zKeySize  = makeZval(static_cast<long>(n));
+    zval *output    = call_user_method(m_symmetricTransformationObject, m_funcnameIsValidKeyLength, zKeySize TSRMLS_CC);
+    bool isValid    = Z_BVAL_P(output);
 
     Z_DELREF_P(zKeySize);
     zval_dtor(output);
@@ -118,14 +100,9 @@ bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
 
 bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
 {
-    zval *zIvSize;
-    zval *output;
-    MAKE_STD_ZVAL(zIvSize)
-    MAKE_STD_ZVAL(output)
-    ZVAL_LONG(zIvSize, static_cast<long>(n));
-    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameIsValidIvLength, output, 1, &zIvSize TSRMLS_CC);
-
-    bool isValid = Z_BVAL_P(output);
+    zval *zIvSize   = makeZval(static_cast<long>(n));
+    zval *output    = call_user_method(m_symmetricTransformationObject, m_funcnameIsValidIvLength, zIvSize TSRMLS_CC);
+    bool isValid    = Z_BVAL_P(output);
 
     Z_DELREF_P(zIvSize);
     zval_dtor(output);
@@ -135,20 +112,16 @@ bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
 
 void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
-    zval *zKey;
-    zval *zIv;
+    zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
+    zval *zIv       = makeZval(reinterpret_cast<const char*>(iv), ivLength);
     zval *output;
-    MAKE_STD_ZVAL(zKey)
-    MAKE_STD_ZVAL(zIv)
-    MAKE_STD_ZVAL(output)
-    ZVAL_STRINGL(zKey, reinterpret_cast<const char*>(key), length, 1);
-    ZVAL_STRINGL(zIv, reinterpret_cast<const char*>(iv), ivLength, 1);
-    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameSetKey, output, 1, &zKey TSRMLS_CC);
-    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameSetIv, output, 1, &zIv TSRMLS_CC);
+    zval *output1   = call_user_method(m_symmetricTransformationObject, m_funcnameSetKey, zKey TSRMLS_CC);
+    zval *output2   = call_user_method(m_symmetricTransformationObject, m_funcnameSetIv, zIv TSRMLS_CC);
 
     Z_DELREF_P(zKey);
     Z_DELREF_P(zIv);
-    zval_dtor(output);
+    zval_dtor(output1);
+    zval_dtor(output2);
 
     Restart();
 }
@@ -178,9 +151,8 @@ void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, 
 
 void SymmetricTransformationProxy::Base::Restart()
 {
-    zval *output;
-    MAKE_STD_ZVAL(output)
-    call_user_function(NULL, &m_symmetricTransformationObject, m_funcnameRestart, output, 0, NULL TSRMLS_CC);
+    zval *output = call_user_method(m_symmetricTransformationObject, m_funcnameRestart TSRMLS_CC);
+    zval_dtor(output);
 }
 
 /*

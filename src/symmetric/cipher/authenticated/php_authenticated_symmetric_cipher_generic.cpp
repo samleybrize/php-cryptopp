@@ -3,6 +3,7 @@
 #include "../../../mac/mac_proxy.h"
 #include "../../../mac/php_mac_interface.h"
 #include "../../../mac/php_mac_abstract.h"
+#include "../../../utils/zval_utils.h"
 #include "../../mode/php_symmetric_mode_abstract.h"
 #include "../stream/php_stream_cipher_abstract.h"
 #include "../php_symmetric_transformation_interface.h"
@@ -16,13 +17,11 @@
 /* {{{ AuthenticatedSymmetricCipher that take an instance of CryptoPP::SymmetricCipher and an instance of CryptoPP::MessageAuthenticationCode */
 AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac)
 {
-    m_zCipher   = zCipher;
-    m_zMac      = zMac;
-    m_cipher    = cipher;
-    m_mac       = mac;
-
-    MAKE_STD_ZVAL(m_funcnameRestart);
-    ZVAL_STRING(m_funcnameRestart, "restart", 1);
+    m_zCipher           = zCipher;
+    m_zMac              = zMac;
+    m_cipher            = cipher;
+    m_mac               = mac;
+    m_funcnameRestart   = makeZval("restart");
 }
 
 AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(zCipher, zMac, cipher, mac)
@@ -195,17 +194,11 @@ static bool getCipherMacElements(
     }
 
     // retrieve the name of the cipher
-    zval *zCipherName;
-    zval *funcName;
-    MAKE_STD_ZVAL(zCipherName);
-    MAKE_STD_ZVAL(funcName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &cipherObject, funcName, zCipherName, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getName");
+    zval *zCipherName   = call_user_method(cipherObject, funcName TSRMLS_CC);
 
     // retrieve the name of the mac
-    zval *zMacName;
-    MAKE_STD_ZVAL(zMacName);
-    call_user_function(NULL, &macObject, funcName, zMacName, 0, NULL TSRMLS_CC);
+    zval *zMacName      = call_user_method(macObject, funcName TSRMLS_CC);
 
     // build authenticated cipher name with cipher name and mac name
     *authenticatedCipherFullName = new std::string();

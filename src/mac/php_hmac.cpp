@@ -2,6 +2,7 @@
 #include "../hash/php_hash_interface.h"
 #include "../hash/php_hash_abstract.h"
 #include "../hash/hash_proxy.h"
+#include "../utils/zval_utils.h"
 #include "php_mac_abstract.h"
 #include "php_hmac.h"
 #include <hmac.h>
@@ -78,12 +79,8 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     setCryptoppMacNativePtr(getThis(), mac  TSRMLS_CC);
 
     // compute algo name
-    zval *hashAlgoName;
-    zval *funcName;
-    MAKE_STD_ZVAL(hashAlgoName);
-    MAKE_STD_ZVAL(funcName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &hashObject, funcName, hashAlgoName, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getName");
+    zval *hashAlgoName  = call_user_method(hashObject, funcName TSRMLS_CC);
 
     std::string name("hmac(");
     name.append(Z_STRVAL_P(hashAlgoName), Z_STRLEN_P(hashAlgoName));

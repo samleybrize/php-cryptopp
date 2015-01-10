@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../utils/zval_utils.h"
 #include "php_block_cipher_interface.h"
 #include "block_cipher_proxy.h"
 #include <zend_exceptions.h>
@@ -14,12 +15,8 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     }
 
     // retrieve block size once
-    zval *funcName;
-    zval *zBlockSize;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zBlockSize);
-    ZVAL_STRING(funcName, "getBlockSize", 1);
-    call_user_function(NULL, &blockCipherObject, funcName, zBlockSize, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getBlockSize");
+    zval *zBlockSize    = call_user_method(blockCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
         zend_class_entry *ce;
@@ -36,11 +33,8 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     zval_dtor(zBlockSize);
 
     // retrieve algo name once
-    zval *zName;
-    MAKE_STD_ZVAL(funcName);
-    MAKE_STD_ZVAL(zName);
-    ZVAL_STRING(funcName, "getName", 1);
-    call_user_function(NULL, &blockCipherObject, funcName, zName, 0, NULL TSRMLS_CC);
+    funcName    = makeZval("getName");
+    zval *zName = call_user_method(blockCipherObject, funcName TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zName)) {
         ZVAL_STRING(zName, "User", 1);
@@ -51,14 +45,10 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     zval_dtor(zName);
 
     // create zvals with php method names
-    MAKE_STD_ZVAL(m_funcnameProcessData);
-    MAKE_STD_ZVAL(m_funcnameProcessBlock);
-    MAKE_STD_ZVAL(m_funcnameIsValidKeyLength);
-    MAKE_STD_ZVAL(m_funcnameSetKey);
-    ZVAL_STRING(m_funcnameProcessData, processDataFuncname, 1);
-    ZVAL_STRING(m_funcnameProcessBlock, processBlockFuncname, 1);
-    ZVAL_STRING(m_funcnameIsValidKeyLength, "isValidKeyLength", 1);
-    ZVAL_STRING(m_funcnameSetKey, "setKey", 1);
+    m_funcnameProcessData       = makeZval(processDataFuncname);
+    m_funcnameProcessBlock      = makeZval(processBlockFuncname);
+    m_funcnameIsValidKeyLength  = makeZval("isValidKeyLength");
+    m_funcnameSetKey            = makeZval("setKey");
 
     // hold blockCipherObject
     m_blockCipherObject = blockCipherObject;
@@ -86,14 +76,9 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n) const
 
 bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 {
-    zval *zKeySize;
-    zval *output;
-    MAKE_STD_ZVAL(zKeySize)
-    MAKE_STD_ZVAL(output)
-    ZVAL_LONG(zKeySize, static_cast<long>(n));
-    call_user_function(NULL, &m_blockCipherObject, m_funcnameIsValidKeyLength, output, 1, &zKeySize TSRMLS_CC);
-
-    bool isValid = Z_BVAL_P(output);
+    zval *zKeySize  = makeZval(static_cast<long>(n));
+    zval *output    = call_user_method(m_blockCipherObject, m_funcnameIsValidKeyLength, zKeySize TSRMLS_CC);
+    bool isValid    = Z_BVAL_P(output);
 
     Z_DELREF_P(zKeySize);
     zval_dtor(output);
@@ -103,12 +88,8 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 
 void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
-    zval *zKey;
-    zval *output;
-    MAKE_STD_ZVAL(zKey)
-    MAKE_STD_ZVAL(output)
-    ZVAL_STRINGL(zKey, reinterpret_cast<const char*>(key), length, 1);
-    call_user_function(NULL, &m_blockCipherObject, m_funcnameSetKey, output, 1, &zKey TSRMLS_CC);
+    zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
+    zval *output    = call_user_method(m_blockCipherObject, m_funcnameSetKey, zKey TSRMLS_CC);
 
     Z_DELREF_P(zKey);
     zval_dtor(output);
@@ -124,12 +105,8 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
     // TODO optimize? (use of AdvancedProcessBlocks)
     // process block
     unsigned int blockSize = BlockSize();
-    zval *zInBlock;
-    zval *zProcessedBlock;
-    MAKE_STD_ZVAL(zInBlock);
-    MAKE_STD_ZVAL(zProcessedBlock);
-    ZVAL_STRINGL(zInBlock, reinterpret_cast<const char*>(inBlock), blockSize, 1);
-    call_user_function(NULL, &m_blockCipherObject, m_funcnameProcessBlock, zProcessedBlock, 1, &zInBlock TSRMLS_CC);
+    zval *zInBlock          = makeZval(reinterpret_cast<const char*>(inBlock), blockSize);
+    zval *zProcessedBlock   = call_user_method(m_blockCipherObject, m_funcnameProcessBlock, zInBlock TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zProcessedBlock)) {
         Z_DELREF_P(zInBlock);

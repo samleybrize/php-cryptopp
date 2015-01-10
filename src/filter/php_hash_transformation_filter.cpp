@@ -5,6 +5,7 @@
 #include "../hash/php_hash_abstract.h"
 #include "../mac/php_mac_interface.h"
 #include "../mac/php_mac_abstract.h"
+#include "../utils/zval_utils.h"
 #include "php_hash_transformation_filter.h"
 #include <exception>
 #include <filters.h>
@@ -150,10 +151,8 @@ static void restartHashObject(zval *htfObject) {
     zval *hashObject;
     hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
 
-    zval *funcName;
-    MAKE_STD_ZVAL(funcName)
-    ZVAL_STRING(funcName, "restart", 1);
-    call_user_function(NULL, &hashObject, funcName, funcName, 0, NULL TSRMLS_CC);
+    zval *funcName = makeZval("restart");
+    call_user_method(hashObject, funcName TSRMLS_CC);
     zval_dtor(funcName);
 }
 /* }}} */
@@ -163,12 +162,8 @@ static int getHashObjectDigestSize(zval *htfObject) {
     zval *hashObject;
     hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
 
-    zval *funcName;
-    zval *zDigestSize;
-    MAKE_STD_ZVAL(funcName)
-    MAKE_STD_ZVAL(zDigestSize)
-    ZVAL_STRING(funcName, "getDigestSize", 1);
-    call_user_function(NULL, &hashObject, funcName, zDigestSize, 0, NULL TSRMLS_CC);
+    zval *funcName      = makeZval("getDigestSize");
+    zval *zDigestSize   = call_user_method(hashObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zDigestSize)) {
         throw false;
