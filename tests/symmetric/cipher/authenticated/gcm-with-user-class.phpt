@@ -5,7 +5,7 @@ Authenticated symmetric cipher: GCM with user class
 
 class BlockCipherUser implements Cryptopp\BlockCipherInterface
 {
-    private $key;
+    private $key = "";
 
     public function getName()
     {
@@ -77,17 +77,25 @@ var_dump($o->isValidIvLength(1256));
 echo "- set key:\n";
 $o->setKey(hex2bin("2b7e15"));
 $o->setIv("1234567");
+var_dump(bin2hex($o->getKey()));
 var_dump(bin2hex($c->getKey()));
 
 // encrypt
 echo "- encrypt:\n";
+$c = new BlockCipherUser();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
+$o->setIv("1234567");
+$c->setKey(hex2bin("2b7e15"));
 var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
 var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
 var_dump(bin2hex($o->finalizeEncryption()));
 
 // decrypt
 echo "- decrypt:\n";
-$o->restart();
+$c = new BlockCipherUser();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
+$o->setIv("1234567");
+$c->setKey(hex2bin("2b7e15"));
 var_dump(bin2hex($o->decrypt(hex2bin("556de8609b18"))));
 var_dump(bin2hex($o->decrypt(hex2bin("5d45eda64796"))));
 var_dump(bin2hex($o->finalizeDecryption()));
@@ -163,6 +171,7 @@ bool(true)
 bool(true)
 bool(true)
 - set key:
+string(6) "2b7e15"
 string(6) "2b7e15"
 - encrypt:
 string(12) "556de8609b18"

@@ -6,7 +6,8 @@ Authenticated symmetric cipher: GCM
 var_dump(is_a("Cryptopp\AuthenticatedSymmetricCipherGcm", "Cryptopp\AuthenticatedSymmetricCipherAbstract", true));
 
 // check algorithm infos
-$o = new Cryptopp\AuthenticatedSymmetricCipherGcm(new Cryptopp\BlockCipherAes());
+$c = new Cryptopp\BlockCipherAes();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 var_dump($o->getDigestSize());
@@ -29,6 +30,7 @@ var_dump($o->isValidIvLength(1256));
 echo "- set key:\n";
 $o->setKey("azertyuiopqsdfgh");
 var_dump($o->getKey());
+var_dump($c->getKey());
 
 // set iv
 echo "- set iv:\n";
@@ -37,15 +39,20 @@ var_dump($o->getIv());
 
 // encrypt
 echo "- encrypt:\n";
-$o->setKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
+$c = new Cryptopp\BlockCipherAes();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
 $o->setIv(hex2bin("cafebabefacedbaddecaf888"));
+$c->setKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
 var_dump(bin2hex($o->encrypt(hex2bin("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a72"))));
 var_dump(bin2hex($o->encrypt(hex2bin("1c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255"))));
 var_dump(bin2hex($o->finalizeEncryption()));
 
 // decrypt
 echo "- decrypt:\n";
-$o->restart();
+$c = new Cryptopp\BlockCipherAes();
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
+$o->setIv(hex2bin("cafebabefacedbaddecaf888"));
+$c->setKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
 var_dump(bin2hex($o->decrypt(hex2bin("42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e"))));
 var_dump(bin2hex($o->decrypt(hex2bin("21d514b25466931c7d8f6a5aac84aa051ba30b396a0aac973d58e091473f5985"))));
 var_dump(bin2hex($o->finalizeDecryption()));
@@ -214,6 +221,7 @@ bool(true)
 bool(true)
 bool(true)
 - set key:
+string(16) "azertyuiopqsdfgh"
 string(16) "azertyuiopqsdfgh"
 - set iv:
 string(16) "qsdfghjklmazerty"

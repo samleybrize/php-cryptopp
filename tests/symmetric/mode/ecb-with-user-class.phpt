@@ -74,6 +74,7 @@ var_dump($o->isValidIvLength(4));
 // set key
 echo "- set key:\n";
 $o->setKey(hex2bin("2b7e15"));
+var_dump(bin2hex($o->getKey()));
 var_dump(bin2hex($c->getKey()));
 
 // encrypt
@@ -162,6 +163,7 @@ bool(true)
 bool(false)
 bool(false)
 - set key:
+string(6) "2b7e15"
 string(6) "2b7e15"
 - encrypt:
 string(12) "402ee2bec16b"
