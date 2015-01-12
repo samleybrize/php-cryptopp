@@ -294,7 +294,7 @@ static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, Cry
     } else if (ivSize > 0 && mode->IsResynchronizable()) {
         // set key and iv
         zval *zKey  = getCipherKey(object);
-        int keySize = Z_STRLEN_P(zKey);
+        int keySize = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
 
         if (keySize > 0) {
             byte *key;

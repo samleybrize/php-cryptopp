@@ -279,7 +279,7 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
 
     if (ivSize > 0 && cipher->IsResynchronizable()) {
         zval *zKey  = getCipherKey(object);
-        int keySize = Z_STRLEN_P(zKey);
+        int keySize = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
 
         // set the key and the iv of native cipher objects
         if (keySize > 0) {
