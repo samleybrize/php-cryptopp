@@ -277,30 +277,33 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
     int ivSize                                      = Z_STRLEN_P(zIv);
     CryptoPP::AuthenticatedSymmetricCipher *cipher  = NULL != encryptor ? encryptor : decryptor;
 
-    if (ivSize > 0 && cipher->IsResynchronizable()) {
-        zval *zKey  = getCipherKey(object);
-        int keySize = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
+    zval *zKey                                      = getCipherKey(object);
+    int keySize                                     = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
 
-        // set the key and the iv of native cipher objects
-        if (keySize > 0) {
-            byte *key;
-            byte *iv;
-            key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
-            iv  = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
+    // set the key and the iv (if applicable) of native mode objects
+    if (keySize > 0 && !cipher->IsResynchronizable()) {
+        // an iv is not required
+        // indicates that the iv is setted
+        zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
+    } else if (keySize > 0 && ivSize > 0 && cipher->IsResynchronizable()) {
+        // set key and iv
+        byte *key;
+        byte *iv;
+        key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
+        iv  = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
 
-            if (NULL != encryptor) {
-                encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
-            }
-
-            if (NULL != decryptor) {
-                decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
-            }
-
-            zval_dtor(zKey);
-
-            // indicates that the iv is setted
-            zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
+        if (NULL != encryptor) {
+            encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         }
+
+        if (NULL != decryptor) {
+            decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
+        }
+
+        zval_dtor(zKey);
+
+        // indicates that the iv is setted
+        zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
     }
 }
 /* }}} */
