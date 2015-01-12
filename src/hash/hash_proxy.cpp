@@ -26,14 +26,14 @@ HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
         ce  = zend_get_class_entry(hashObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
-        zval_dtor(funcName);
-        zval_dtor(zBlockSize);
+        zval_ptr_dtor(&funcName);
+        zval_ptr_dtor(&zBlockSize);
         throw false;
     }
 
     m_blockSize = static_cast<unsigned int>(Z_LVAL_P(zBlockSize));
-    zval_dtor(funcName);
-    zval_dtor(zBlockSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zBlockSize);
 
     // retrieve digest size once
     funcName            = makeZval("getDigestSize");
@@ -44,14 +44,14 @@ HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
         ce  = zend_get_class_entry(hashObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid digest size returned", ce->name);
 
-        zval_dtor(funcName);
-        zval_dtor(zDigestSize);
+        zval_ptr_dtor(&funcName);
+        zval_ptr_dtor(&zDigestSize);
         throw false;
     }
 
     m_digestSize = static_cast<unsigned int>(Z_LVAL_P(zDigestSize));
-    zval_dtor(funcName);
-    zval_dtor(zDigestSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zDigestSize);
 
     // create zvals with php method names
     m_funcnameCalculateDigest   = makeZval("calculateDigest");
@@ -66,11 +66,11 @@ HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
 
 HashProxy::~HashProxy()
 {
-    Z_DELREF_P(m_hashObject);
-    zval_dtor(m_funcnameCalculateDigest);
-    zval_dtor(m_funcnameUpdate);
-    zval_dtor(m_funcnameFinal);
-    zval_dtor(m_funcnameRestart);
+    zval_ptr_dtor(&m_hashObject);
+    zval_ptr_dtor(&m_funcnameCalculateDigest);
+    zval_ptr_dtor(&m_funcnameUpdate);
+    zval_ptr_dtor(&m_funcnameFinal);
+    zval_ptr_dtor(&m_funcnameRestart);
 }
 
 unsigned int HashProxy::DigestSize() const {
@@ -89,7 +89,7 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     zval *zOutput = call_user_method(m_hashObject, m_funcnameFinal M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
@@ -97,13 +97,13 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
         ce  = zend_get_class_entry(m_hashObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     }
 
     int length = std::min(static_cast<int>(digestSize), Z_STRLEN_P(zOutput));
     memcpy(digest, Z_STRVAL_P(zOutput), length);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
@@ -111,8 +111,8 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
     zval *zOutput   = call_user_method(m_hashObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
-        Z_DELREF_P(zInput);
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zInput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
@@ -120,22 +120,22 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
         ce  = zend_get_class_entry(m_hashObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
-        Z_DELREF_P(zInput);
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zInput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     }
 
     memcpy(digest, Z_STRVAL_P(zOutput), Z_STRLEN_P(zOutput));
-    Z_DELREF_P(zInput);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zInput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void HashProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_hashObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
 
-    Z_DELREF_P(zInput);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zInput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void HashProxy::Final(byte *digest) {
@@ -144,7 +144,7 @@ void HashProxy::Final(byte *digest) {
 
 void HashProxy::Restart() {
     zval *zOutput = call_user_method(m_hashObject, m_funcnameRestart M_TSRMLS_CC);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zOutput);
 }
 
 /*

@@ -53,8 +53,8 @@ bool SymmetricTransformationFilter::PaddingObjectCanUnpad()
         result = true;
     }
 
-    zval_dtor(canUnpad);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&canUnpad);
+    zval_ptr_dtor(&funcName);
     return result;
 }
 
@@ -102,7 +102,7 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
             funcName    = makeZval("pad");
             zInput      = makeZval(reinterpret_cast<const char*>(inString), length);
             zOutput     = call_user_method(m_paddingObject, funcName, zInput, zBlockSize M_TSRMLS_CC);
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
             zInput      = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
@@ -141,7 +141,7 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
             funcName    = makeZval("unpad");
             zInput      = makeZval(reinterpret_cast<const char*>(plain), length);
             zOutput     = call_user_method(m_paddingObject, funcName, zInput, zBlockSize M_TSRMLS_CC);
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
             zInput      = NULL;
 
             if (IS_STRING != Z_TYPE_P(zOutput)) {
@@ -158,65 +158,65 @@ void SymmetricTransformationFilter::LastPut(const byte *inString, size_t length)
         }
     } catch (const std::exception &e) {
         // free zvals whatever happen
-        Z_DELREF_P(zBlockSize);
+        zval_ptr_dtor(&zBlockSize);
 
         if (NULL != zInput) {
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
         }
 
         if (NULL != funcName) {
-            zval_dtor(funcName);
+            zval_ptr_dtor(&funcName);
         }
 
         if (NULL != zOutput) {
-            zval_dtor(zOutput);
+            zval_ptr_dtor(&zOutput);
         }
 
         if (NULL != zInput) {
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
         }
 
         throw e;
     } catch (bool e) {
         // free zvals whatever happen
-        Z_DELREF_P(zBlockSize);
+        zval_ptr_dtor(&zBlockSize);
 
         if (NULL != zInput) {
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
         }
 
         if (NULL != funcName) {
-            zval_dtor(funcName);
+            zval_ptr_dtor(&funcName);
         }
 
         if (NULL != zOutput) {
-            zval_dtor(zOutput);
+            zval_ptr_dtor(&zOutput);
         }
 
         if (NULL != zInput) {
-            Z_DELREF_P(zInput);
+            zval_ptr_dtor(&zInput);
         }
 
         throw e;
     }
 
     // free zvals
-    Z_DELREF_P(zBlockSize);
+    zval_ptr_dtor(&zBlockSize);
 
     if (NULL != zInput) {
-        Z_DELREF_P(zInput);
+        zval_ptr_dtor(&zInput);
     }
 
     if (NULL != funcName) {
-        zval_dtor(funcName);
+        zval_ptr_dtor(&funcName);
     }
 
     if (NULL != zOutput) {
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zOutput);
     }
 
     if (NULL != zInput) {
-        Z_DELREF_P(zInput);
+        zval_ptr_dtor(&zInput);
     }
 }
 /* }}} */
@@ -426,7 +426,7 @@ static void restartSymmetricCipherObject(zval *stfObject TSRMLS_DC) {
 
     zval *funcName = makeZval("restart");
     call_user_method(cipherObject, funcName TSRMLS_CC);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&funcName);
 }
 /* }}} */
 
@@ -531,7 +531,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
     zend_update_property(cryptopp_ce_SymmetricTransformationFilter, getThis(), "padding", 7, paddingObject TSRMLS_CC);
 
     if (createdPadding) {
-        Z_DELREF_P(paddingObject);
+        zval_ptr_dtor(&paddingObject);
     }
 }
 /* }}} */

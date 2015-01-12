@@ -26,14 +26,14 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
         ce  = zend_get_class_entry(macObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
-        zval_dtor(funcName);
-        zval_dtor(zBlockSize);
+        zval_ptr_dtor(&funcName);
+        zval_ptr_dtor(&zBlockSize);
         throw false;
     }
 
     m_blockSize = static_cast<unsigned int>(Z_LVAL_P(zBlockSize));
-    zval_dtor(funcName);
-    zval_dtor(zBlockSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zBlockSize);
 
     // retrieve digest size once
     funcName            = makeZval("getDigestSize");
@@ -44,14 +44,14 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
         ce  = zend_get_class_entry(macObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid digest size returned", ce->name);
 
-        zval_dtor(funcName);
-        zval_dtor(zDigestSize);
+        zval_ptr_dtor(&funcName);
+        zval_ptr_dtor(&zDigestSize);
         throw false;
     }
 
     m_digestSize = static_cast<unsigned int>(Z_LVAL_P(zDigestSize));
-    zval_dtor(funcName);
-    zval_dtor(zDigestSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zDigestSize);
 
     // create zvals with php method names
     m_funcnameCalculateDigest   = makeZval("calculateDigest");
@@ -68,13 +68,13 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
 
 MacProxy::~MacProxy()
 {
-    Z_DELREF_P(m_macObject);
-    zval_dtor(m_funcnameCalculateDigest);
-    zval_dtor(m_funcnameUpdate);
-    zval_dtor(m_funcnameFinal);
-    zval_dtor(m_funcnameRestart);
-    zval_dtor(m_funcnameSetKey);
-    zval_dtor(m_funcnameIsValidKeyLength);
+    zval_ptr_dtor(&m_macObject);
+    zval_ptr_dtor(&m_funcnameCalculateDigest);
+    zval_ptr_dtor(&m_funcnameUpdate);
+    zval_ptr_dtor(&m_funcnameFinal);
+    zval_ptr_dtor(&m_funcnameRestart);
+    zval_ptr_dtor(&m_funcnameSetKey);
+    zval_ptr_dtor(&m_funcnameIsValidKeyLength);
 }
 
 unsigned int MacProxy::DigestSize() const {
@@ -93,7 +93,7 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     zval *zOutput = call_user_method(m_macObject, m_funcnameFinal M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
@@ -101,13 +101,13 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
         ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     }
 
     int length = std::min(static_cast<int>(digestSize), Z_STRLEN_P(zOutput));
     memcpy(digest, Z_STRVAL_P(zOutput), length);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
@@ -115,8 +115,8 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval *zOutput   = call_user_method(m_macObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
-        Z_DELREF_P(zInput);
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zInput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
@@ -124,22 +124,22 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
         ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
-        Z_DELREF_P(zInput);
-        zval_dtor(zOutput);
+        zval_ptr_dtor(&zInput);
+        zval_ptr_dtor(&zOutput);
         throw false;
     }
 
     memcpy(digest, Z_STRVAL_P(zOutput), Z_STRLEN_P(zOutput));
-    Z_DELREF_P(zInput);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zInput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void MacProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_macObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
 
-    Z_DELREF_P(zInput);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zInput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void MacProxy::Final(byte *digest) {
@@ -148,7 +148,7 @@ void MacProxy::Final(byte *digest) {
 
 void MacProxy::Restart() {
     zval *zOutput = call_user_method(m_macObject, m_funcnameRestart M_TSRMLS_CC);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zOutput);
 }
 
 void MacProxy::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
@@ -156,8 +156,8 @@ void MacProxy::SetKey(const byte *key, size_t length, const CryptoPP::NameValueP
     zval *zInput    = makeZval(reinterpret_cast<const char*>(key), length);
     zval *zOutput   = call_user_method(m_macObject, m_funcnameSetKey, zInput M_TSRMLS_CC);
 
-    Z_DELREF_P(zInput);
-    zval_dtor(zOutput);
+    zval_ptr_dtor(&zInput);
+    zval_ptr_dtor(&zOutput);
 }
 
 bool MacProxy::IsValidKeyLength(size_t n) const
@@ -171,8 +171,8 @@ bool MacProxy::IsValidKeyLength(size_t n)
     zval *output    = call_user_method(m_macObject, m_funcnameIsValidKeyLength, zKeySize M_TSRMLS_CC);
     bool isValid    = Z_BVAL_P(output);
 
-    Z_DELREF_P(zKeySize);
-    zval_dtor(output);
+    zval_ptr_dtor(&zKeySize);
+    zval_ptr_dtor(&output);
 
     return isValid;
 }

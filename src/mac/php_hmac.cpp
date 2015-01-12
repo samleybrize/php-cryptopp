@@ -87,8 +87,8 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     name.append(")");
     zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "name", 4, name.c_str(), name.length() TSRMLS_CC);
 
-    zval_dtor(hashAlgoName);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&hashAlgoName);
+    zval_ptr_dtor(&funcName);
 
     // set a default empty key
     byte defaultKey[0];

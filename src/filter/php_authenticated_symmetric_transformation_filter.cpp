@@ -302,7 +302,7 @@ static void restartCipherObject(zval *stfObject TSRMLS_DC) {
 
     zval *funcName = makeZval("restart");
     call_user_method(cipherObject, funcName TSRMLS_CC);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&funcName);
 }
 /* }}} */
 
@@ -394,7 +394,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
     zend_update_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, getThis(), "padding", 7, paddingObject TSRMLS_CC);
 
     if (createdPadding) {
-        Z_DELREF_P(paddingObject);
+        zval_ptr_dtor(&paddingObject);
     }
 }
 /* }}} */

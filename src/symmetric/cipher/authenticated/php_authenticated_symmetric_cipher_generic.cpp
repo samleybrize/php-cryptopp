@@ -207,9 +207,9 @@ static bool getCipherMacElements(
     (*authenticatedCipherFullName)->append("/");
     (*authenticatedCipherFullName)->append(Z_STRVAL_P(zMacName), Z_STRLEN_P(zMacName));
 
-    zval_dtor(zCipherName);
-    zval_dtor(zMacName);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&zCipherName);
+    zval_ptr_dtor(&zMacName);
+    zval_ptr_dtor(&funcName);
 
     return true;
 }

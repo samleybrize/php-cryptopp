@@ -153,7 +153,7 @@ static void restartHashObject(zval *htfObject TSRMLS_DC) {
 
     zval *funcName = makeZval("restart");
     call_user_method(hashObject, funcName TSRMLS_CC);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&funcName);
 }
 /* }}} */
 
@@ -170,8 +170,8 @@ static int getHashObjectDigestSize(zval *htfObject TSRMLS_DC) {
     }
 
     int digestSize = static_cast<int>(Z_LVAL_P(zDigestSize));
-    zval_dtor(funcName);
-    zval_dtor(zDigestSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zDigestSize);
 
     return digestSize;
 }

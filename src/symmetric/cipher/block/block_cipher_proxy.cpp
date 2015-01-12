@@ -25,14 +25,14 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
         ce  = zend_get_class_entry(blockCipherObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
-        zval_dtor(funcName);
-        zval_dtor(zBlockSize);
+        zval_ptr_dtor(&funcName);
+        zval_ptr_dtor(&zBlockSize);
         throw false;
     }
 
     m_blockSize = static_cast<unsigned int>(Z_LVAL_P(zBlockSize));
-    zval_dtor(funcName);
-    zval_dtor(zBlockSize);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zBlockSize);
 
     // retrieve algo name once
     funcName    = makeZval("getName");
@@ -43,8 +43,8 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     }
 
     m_name.assign(Z_STRVAL_P(zName), Z_STRLEN_P(zName));
-    zval_dtor(funcName);
-    zval_dtor(zName);
+    zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&zName);
 
     // create zvals with php method names
     m_funcnameProcessData       = makeZval(processDataFuncname);
@@ -59,11 +59,11 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
 
 BlockCipherProxy::Base::~Base()
 {
-    Z_DELREF_P(m_blockCipherObject);
-    zval_dtor(m_funcnameProcessData);
-    zval_dtor(m_funcnameProcessBlock);
-    zval_dtor(m_funcnameIsValidKeyLength);
-    zval_dtor(m_funcnameSetKey);
+    zval_ptr_dtor(&m_blockCipherObject);
+    zval_ptr_dtor(&m_funcnameProcessData);
+    zval_ptr_dtor(&m_funcnameProcessBlock);
+    zval_ptr_dtor(&m_funcnameIsValidKeyLength);
+    zval_ptr_dtor(&m_funcnameSetKey);
 }
 
 unsigned int BlockCipherProxy::Base::BlockSize() const
@@ -82,8 +82,8 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
     zval *output    = call_user_method(m_blockCipherObject, m_funcnameIsValidKeyLength, zKeySize M_TSRMLS_CC);
     bool isValid    = Z_BVAL_P(output);
 
-    Z_DELREF_P(zKeySize);
-    zval_dtor(output);
+    zval_ptr_dtor(&zKeySize);
+    zval_ptr_dtor(&output);
 
     return isValid;
 }
@@ -93,8 +93,8 @@ void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const Crypto
     zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
     zval *output    = call_user_method(m_blockCipherObject, m_funcnameSetKey, zKey M_TSRMLS_CC);
 
-    Z_DELREF_P(zKey);
-    zval_dtor(output);
+    zval_ptr_dtor(&zKey);
+    zval_ptr_dtor(&output);
 }
 
 void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
@@ -111,8 +111,8 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
     zval *zProcessedBlock   = call_user_method(m_blockCipherObject, m_funcnameProcessBlock, zInBlock M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zProcessedBlock)) {
-        Z_DELREF_P(zInBlock);
-        zval_dtor(zProcessedBlock);
+        zval_ptr_dtor(&zInBlock);
+        zval_ptr_dtor(&zProcessedBlock);
         throw false;
     }
 
@@ -125,8 +125,8 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
         }
     }
 
-    Z_DELREF_P(zInBlock);
-    zval_dtor(zProcessedBlock);
+    zval_ptr_dtor(&zInBlock);
+    zval_ptr_dtor(&zProcessedBlock);
 }
 
 /*

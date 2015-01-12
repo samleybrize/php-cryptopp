@@ -184,8 +184,8 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     (*authenticatedCipherFullName)->append(Z_STRVAL_P(zCipherName), Z_STRLEN_P(zCipherName));
     (*authenticatedCipherFullName)->append(")");
 
-    zval_dtor(zCipherName);
-    zval_dtor(funcName);
+    zval_ptr_dtor(&zCipherName);
+    zval_ptr_dtor(&funcName);
 
     return true;
 }
@@ -196,7 +196,7 @@ static inline zval *getCipherKey(zval *object TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zval *funcname          = makeZval("getKey");
     zval *key               = call_user_method(cipher, funcname TSRMLS_CC);
-    zval_dtor(funcname);
+    zval_ptr_dtor(&funcname);
     return key;
 }
 /* }}} */
@@ -225,7 +225,7 @@ bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::Auth
     zval *key;
     key         = getCipherKey(object TSRMLS_CC);
     int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
-    zval_dtor(key);
+    zval_ptr_dtor(&key);
 
     return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize TSRMLS_CC) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher TSRMLS_CC);
 }
@@ -301,7 +301,7 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
             decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         }
 
-        zval_dtor(zKey);
+        zval_ptr_dtor(&zKey);
 
         // indicates that the iv is setted
         zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
@@ -437,7 +437,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
     zval *zKey      = makeZval(key, keySize);
     zval *cipher    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
     zval *output    = call_user_method(cipher, funcname, zKey TSRMLS_CC);
-    zval_dtor(output);
+    zval_ptr_dtor(&output);
 
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
@@ -474,7 +474,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey) {
     zval *key = getCipherKey(getThis() TSRMLS_CC);
     RETVAL_ZVAL(key, 1, 0);
-    zval_dtor(key);
+    zval_ptr_dtor(&key);
 }
 /* }}} */
 
