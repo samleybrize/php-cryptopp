@@ -38,7 +38,7 @@ public:
         void GetNextIV(CryptoPP::RandomNumberGenerator &rng, byte *IV) {}
 
     protected:
-        Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname);
+        Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname TSRMLS_DC);
 
         // unused
         void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {};
@@ -50,6 +50,7 @@ public:
         zval *m_funcnameProcessBlock;
         zval *m_funcnameIsValidKeyLength;
         zval *m_funcnameSetKey;
+        M_TSRMLS_D;
     };
     /* }}} */
 
@@ -57,7 +58,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *blockCipherObject) : Base(blockCipherObject, "encrypt", "encryptBlock"){};
+        Encryption(zval *blockCipherObject TSRMLS_DC) : Base(blockCipherObject, "encrypt", "encryptBlock" TSRMLS_CC){};
         bool IsForwardTransformation() const {return true;};
         inline CryptoPP::CipherDir GetCipherDirection() const {return CryptoPP::ENCRYPTION;}
     };
@@ -67,7 +68,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *blockCipherObject) : Base(blockCipherObject, "decrypt", "decryptBlock"){};
+        Decryption(zval *blockCipherObject TSRMLS_DC) : Base(blockCipherObject, "decrypt", "decryptBlock" TSRMLS_CC){};
         bool IsForwardTransformation() const {return false;};
         inline CryptoPP::CipherDir GetCipherDirection() const {return CryptoPP::DECRYPTION;}
     };

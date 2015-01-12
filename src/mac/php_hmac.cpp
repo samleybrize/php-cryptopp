@@ -55,13 +55,13 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     CryptoPP::MessageAuthenticationCode *mac;
     CryptoPP::HashTransformation *hash;
 
-    if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract)) {
+    if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract TSRMLS_CC)) {
         // retrieve native hash object
-        hash    = getCryptoppHashNativePtr(hashObject);
+        hash    = getCryptoppHashNativePtr(hashObject TSRMLS_CC);
         mac     = new Hmac(hash, false);
     } else {
         // create a proxy to the user php object
-        hash    = new HashProxy(hashObject);
+        hash    = new HashProxy(hashObject TSRMLS_CC);
         mac     = new Hmac(hash, true);
     }
 

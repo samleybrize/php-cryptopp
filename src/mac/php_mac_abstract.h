@@ -54,7 +54,7 @@ ZEND_END_ARG_INFO()
 /* }}} */
 
 /* verify that a key size is valid for a MacAbstract instance */
-bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac);
+bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC);
 
 #endif /* PHP_MAC_ABSTRACT_H */
 

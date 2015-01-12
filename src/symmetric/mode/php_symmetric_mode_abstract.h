@@ -74,14 +74,15 @@ bool cryptoppSymmetricModeGetCipherElements(
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
     std::string **modeFullName
+    TSRMLS_DC
 );
 /* }}} */
 
 /* verify that a key size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode);
+bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
 
 /* verify that an iv size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode);
+bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
 
 #endif /* PHP_SYMMETRIC_MODE_ABSTRACT_H */
 

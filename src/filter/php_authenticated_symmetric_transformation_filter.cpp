@@ -13,8 +13,8 @@
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::AuthenticatedEncryptionFilter to support padding schemes as objects */
-AuthenticatedEncryptionFilter::AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed)
-    : SymmetricTransformationFilter(c, paddingObject, cipherMustBeDestructed, true)
+AuthenticatedEncryptionFilter::AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed TSRMLS_DC)
+    : SymmetricTransformationFilter(c, paddingObject, cipherMustBeDestructed TSRMLS_CC, true)
     , m_hf(c, new CryptoPP::OutputProxy(*this, false), false, -1, CryptoPP::DEFAULT_CHANNEL, CryptoPP::DEFAULT_CHANNEL)
 {
     // initialization copied from CryptoPP::AuthenticatedEncryptionFilter
@@ -75,10 +75,10 @@ size_t HashVerificationFilter::LastSize()
 /* }}} */
 
 /* {{{ fork of CryptoPP::AuthenticatedDecryptionFilter to support padding schemes as objects */
-AuthenticatedDecryptionFilter::AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed, CryptoPP::word32 flags)
+AuthenticatedDecryptionFilter::AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed TSRMLS_DC, CryptoPP::word32 flags)
     : FilterWithBufferedInput(NULL)
     , m_hashVerifier(c, new CryptoPP::OutputProxy(*this, false))
-    , m_streamFilter(c, paddingObject, cipherMustBeDestructed, true)
+    , m_streamFilter(c, paddingObject, cipherMustBeDestructed TSRMLS_CC, true)
 {
     m_streamFilter.Attach(new CryptoPP::OutputProxy(*this, false));
 
@@ -274,19 +274,19 @@ static void setCryptoppAuthenticatedSymmetricTransformationFilterDecryptorPtr(zv
 /* }}} */
 
 /* {{{ indicates if the native cipher object holded by a stf object is valid */
-static bool isNativeCipherObjectValid(zval *stfObject) {
+static bool isNativeCipherObjectValid(zval *stfObject TSRMLS_DC) {
     zval *cipherObject;
     cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
     if (IS_OBJECT != Z_TYPE_P(cipherObject)) {
         // not an object
         return false;
-    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract)) {
+    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract TSRMLS_CC)) {
         // AuthenticatedSymmetricCipherAbstract
         CryptoPP::AuthenticatedSymmetricCipher *cipherEncryptor;
-        cipherEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject);
+        cipherEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject TSRMLS_CC);
 
-        if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(cipherObject, cipherEncryptor) || !isCryptoppAuthenticatedSymmetricCipherIvValid(cipherObject, cipherEncryptor)) {
+        if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(cipherObject, cipherEncryptor TSRMLS_CC) || !isCryptoppAuthenticatedSymmetricCipherIvValid(cipherObject, cipherEncryptor TSRMLS_CC)) {
             return false;
         }
     }
@@ -296,7 +296,7 @@ static bool isNativeCipherObjectValid(zval *stfObject) {
 /* }}} */
 
 /* {{{ restart the cipher holded by a AuthenticatedSymmetricTransformationFilter php object */
-static void restartCipherObject(zval *stfObject) {
+static void restartCipherObject(zval *stfObject TSRMLS_DC) {
     zval *cipherObject;
     cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
@@ -344,10 +344,10 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
     bool parentConstructorError = false;
     bool cipherMustBeDestructed = false;
 
-    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract)) {
+    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_AuthenticatedSymmetricCipherAbstract TSRMLS_CC)) {
         // retrieve native mode objects
-        symmetricEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject);
-        symmetricDecryptor = getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(cipherObject);
+        symmetricEncryptor = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(cipherObject TSRMLS_CC);
+        symmetricDecryptor = getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(cipherObject TSRMLS_CC);
 
         if (NULL == symmetricEncryptor || NULL == symmetricDecryptor) {
             parentConstructorError = true;
@@ -355,8 +355,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
     } else {
         // create a proxy to the user php object
         try {
-            symmetricEncryptor      = new AuthenticatedSymmetricCipherProxy::Encryption(cipherObject);
-            symmetricDecryptor      = new AuthenticatedSymmetricCipherProxy::Decryption(cipherObject);
+            symmetricEncryptor      = new AuthenticatedSymmetricCipherProxy::Encryption(cipherObject TSRMLS_CC);
+            symmetricDecryptor      = new AuthenticatedSymmetricCipherProxy::Decryption(cipherObject TSRMLS_CC);
             cipherMustBeDestructed  = true;
         } catch (bool e) {
             return;
@@ -378,8 +378,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, __construct) {
     AuthenticatedDecryptionFilter *stfDecryptor;
 
     try {
-        stfEncryptor = new AuthenticatedEncryptionFilter(*symmetricEncryptor, paddingObject, cipherMustBeDestructed);
-        stfDecryptor = new AuthenticatedDecryptionFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed);
+        stfEncryptor = new AuthenticatedEncryptionFilter(*symmetricEncryptor, paddingObject, cipherMustBeDestructed TSRMLS_CC);
+        stfDecryptor = new AuthenticatedDecryptionFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed TSRMLS_CC);
     } catch (std::exception &e) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: AuthenticatedSymmetricTransformationFilter: %s", e.what());
         return;
@@ -435,7 +435,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString) {
     stfEncryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(stfEncryptor)
 
     // if the cipher object is a native object, ensure that the key/iv is valid
-    if (!isNativeCipherObjectValid(getThis())) {
+    if (!isNativeCipherObjectValid(getThis() TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -462,7 +462,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString) {
         // retrieve encrypted data and tag
         // the tag is right after encrypted data
         CryptoPP::lword retrievable = stfEncryptor->MaxRetrievable();
-        restartCipherObject(getThis());
+        restartCipherObject(getThis() TSRMLS_CC);
 
         if (retrievable > dataSize) {
             // return ciphertext
@@ -495,7 +495,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
     stfDecryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
 
     // if the mode object is a native object, ensure that the key/iv is valid
-    if (!isNativeCipherObjectValid(getThis())) {
+    if (!isNativeCipherObjectValid(getThis() TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -520,7 +520,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
         stfDecryptor->ChannelMessageEnd(CryptoPP::DEFAULT_CHANNEL);
 
         CryptoPP::lword retrievable = stfDecryptor->MaxRetrievable();
-        restartCipherObject(getThis());
+        restartCipherObject(getThis() TSRMLS_CC);
 
         if (retrievable > 0 && retrievable <= ciphertextSize) {
             // return plain text

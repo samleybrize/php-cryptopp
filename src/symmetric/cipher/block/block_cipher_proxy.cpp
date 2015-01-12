@@ -6,11 +6,13 @@
 #include <zend_exceptions.h>
 #include <exception>
 
-BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname)
+BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname TSRMLS_DC)
 {
+    M_TSRMLS_C = TSRMLS_C;
+
     // verify that blockCipherObject is an instance of BlockCipherInterface
     if (IS_OBJECT != Z_TYPE_P(blockCipherObject) ||
-            !instanceof_function(Z_OBJCE_P(blockCipherObject), cryptopp_ce_BlockCipherInterface)) {
+            !instanceof_function(Z_OBJCE_P(blockCipherObject), cryptopp_ce_BlockCipherInterface TSRMLS_CC)) {
         throw "BlockCipherProxy expect a zval that holds an instance of Cryptopp\\BlockCipherInterface";
     }
 
@@ -77,7 +79,7 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n) const
 bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 {
     zval *zKeySize  = makeZval(static_cast<long>(n));
-    zval *output    = call_user_method(m_blockCipherObject, m_funcnameIsValidKeyLength, zKeySize TSRMLS_CC);
+    zval *output    = call_user_method(m_blockCipherObject, m_funcnameIsValidKeyLength, zKeySize M_TSRMLS_CC);
     bool isValid    = Z_BVAL_P(output);
 
     Z_DELREF_P(zKeySize);
@@ -89,7 +91,7 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
-    zval *output    = call_user_method(m_blockCipherObject, m_funcnameSetKey, zKey TSRMLS_CC);
+    zval *output    = call_user_method(m_blockCipherObject, m_funcnameSetKey, zKey M_TSRMLS_CC);
 
     Z_DELREF_P(zKey);
     zval_dtor(output);
@@ -106,7 +108,7 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
     // process block
     unsigned int blockSize = BlockSize();
     zval *zInBlock          = makeZval(reinterpret_cast<const char*>(inBlock), blockSize);
-    zval *zProcessedBlock   = call_user_method(m_blockCipherObject, m_funcnameProcessBlock, zInBlock TSRMLS_CC);
+    zval *zProcessedBlock   = call_user_method(m_blockCipherObject, m_funcnameProcessBlock, zInBlock M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zProcessedBlock)) {
         Z_DELREF_P(zInBlock);

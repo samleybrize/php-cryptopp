@@ -12,6 +12,20 @@ extern "C" {
 #include "php.h"
 }
 
+#ifdef ZTS
+
+#define M_TSRMLS_D  void ***m_tsrm_ls
+#define M_TSRMLS_C  m_tsrm_ls
+#define M_TSRMLS_CC , M_TSRMLS_C
+
+#else /* non ZTS */
+
+#define M_TSRMLS_D  void
+#define M_TSRMLS_C
+#define M_TSRMLS_CC
+
+#endif /* ZTS */
+
 /* {{{ include crypto++ */
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 #include <cryptlib.h>

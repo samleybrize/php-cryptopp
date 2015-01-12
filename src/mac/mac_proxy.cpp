@@ -1,17 +1,19 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
 #include "../utils/zval_utils.h"
+#include "mac_proxy.h"
 #include "php_mac_interface.h"
 #include <zend_exceptions.h>
 #include <exception>
 #include <algorithm>
-#include "mac_proxy.h"
 
-MacProxy::MacProxy(zval *macObject)
+MacProxy::MacProxy(zval *macObject TSRMLS_DC)
 {
+    M_TSRMLS_C = TSRMLS_C;
+
     // verify that hashObject is an instance of HashInterface
     if (IS_OBJECT != Z_TYPE_P(macObject) ||
-            !instanceof_function(Z_OBJCE_P(macObject), cryptopp_ce_MacInterface)) {
+            !instanceof_function(Z_OBJCE_P(macObject), cryptopp_ce_MacInterface TSRMLS_CC)) {
         throw "MacProxy expect a zval that holds an instance of Cryptopp\\MacInterface";
     }
 
@@ -88,7 +90,7 @@ unsigned int MacProxy::OptimalBlockSize() const {
 }
 
 void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
-    zval *zOutput = call_user_method(m_macObject, m_funcnameFinal TSRMLS_CC);
+    zval *zOutput = call_user_method(m_macObject, m_funcnameFinal M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         zval_dtor(zOutput);
@@ -96,8 +98,8 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
         zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_macObject TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+        ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         zval_dtor(zOutput);
         throw false;
@@ -110,7 +112,7 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
 
 void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
-    zval *zOutput   = call_user_method(m_macObject, m_funcnameCalculateDigest, zInput TSRMLS_CC);
+    zval *zOutput   = call_user_method(m_macObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         Z_DELREF_P(zInput);
@@ -119,8 +121,8 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
         zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_macObject TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+        ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         Z_DELREF_P(zInput);
         zval_dtor(zOutput);
@@ -134,7 +136,7 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
 
 void MacProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
-    zval *zOutput   = call_user_method(m_macObject, m_funcnameUpdate, zInput TSRMLS_CC);
+    zval *zOutput   = call_user_method(m_macObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
 
     Z_DELREF_P(zInput);
     zval_dtor(zOutput);
@@ -145,14 +147,14 @@ void MacProxy::Final(byte *digest) {
 }
 
 void MacProxy::Restart() {
-    zval *zOutput = call_user_method(m_macObject, m_funcnameRestart TSRMLS_CC);
+    zval *zOutput = call_user_method(m_macObject, m_funcnameRestart M_TSRMLS_CC);
     zval_dtor(zOutput);
 }
 
 void MacProxy::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(key), length);
-    zval *zOutput   = call_user_method(m_macObject, m_funcnameSetKey, zInput TSRMLS_CC);
+    zval *zOutput   = call_user_method(m_macObject, m_funcnameSetKey, zInput M_TSRMLS_CC);
 
     Z_DELREF_P(zInput);
     zval_dtor(zOutput);
@@ -166,7 +168,7 @@ bool MacProxy::IsValidKeyLength(size_t n) const
 bool MacProxy::IsValidKeyLength(size_t n)
 {
     zval *zKeySize  = makeZval(static_cast<long>(n));
-    zval *output    = call_user_method(m_macObject, m_funcnameIsValidKeyLength, zKeySize TSRMLS_CC);
+    zval *output    = call_user_method(m_macObject, m_funcnameIsValidKeyLength, zKeySize M_TSRMLS_CC);
     bool isValid    = Z_BVAL_P(output);
 
     Z_DELREF_P(zKeySize);

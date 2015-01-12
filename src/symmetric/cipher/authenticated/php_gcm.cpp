@@ -38,7 +38,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct) {
     CryptoPP::BlockCipher *cipherDecryptor;
     std::string *authenticatedCipherName;
 
-    if (!cryptoppAuthenticatedSymmetricCipherGetCipherElements("gcm", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &authenticatedCipherName)) {
+    if (!cryptoppAuthenticatedSymmetricCipherGetCipherElements("gcm", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &authenticatedCipherName TSRMLS_CC)) {
         RETURN_NULL()
     } else if (16 != cipherEncryptor->BlockSize()) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherGcm require a block cipher with a block size of 128 bits (16 bytes)");

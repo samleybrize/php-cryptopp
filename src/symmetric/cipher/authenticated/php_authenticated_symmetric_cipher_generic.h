@@ -5,7 +5,7 @@
 
 extern zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherGeneric;
 void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D);
-bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher);
+bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct);
 
 /* {{{ methods declarations */

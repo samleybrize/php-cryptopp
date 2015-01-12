@@ -79,14 +79,15 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
     std::string **authenticatedCipherFullName
+    TSRMLS_DC
 );
 /* }}} */
 
 /* verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher);
+bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
 
 /* verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher);
+bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_H */
 

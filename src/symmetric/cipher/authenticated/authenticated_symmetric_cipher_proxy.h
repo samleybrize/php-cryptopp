@@ -54,7 +54,7 @@ public:
         bool VerifyTruncatedDigest(const byte *digest, size_t digestLength, const byte *input, size_t length) {Update(input, length); return TruncatedVerify(digest, digestLength);}
 
     protected:
-        Base(zval *authenticatedCipherObject, const char* processDataFuncname, const char* updateFuncname, const char* finalizeFuncname);
+        Base(zval *authenticatedCipherObject, const char* processDataFuncname, const char* updateFuncname, const char* finalizeFuncname TSRMLS_DC);
 
         // unused
         const Algorithm & GetAlgorithm() const {return *static_cast<const CryptoPP::MessageAuthenticationCode *>(this);}
@@ -69,6 +69,7 @@ public:
         zval *m_funcnameUpdate;
         zval *m_funcnameFinalize;
         zval *m_funcnameRestart;
+        M_TSRMLS_D;
     };
     /* }}} */
 
@@ -76,7 +77,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *authenticatedCipherObject) : Base(authenticatedCipherObject, "encrypt", "addEncryptionAdditionalData", "finalizeEncryption") {};
+        Encryption(zval *authenticatedCipherObject TSRMLS_DC) : Base(authenticatedCipherObject, "encrypt", "addEncryptionAdditionalData", "finalizeEncryption" TSRMLS_CC) {};
         bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
@@ -85,7 +86,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *authenticatedCipherObject) : Base(authenticatedCipherObject, "decrypt", "addDecryptionAdditionalData", "finalizeDecryption") {};
+        Decryption(zval *authenticatedCipherObject TSRMLS_DC) : Base(authenticatedCipherObject, "decrypt", "addDecryptionAdditionalData", "finalizeDecryption" TSRMLS_CC) {};
         bool IsForwardTransformation() const {return false;};
     };
     /* }}} */

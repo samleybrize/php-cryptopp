@@ -126,7 +126,7 @@ void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *d
 /* }}} */
 
 /* {{{ verify that a key size is valid for a BlockCipherAbstract instance */
-static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher, int keySize) {
+static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher, int keySize TSRMLS_DC) {
     zend_class_entry *ce;
     ce = zend_get_class_entry(object TSRMLS_CC);
 
@@ -143,12 +143,12 @@ static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *c
     return true;
 }
 
-bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher) {
+bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC) {
     zval *key;
     key         = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
-    return isCryptoppBlockCipherKeyValid(object, cipher, keySize);
+    return isCryptoppBlockCipherKeyValid(object, cipher, keySize TSRMLS_CC);
 }
 /* }}} */
 
@@ -222,7 +222,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
     encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor, keySize)) {
+    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -258,7 +258,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock) {
     encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key
-    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor)) {
+    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -292,7 +292,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
     decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key
-    if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor)) {
+    if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -326,7 +326,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
     encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key
-    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor)) {
+    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -368,7 +368,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
     decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key
-    if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor)) {
+    if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 

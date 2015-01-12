@@ -23,18 +23,18 @@ PHP_FUNCTION(hash_equals)
     char *known_str, *user_str;
     int result = 0, j;
 
-    if (zend_parse_parameters(ZEND_NUM_ARGS(), "zz", &known_zval, &user_zval) == FAILURE) {
+    if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz", &known_zval, &user_zval) == FAILURE) {
         return;
     }
 
     /* We only allow comparing string to prevent unexpected results. */
     if (Z_TYPE_P(known_zval) != IS_STRING) {
-        php_error_docref(NULL, E_WARNING, "Expected known_string to be a string, %s given", zend_zval_type_name(known_zval));
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expected known_string to be a string, %s given", zend_zval_type_name(known_zval));
         RETURN_FALSE;
     }
 
     if (Z_TYPE_P(user_zval) != IS_STRING) {
-        php_error_docref(NULL, E_WARNING, "Expected user_string to be a string, %s given", zend_zval_type_name(user_zval));
+        php_error_docref(NULL TSRMLS_CC, E_WARNING, "Expected user_string to be a string, %s given", zend_zval_type_name(user_zval));
         RETURN_FALSE;
     }
 

@@ -36,7 +36,7 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     CryptoPP::BlockCipher *cipherDecryptor;
     std::string *modeName;
 
-    if (!cryptoppSymmetricModeGetCipherElements("ecb", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &modeName)) {
+    if (!cryptoppSymmetricModeGetCipherElements("ecb", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &modeName TSRMLS_CC)) {
         RETURN_NULL()
     }
 

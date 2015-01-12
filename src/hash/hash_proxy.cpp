@@ -7,11 +7,13 @@
 #include <exception>
 #include <algorithm>
 
-HashProxy::HashProxy(zval *hashObject)
+HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
 {
+    M_TSRMLS_C = TSRMLS_C;
+
     // verify that hashObject is an instance of HashInterface
     if (IS_OBJECT != Z_TYPE_P(hashObject) ||
-            !instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashTransformationInterface)) {
+            !instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashTransformationInterface TSRMLS_CC)) {
         throw "HashProxy expect a zval that holds an instance of Cryptopp\\HashTransformationInterface";
     }
 
@@ -84,7 +86,7 @@ unsigned int HashProxy::OptimalBlockSize() const {
 }
 
 void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
-    zval *zOutput = call_user_method(m_hashObject, m_funcnameFinal TSRMLS_CC);
+    zval *zOutput = call_user_method(m_hashObject, m_funcnameFinal M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         zval_dtor(zOutput);
@@ -92,8 +94,8 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
         zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_hashObject TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+        ce  = zend_get_class_entry(m_hashObject M_TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         zval_dtor(zOutput);
         throw false;
@@ -106,7 +108,7 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
 
 void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
-    zval *zOutput   = call_user_method(m_hashObject, m_funcnameCalculateDigest, zInput TSRMLS_CC);
+    zval *zOutput   = call_user_method(m_hashObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
 
     if (IS_STRING != Z_TYPE_P(zOutput)) {
         Z_DELREF_P(zInput);
@@ -115,8 +117,8 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
         zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_hashObject TSRMLS_CC);
-        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
+        ce  = zend_get_class_entry(m_hashObject M_TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         Z_DELREF_P(zInput);
         zval_dtor(zOutput);
@@ -130,7 +132,7 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
 
 void HashProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
-    zval *zOutput   = call_user_method(m_hashObject, m_funcnameUpdate, zInput TSRMLS_CC);
+    zval *zOutput   = call_user_method(m_hashObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
 
     Z_DELREF_P(zInput);
     zval_dtor(zOutput);
@@ -141,7 +143,7 @@ void HashProxy::Final(byte *digest) {
 }
 
 void HashProxy::Restart() {
-    zval *zOutput = call_user_method(m_hashObject, m_funcnameRestart TSRMLS_CC);
+    zval *zOutput = call_user_method(m_hashObject, m_funcnameRestart M_TSRMLS_CC);
     zval_dtor(zOutput);
 }
 

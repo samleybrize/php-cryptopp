@@ -6,7 +6,7 @@
 class MacProxy : public CryptoPP::MessageAuthenticationCode
 {
 public:
-    MacProxy(zval *hashObject);
+    MacProxy(zval *hashObject TSRMLS_DC);
     ~MacProxy();
     unsigned int DigestSize() const;
     unsigned int BlockSize() const;
@@ -49,6 +49,7 @@ protected:
     zval *m_funcnameRestart;
     zval *m_funcnameSetKey;
     zval *m_funcnameIsValidKeyLength;
+    M_TSRMLS_D;
 };
 
 #endif /* PHP_MAC_PROXY_H */

@@ -13,7 +13,7 @@ class AuthenticatedEncryptionFilter : public SymmetricTransformationFilter
 {
 public:
     /*! See StreamTransformationFilter for documentation on BlockPaddingScheme  */
-    AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed);
+    AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed TSRMLS_DC);
 
     void IsolatedInitialize(const CryptoPP::NameValuePairs &parameters);
     byte * ChannelCreatePutSpace(const std::string &channel, size_t &size);
@@ -43,7 +43,7 @@ public:
     enum Flags {MAC_AT_END=0, MAC_AT_BEGIN=1, THROW_EXCEPTION=16, DEFAULT_FLAGS = THROW_EXCEPTION};
 
     /*! See StreamTransformationFilter for documentation on BlockPaddingScheme  */
-    AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed, CryptoPP::word32 flags = DEFAULT_FLAGS);
+    AuthenticatedDecryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed TSRMLS_DC, CryptoPP::word32 flags = DEFAULT_FLAGS);
 
     std::string AlgorithmName() const {return m_hashVerifier.AlgorithmName();}
     byte * ChannelCreatePutSpace(const std::string &channel, size_t &size);

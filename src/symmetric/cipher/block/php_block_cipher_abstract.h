@@ -65,7 +65,7 @@ ZEND_END_ARG_INFO()
 /* }}} */
 
 /* verify that a key size is valid for a BlockCipherAbstract instance */
-bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher);
+bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC);
 
 #endif /* PHP_BLOCK_CIPHER_ABSTRACT_H */
 

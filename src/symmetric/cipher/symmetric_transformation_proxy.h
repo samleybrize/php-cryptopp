@@ -33,7 +33,7 @@ class SymmetricTransformationProxy
         void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {}
 
     protected:
-        Base(zval *symmetricTransformationObject, const char* processDataFuncname);
+        Base(zval *symmetricTransformationObject, const char* processDataFuncname TSRMLS_DC);
 
         unsigned int m_blockSize;
         zval *m_symmetricTransformationObject;
@@ -43,6 +43,7 @@ class SymmetricTransformationProxy
         zval *m_funcnameSetKey;
         zval *m_funcnameSetIv;
         zval *m_funcnameRestart;
+        M_TSRMLS_D;
     };
     /* }}} */
 
@@ -51,7 +52,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "encrypt"){};
+        Encryption(zval *symmetricTransformationObject TSRMLS_DC) : Base(symmetricTransformationObject, "encrypt" TSRMLS_CC){};
         bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
@@ -60,7 +61,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *symmetricTransformationObject) : Base(symmetricTransformationObject, "decrypt"){};
+        Decryption(zval *symmetricTransformationObject TSRMLS_DC) : Base(symmetricTransformationObject, "decrypt" TSRMLS_CC){};
         bool IsForwardTransformation() const {return false;};
     };
     /* }}} */

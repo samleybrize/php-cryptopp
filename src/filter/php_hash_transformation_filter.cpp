@@ -122,22 +122,22 @@ static void setCryptoppHashTransformationFilterNativePtr(zval *this_ptr, HashTra
 /* }}} */
 
 /* {{{ indicates if the native hash object holded by a stf object is valid */
-static bool isNativeHashTransformationObjectValid(zval *stfObject) {
+static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
     zval *hashObject;
     hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, stfObject, "hash", 4, 0 TSRMLS_CC);
 
     if (IS_OBJECT != Z_TYPE_P(hashObject)) {
         // not an object
         return false;
-    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract)) {
+    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract TSRMLS_CC)) {
         // HashAbstract
         return true;
-    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_StreamCipherAbstract)) {
+    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_StreamCipherAbstract TSRMLS_CC)) {
         // MacAbstract
         CryptoPP::MessageAuthenticationCode *mac;
-        mac = getCryptoppMacNativePtr(hashObject);
+        mac = getCryptoppMacNativePtr(hashObject TSRMLS_CC);
 
-        if (!isCryptoppMacKeyValid(hashObject, mac)) {
+        if (!isCryptoppMacKeyValid(hashObject, mac TSRMLS_CC)) {
             return false;
         }
     }
@@ -147,7 +147,7 @@ static bool isNativeHashTransformationObjectValid(zval *stfObject) {
 /* }}} */
 
 /* {{{ restart the hash holded by a HashTransformationFilter php object */
-static void restartHashObject(zval *htfObject) {
+static void restartHashObject(zval *htfObject TSRMLS_DC) {
     zval *hashObject;
     hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
 
@@ -158,7 +158,7 @@ static void restartHashObject(zval *htfObject) {
 /* }}} */
 
 /* {{{ returns the hash object digest size */
-static int getHashObjectDigestSize(zval *htfObject) {
+static int getHashObjectDigestSize(zval *htfObject TSRMLS_DC) {
     zval *hashObject;
     hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
 
@@ -204,16 +204,16 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
     bool parentConstructorError = false;
     bool hashMustBeDestructed   = false;
 
-    if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract)) {
+    if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract TSRMLS_CC)) {
         // retrieve native hash object
-        hash = getCryptoppHashNativePtr(hashObject);
+        hash = getCryptoppHashNativePtr(hashObject TSRMLS_CC);
 
         if (NULL == hash) {
             parentConstructorError = true;
         }
-    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_MacAbstract)) {
+    } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_MacAbstract TSRMLS_CC)) {
         // retrieve native mac object
-        hash = getCryptoppMacNativePtr(hashObject);
+        hash = getCryptoppMacNativePtr(hashObject TSRMLS_CC);
 
         if (NULL == hash) {
             parentConstructorError = true;
@@ -221,7 +221,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
     } else {
         // create a proxy to the user php object
         try {
-            hash                    = new HashProxy(hashObject);
+            hash                    = new HashProxy(hashObject TSRMLS_CC);
             hashMustBeDestructed    = true;
         } catch (bool e) {
             return;
@@ -281,7 +281,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, calculateDigestString) {
     htf = CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(htf)
 
     // if the hash object is a native mac object, ensure that the key is valid
-    if (!isNativeHashTransformationObjectValid(getThis())) {
+    if (!isNativeHashTransformationObjectValid(getThis() TSRMLS_CC)) {
         RETURN_FALSE
     }
 
@@ -292,9 +292,9 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, calculateDigestString) {
         htf->MessageEnd();
 
         CryptoPP::lword retrievable = htf->MaxRetrievable();
-        restartHashObject(getThis());
+        restartHashObject(getThis() TSRMLS_CC);
 
-        if (retrievable == getHashObjectDigestSize(getThis())) {
+        if (retrievable == getHashObjectDigestSize(getThis() TSRMLS_CC)) {
             // return ciphertext
             byte digest[retrievable];
             htf->Get(digest, retrievable);

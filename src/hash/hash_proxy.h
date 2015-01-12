@@ -6,7 +6,7 @@
 class HashProxy : public CryptoPP::HashTransformation
 {
 public:
-    HashProxy(zval *hashObject);
+    HashProxy(zval *hashObject TSRMLS_DC);
     ~HashProxy();
     unsigned int DigestSize() const;
     unsigned int BlockSize() const;
@@ -36,6 +36,7 @@ protected:
     zval *m_funcnameUpdate;
     zval *m_funcnameFinal;
     zval *m_funcnameRestart;
+    M_TSRMLS_D;
 };
 
 #endif /* PHP_HASH_PROXY_H */

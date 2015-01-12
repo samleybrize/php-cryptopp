@@ -148,15 +148,16 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
     std::string **authenticatedCipherFullName
+    TSRMLS_DC
 ) {
-    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract)) {
+    if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract TSRMLS_CC)) {
         // retrieve native objects
         *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
         *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
-    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherInterface)) {
+    } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherInterface TSRMLS_CC)) {
         // create a proxy to the user php object
-        *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject);
-        *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject);
+        *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
+        *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject TSRMLS_CC);
     } else {
         // invalid object
         zend_class_entry *ce;
@@ -191,7 +192,7 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
 /* }}} */
 
 /* {{{ returns the cipher key */
-static inline zval *getCipherKey(zval *object) {
+static inline zval *getCipherKey(zval *object TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zval *funcname          = makeZval("getKey");
     zval *key               = call_user_method(cipher, funcname TSRMLS_CC);
@@ -201,7 +202,7 @@ static inline zval *getCipherKey(zval *object) {
 /* }}} */
 
 /* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-static bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize, bool throwIfFalse = true) {
+static bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize TSRMLS_DC, bool throwIfFalse = true) {
     if (!cipher->IsValidKeyLength(keySize)) {
         zend_class_entry *ce;
         ce = zend_get_class_entry(object TSRMLS_CC);
@@ -220,18 +221,18 @@ static bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoP
     return true;
 }
 
-bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher) {
+bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *key;
-    key         = getCipherKey(object);
+    key         = getCipherKey(object TSRMLS_CC);
     int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
     zval_dtor(key);
 
-    return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher);
+    return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize TSRMLS_CC) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int ivSize, bool throwIfFalse = true) {
+static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int ivSize TSRMLS_DC, bool throwIfFalse = true) {
     bool isValid = false;
 
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
@@ -262,22 +263,22 @@ static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP
     return true;
 }
 
-bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher) {
+bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *iv;
     iv          = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize  = Z_STRLEN_P(iv);
 
-    return isCryptoppAuthenticatedSymmetricCipherIvValid(object, cipher, ivSize);
+    return isCryptoppAuthenticatedSymmetricCipherIvValid(object, cipher, ivSize TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
-static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor) {
+static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
     zval *zIv                                       = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize                                      = Z_STRLEN_P(zIv);
     CryptoPP::AuthenticatedSymmetricCipher *cipher  = NULL != encryptor ? encryptor : decryptor;
 
-    zval *zKey                                      = getCipherKey(object);
+    zval *zKey                                      = getCipherKey(object TSRMLS_CC);
     int keySize                                     = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
 
     // set the key and the iv (if applicable) of native mode objects
@@ -309,18 +310,18 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
 /* }}} */
 
 /* {{{ resets the mac and the iv of the cipher to their initial state */
-static inline void restart(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor) {
-    setKeyWithIv(object, encryptor, decryptor);
+static inline void restart(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
+    setKeyWithIv(object, encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ ensure the iv is set.
    If cipher's setKey() is called after setIv(), the internal iv of the native cryptopp object may not be set. */
-static inline void ensureIvIsSet(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor) {
+static inline void ensureIvIsSet(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
     zval *ivSetted = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
 
     if (!Z_BVAL_P(ivSetted)) {
-        setKeyWithIv(object, encryptor, decryptor);
+        setKeyWithIv(object, encryptor, decryptor TSRMLS_CC);
     }
 }
 /* }}} */
@@ -383,7 +384,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
-    if (isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize, false)) {
+    if (isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
@@ -404,7 +405,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
-    if (isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize, false)) {
+    if (isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
@@ -427,7 +428,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -435,10 +436,10 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
     zval *funcname  = makeZval("setKey");
     zval *zKey      = makeZval(key, keySize);
     zval *cipher    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
-    zval *output    = call_user_method(cipher, funcname, zKey);
+    zval *output    = call_user_method(cipher, funcname, zKey TSRMLS_CC);
     zval_dtor(output);
 
-    setKeyWithIv(getThis(), encryptor, decryptor);
+    setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */
 
@@ -457,21 +458,21 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
         // invalid iv
         RETURN_FALSE;
     }
 
     // set the iv on both the php object and the native cryptopp object
     zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
-    setKeyWithIv(getThis(), encryptor, decryptor);
+    setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ proto string AuthenticatedSymmetricCipherAbstract::getKey(void)
    Returns the key */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey) {
-    zval *key = getCipherKey(getThis());
+    zval *key = getCipherKey(getThis() TSRMLS_CC);
     RETVAL_ZVAL(key, 1, 0);
     zval_dtor(key);
 }
@@ -500,11 +501,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt) {
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key and iv
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor) || !isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor TSRMLS_CC) || !isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 
-    ensureIvIsSet(getThis(), encryptor, NULL);
+    ensureIvIsSet(getThis(), encryptor, NULL TSRMLS_CC);
 
     // check dataSize against block size
     int blockSize = static_cast<int>(encryptor->MandatoryBlockSize());
@@ -541,11 +542,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt) {
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key and iv
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor) || !isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), decryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor TSRMLS_CC) || !isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), decryptor TSRMLS_CC)) {
         RETURN_FALSE
     }
 
-    ensureIvIsSet(getThis(), NULL, decryptor);
+    ensureIvIsSet(getThis(), NULL, decryptor TSRMLS_CC);
 
     // check dataSize against block size
     int blockSize = static_cast<int>(decryptor->MandatoryBlockSize());
@@ -593,7 +594,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditiona
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -626,7 +627,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditiona
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -640,7 +641,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -652,7 +653,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption) {
         // restart
         CryptoPP::AuthenticatedSymmetricCipher *decryptor;
         decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
-        restart(getThis(), encryptor, decryptor);
+        restart(getThis(), encryptor, decryptor TSRMLS_CC);
     } catch (bool e) {
         RETURN_FALSE;
     }
@@ -667,7 +668,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor)) {
+    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -679,7 +680,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
         // restart
         CryptoPP::AuthenticatedSymmetricCipher *encryptor;
         encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-        restart(getThis(), encryptor, decryptor);
+        restart(getThis(), encryptor, decryptor TSRMLS_CC);
     } catch (bool e) {
         RETURN_FALSE;
     }
@@ -695,7 +696,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, restart) {
     CryptoPP::AuthenticatedSymmetricCipher *decryptor;
     encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
-    restart(getThis(), encryptor, decryptor);
+    restart(getThis(), encryptor, decryptor TSRMLS_CC);
 
     // indicate that encryption/decryption has not started
     zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 0 TSRMLS_CC);
