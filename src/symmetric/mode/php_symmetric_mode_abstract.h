@@ -73,7 +73,8 @@ bool cryptoppSymmetricModeGetCipherElements(
     zval *modeObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **modeFullName
+    std::string **modeFullName,
+    bool &cipherMustBeDestructed
     TSRMLS_DC
 );
 /* }}} */

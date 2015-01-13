@@ -4,6 +4,15 @@
 #include "php_ecb.h"
 #include <modes.h>
 
+/* {{{ fork of CryptoPP::ECB_Mode_ExternalCipher to support block cipher destruction */
+Ecb::Base::~Base()
+{
+    if (m_cipherMustBeDestructed) {
+        delete m_cipher;
+    }
+}
+/* }}} */
+
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeEcb_construct, 0)
     ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\BlockCipherInterface, 0)
@@ -35,17 +44,18 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     CryptoPP::BlockCipher *cipherEncryptor;
     CryptoPP::BlockCipher *cipherDecryptor;
     std::string *modeName;
+    bool cipherMustBeDestructed;
 
-    if (!cryptoppSymmetricModeGetCipherElements("ecb", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &modeName TSRMLS_CC)) {
+    if (!cryptoppSymmetricModeGetCipherElements("ecb", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &modeName, cipherMustBeDestructed TSRMLS_CC)) {
         RETURN_NULL()
     }
 
     // instanciate mode encryptor/decryptor
-    CryptoPP::ECB_Mode_ExternalCipher::Encryption *encryptor;
-    CryptoPP::ECB_Mode_ExternalCipher::Decryption *decryptor;
+    Ecb::Encryption *encryptor;
+    Ecb::Decryption *decryptor;
 
-    encryptor = new CryptoPP::ECB_Mode_ExternalCipher::Encryption(*cipherEncryptor);
-    decryptor = new CryptoPP::ECB_Mode_ExternalCipher::Decryption(*cipherDecryptor);
+    encryptor = new Ecb::Encryption(cipherEncryptor, cipherMustBeDestructed);
+    decryptor = new Ecb::Decryption(cipherDecryptor, cipherMustBeDestructed);
     setCryptoppSymmetricModeEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppSymmetricModeDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

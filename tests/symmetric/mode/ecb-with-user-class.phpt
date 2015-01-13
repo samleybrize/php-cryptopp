@@ -185,4 +185,4 @@ Cryptopp\SymmetricModeEcb : no initialization vector needed
 - no key:
 Cryptopp\SymmetricModeEcb : a key is required
 - block size 0:
-Cryptopp\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0
+BlockCipherUser2 : invalid block size returned

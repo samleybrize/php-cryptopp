@@ -151,17 +151,35 @@ bool cryptoppSymmetricModeGetCipherElements(
     zval *modeObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **modeFullName
+    std::string **modeFullName,
+    bool &cipherMustBeDestructed
     TSRMLS_DC
 ) {
+    cipherMustBeDestructed = false;
+
     if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract TSRMLS_CC)) {
         // retrieve native objects
         *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
         *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
     } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherInterface TSRMLS_CC)) {
         // create a proxy to the user php object
-        *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
-        *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject TSRMLS_CC);
+        try {
+            *cipherEncryptor        = NULL;
+            *cipherDecryptor        = NULL;
+            *cipherEncryptor        = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
+            *cipherDecryptor        = new BlockCipherProxy::Decryption(cipherObject TSRMLS_CC);
+            cipherMustBeDestructed  = true;
+        } catch (bool e) {
+            if (NULL != *cipherEncryptor) {
+                delete *cipherEncryptor;
+            }
+
+            if (NULL != *cipherDecryptor) {
+                delete *cipherDecryptor;
+            }
+
+            return false;
+        }
     } else {
         // invalid object
         zend_class_entry *ce;
