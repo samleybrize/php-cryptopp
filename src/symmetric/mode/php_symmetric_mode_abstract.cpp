@@ -306,11 +306,11 @@ static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, Cry
             decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         }
 
-        zval_ptr_dtor(&zKey);
-
         // indicates that the iv is setted
         zend_update_property_bool(cryptopp_ce_SymmetricModeAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
     }
+
+    zval_ptr_dtor(&zKey);
 }
 /* }}} */
 
@@ -424,6 +424,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
     zval *zKey      = makeZval(key, keySize);
     zval *cipher    = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
     zval *output    = call_user_method(cipher, funcname, zKey TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&zKey);
     zval_ptr_dtor(&output);
 
     // set the key on both the php object and the native cryptopp object

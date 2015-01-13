@@ -6,6 +6,21 @@
 #include <zend_exceptions.h>
 #include <gcm.h>
 
+/* {{{ fork of CryptoPP::GCM that take a cipher as parameter instead of a template parameter */
+GCM::Base::Base(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed)
+    : m_cipher(cipher)
+    , m_cipherMustBeDestructed(cipherMustBeDestructed)
+{
+}
+
+GCM::Base::~Base()
+{
+    if (m_cipherMustBeDestructed) {
+        delete m_cipher;
+    }
+}
+/* }}} */
+
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherGcm_construct, 0)
     ZEND_ARG_OBJ_INFO(0, cipher, Cryptopp\\BlockCipherInterface, 0)
@@ -37,19 +52,27 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct) {
     CryptoPP::BlockCipher *cipherEncryptor;
     CryptoPP::BlockCipher *cipherDecryptor;
     std::string *authenticatedCipherName;
+    bool cipherMustBeDestructed;
 
-    if (!cryptoppAuthenticatedSymmetricCipherGetCipherElements("gcm", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &authenticatedCipherName TSRMLS_CC)) {
+    if (!cryptoppAuthenticatedSymmetricCipherGetCipherElements("gcm", cipherObject, getThis(), &cipherEncryptor, &cipherDecryptor, &authenticatedCipherName, cipherMustBeDestructed TSRMLS_CC)) {
         RETURN_NULL()
     } else if (16 != cipherEncryptor->BlockSize()) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherGcm require a block cipher with a block size of 128 bits (16 bytes)");
+        delete cipherEncryptor;
+        delete cipherDecryptor;
+        delete authenticatedCipherName;
         RETURN_NULL()
+    }
+
+    if (cipherMustBeDestructed) {
+        delete cipherDecryptor;
     }
 
     // instanciate authenticated cipher encryptor/decryptor
     GCM::Encryption *encryptor;
     GCM::Decryption *decryptor;
-    encryptor = new GCM::Encryption(cipherEncryptor);
-    decryptor = new GCM::Decryption(cipherEncryptor);
+    encryptor = new GCM::Encryption(cipherEncryptor, cipherMustBeDestructed);
+    decryptor = new GCM::Decryption(cipherEncryptor, false);
     setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

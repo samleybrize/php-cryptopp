@@ -55,6 +55,7 @@ SymmetricTransformationProxy::Base::~Base()
     zval_ptr_dtor(&m_funcnameIsValidIvLength);
     zval_ptr_dtor(&m_funcnameSetKey);
     zval_ptr_dtor(&m_funcnameSetIv);
+    zval_ptr_dtor(&m_funcnameRestart);
 }
 
 unsigned int SymmetricTransformationProxy::Base::MandatoryBlockSize() const

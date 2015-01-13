@@ -15,21 +15,38 @@
 #include <zend_exceptions.h>
 
 /* {{{ AuthenticatedSymmetricCipher that take an instance of CryptoPP::SymmetricCipher and an instance of CryptoPP::MessageAuthenticationCode */
-AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac)
+AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
 {
-    m_zCipher           = zCipher;
-    m_zMac              = zMac;
-    m_cipher            = cipher;
-    m_mac               = mac;
-    m_funcnameRestart   = makeZval("restart");
+    m_zCipher                   = zCipher;
+    m_zMac                      = zMac;
+    m_cipher                    = cipher;
+    m_mac                       = mac;
+    m_funcnameRestart           = makeZval("restart");
+    m_cipherMustBeDestructed    = cipherMustBeDestructed;
+    m_macMustBeDestructed       = macMustBeDestructed;
 }
 
-AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(zCipher, zMac, cipher, mac)
+AuthenticatedSymmetricCipherGeneric::Base::~Base()
+{
+    zval_ptr_dtor(&m_funcnameRestart);
+
+    if (m_cipherMustBeDestructed) {
+        delete m_cipher;
+    }
+
+    if (m_macMustBeDestructed) {
+        delete m_mac;
+    }
+}
+
+AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
+    : Base(zCipher, zMac, cipher, mac, cipherMustBeDestructed, macMustBeDestructed)
 {
     assert(cipher->IsForwardTransformation());
 }
 
-AuthenticatedSymmetricCipherGeneric::Decryption::Decryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac) : Base(zCipher, zMac, cipher, mac)
+AuthenticatedSymmetricCipherGeneric::Decryption::Decryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
+    : Base(zCipher, zMac, cipher, mac, cipherMustBeDestructed, macMustBeDestructed)
 {
     // can't assert that the cipher is not a forward transformation, because some ciphers use the same transformation for both encryption and decryption
 }
@@ -142,9 +159,14 @@ static bool getCipherMacElements(
     CryptoPP::SymmetricCipher **cipherEncryptor,
     CryptoPP::SymmetricCipher **cipherDecryptor,
     CryptoPP::MessageAuthenticationCode **mac,
-    std::string **authenticatedCipherFullName
+    std::string **authenticatedCipherFullName,
+    bool &cipherMustBeDestructed,
+    bool &macMustBeDestructed
     TSRMLS_DC
 ) {
+    cipherMustBeDestructed  = false;
+    macMustBeDestructed     = false;
+
     // cipher
     if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_SymmetricModeAbstract TSRMLS_CC)) {
         // retrieve native objects
@@ -156,8 +178,9 @@ static bool getCipherMacElements(
         *cipherDecryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
     } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_SymmetricTransformationInterface TSRMLS_CC)) {
         // create a proxy to the user php object
-        *cipherEncryptor = new SymmetricTransformationProxy::Encryption(cipherObject TSRMLS_CC);
-        *cipherDecryptor = new SymmetricTransformationProxy::Decryption(cipherObject TSRMLS_CC);
+        *cipherEncryptor        = new SymmetricTransformationProxy::Encryption(cipherObject TSRMLS_CC);
+        *cipherDecryptor        = new SymmetricTransformationProxy::Decryption(cipherObject TSRMLS_CC);
+        cipherMustBeDestructed  = true;
     } else {
         // invalid object
         zend_class_entry *ce;
@@ -172,7 +195,8 @@ static bool getCipherMacElements(
         *mac = static_cast<MacAbstractContainer *>(zend_object_store_get_object(macObject TSRMLS_CC))->mac;
     } else if (instanceof_function(Z_OBJCE_P(macObject), cryptopp_ce_MacInterface TSRMLS_CC)) {
         // create a proxy to the user php object
-        *mac = new MacProxy(macObject TSRMLS_CC);
+        *mac                = new MacProxy(macObject TSRMLS_CC);
+        macMustBeDestructed = true;
     } else {
         // invalid object
         zend_class_entry *ce;
@@ -259,16 +283,18 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct) {
     CryptoPP::SymmetricCipher *cipherDecryptor;
     CryptoPP::MessageAuthenticationCode *mac;
     std::string *authenticatedCipherName;
+    bool cipherMustBeDestructed;
+    bool macMustBeDestructed;
 
-    if (!getCipherMacElements(cipherObject, macObject, getThis(), &cipherEncryptor, &cipherDecryptor, &mac, &authenticatedCipherName TSRMLS_CC)) {
+    if (!getCipherMacElements(cipherObject, macObject, getThis(), &cipherEncryptor, &cipherDecryptor, &mac, &authenticatedCipherName, cipherMustBeDestructed, macMustBeDestructed TSRMLS_CC)) {
         RETURN_NULL()
     }
 
     // instanciate authenticated cipher encryptor/decryptor
     AuthenticatedSymmetricCipherGeneric::Encryption *encryptor;
     AuthenticatedSymmetricCipherGeneric::Decryption *decryptor;
-    encryptor = new AuthenticatedSymmetricCipherGeneric::Encryption(cipherObject, macObject, cipherEncryptor, mac);
-    decryptor = new AuthenticatedSymmetricCipherGeneric::Decryption(cipherObject, macObject, cipherDecryptor, mac);
+    encryptor = new AuthenticatedSymmetricCipherGeneric::Encryption(cipherObject, macObject, cipherEncryptor, mac, cipherMustBeDestructed, macMustBeDestructed);
+    decryptor = new AuthenticatedSymmetricCipherGeneric::Decryption(cipherObject, macObject, cipherDecryptor, mac, cipherMustBeDestructed, false);
     setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

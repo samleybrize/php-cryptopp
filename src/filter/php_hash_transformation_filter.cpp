@@ -149,11 +149,12 @@ static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
 /* {{{ restart the hash holded by a HashTransformationFilter php object */
 static void restartHashObject(zval *htfObject TSRMLS_DC) {
     zval *hashObject;
-    hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
+    hashObject      = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
 
-    zval *funcName = makeZval("restart");
-    call_user_method(hashObject, funcName TSRMLS_CC);
+    zval *funcName  = makeZval("restart");
+    zval *output    = call_user_method(hashObject, funcName TSRMLS_CC);
     zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&output);
 }
 /* }}} */
 

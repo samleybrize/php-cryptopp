@@ -22,6 +22,8 @@ public:
     class Base : public CryptoPP::AuthenticatedSymmetricCipher, public SymmetricTransformationUserInterface
     {
     public:
+        ~Base();
+
         void ProcessData(byte *outString, const byte *inString, size_t length);
         void SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength);
         void SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params = CryptoPP::g_nullNameValuePairs);
@@ -73,13 +75,15 @@ public:
         bool DecryptAndVerify(byte *message, const byte *mac, size_t macLength, const byte *iv, int ivLength, const byte *header, size_t headerLength, const byte *ciphertext, size_t ciphertextLength) {return true;}
 
     protected:
-        Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed);
 
         // unused
         const Algorithm & GetAlgorithm() const {return *static_cast<const CryptoPP::MessageAuthenticationCode *>(this);}
         void UncheckedSpecifyDataLengths(CryptoPP::lword headerLength, CryptoPP::lword messageLength, CryptoPP::lword footerLength) {}
         void UncheckedSetKey(const byte *key, unsigned int length, const CryptoPP::NameValuePairs &params) {}
 
+        bool m_cipherMustBeDestructed;
+        bool m_macMustBeDestructed;
         zval *m_zCipher;
         zval *m_zMac;
         zval *m_funcnameRestart;
@@ -92,7 +96,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed);
         bool IsForwardTransformation() const {return true;};
     };
     /* }}} */
@@ -101,7 +105,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac);
+        Decryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed);
         bool IsForwardTransformation() const {return false;};
     };
     /* }}} */

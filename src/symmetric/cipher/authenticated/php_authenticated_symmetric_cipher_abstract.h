@@ -78,7 +78,8 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     zval *authenticatedCipherObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **authenticatedCipherFullName
+    std::string **authenticatedCipherFullName,
+    bool &cipherMustBeDestructed
     TSRMLS_DC
 );
 /* }}} */

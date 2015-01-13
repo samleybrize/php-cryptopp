@@ -147,17 +147,21 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     zval *authenticatedCipherObject,
     CryptoPP::BlockCipher **cipherEncryptor,
     CryptoPP::BlockCipher **cipherDecryptor,
-    std::string **authenticatedCipherFullName
+    std::string **authenticatedCipherFullName,
+    bool &cipherMustBeDestructed
     TSRMLS_DC
 ) {
+    cipherMustBeDestructed = false;
+
     if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract TSRMLS_CC)) {
         // retrieve native objects
         *cipherEncryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->encryptor;
         *cipherDecryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(cipherObject TSRMLS_CC))->decryptor;
     } else if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherInterface TSRMLS_CC)) {
         // create a proxy to the user php object
-        *cipherEncryptor = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
-        *cipherDecryptor = new BlockCipherProxy::Decryption(cipherObject TSRMLS_CC);
+        *cipherEncryptor        = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
+        *cipherDecryptor        = new BlockCipherProxy::Decryption(cipherObject TSRMLS_CC);
+        cipherMustBeDestructed  = true;
     } else {
         // invalid object
         zend_class_entry *ce;
@@ -301,11 +305,11 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
             decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         }
 
-        zval_ptr_dtor(&zKey);
-
         // indicates that the iv is setted
         zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
     }
+
+    zval_ptr_dtor(&zKey);
 }
 /* }}} */
 
@@ -437,6 +441,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
     zval *zKey      = makeZval(key, keySize);
     zval *cipher    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
     zval *output    = call_user_method(cipher, funcname, zKey TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&zKey);
     zval_ptr_dtor(&output);
 
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);

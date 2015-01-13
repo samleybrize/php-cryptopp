@@ -424,9 +424,10 @@ static void restartSymmetricCipherObject(zval *stfObject TSRMLS_DC) {
     zval *cipherObject;
     cipherObject = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
-    zval *funcName = makeZval("restart");
-    call_user_method(cipherObject, funcName TSRMLS_CC);
+    zval *funcName  = makeZval("restart");
+    zval *output    = call_user_method(cipherObject, funcName TSRMLS_CC);
     zval_ptr_dtor(&funcName);
+    zval_ptr_dtor(&output);
 }
 /* }}} */
 
@@ -499,6 +500,11 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
             return;
         } catch (const char *e) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: SymmetricTransformationFilter: %s", e);
+
+            if (createdPadding) {
+                zval_ptr_dtor(&paddingObject);
+            }
+
             return;
         }
     }
@@ -507,6 +513,11 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
         zend_class_entry *ce;
         ce  = zend_get_class_entry(cipherObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
+
+        if (createdPadding) {
+            zval_ptr_dtor(&paddingObject);
+        }
+
         return;
     }
 
@@ -519,6 +530,11 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
         stfDecryptor = new SymmetricTransformationFilter(*symmetricDecryptor, paddingObject, cipherMustBeDestructed TSRMLS_CC);
     } catch (std::exception &e) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp internal error: SymmetricTransformationFilter: %s", e.what());
+
+        if (createdPadding) {
+            zval_ptr_dtor(&paddingObject);
+        }
+
         return;
     }
 

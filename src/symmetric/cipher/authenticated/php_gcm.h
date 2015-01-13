@@ -12,15 +12,17 @@ public:
     class Base : public CryptoPP::GCM_Base
     {
     public:
+        ~Base();
         static std::string StaticAlgorithmName() {return std::string("GCM");}
 
     protected:
-        Base(CryptoPP::BlockCipher *cipher) : m_cipher(cipher){};
+        Base(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed);
 
     private:
         CryptoPP::GCM_TablesOption GetTablesOption() const {return CryptoPP::GCM_2K_Tables;}
         CryptoPP::BlockCipher & AccessBlockCipher() {return *m_cipher;}
 
+        bool m_cipherMustBeDestructed;
         CryptoPP::BlockCipher *m_cipher;
     };
     /* }}} */
@@ -29,7 +31,7 @@ public:
     class Encryption : public Base
     {
     public:
-        Encryption(CryptoPP::BlockCipher *cipher) : Base(cipher){};
+        Encryption(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed) : Base(cipher, cipherMustBeDestructed){};
         bool IsForwardTransformation() const {return true;}
     };
     /* }}} */
@@ -38,7 +40,7 @@ public:
     class Decryption : public Base
     {
     public:
-        Decryption(CryptoPP::BlockCipher *cipher) : Base(cipher){};
+        Decryption(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed) : Base(cipher, cipherMustBeDestructed){};
         bool IsForwardTransformation() const {return false;}
     };
     /* }}} */
