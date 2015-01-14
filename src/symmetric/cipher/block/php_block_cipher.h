@@ -2,11 +2,9 @@
 #define PHP_BLOCK_CIPHER_H
 
 #include "../../../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../../../utils/algo_list.h"
 
-void addBlockCipherAlgo(const std::string algoName, const std::string cipherClassname);
-std::vector<std::string> getBlockCipherAlgoList();
+extern AlgoList blockCipherAlgoList;
 
 void init_class_BlockCipher(TSRMLS_D);
 PHP_METHOD(Cryptopp_BlockCipher, getAlgos);

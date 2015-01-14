@@ -30,53 +30,55 @@ static PHP_MINFO_FUNCTION(cryptopp) {
     sprintf(cryptopp_version, "%d", CRYPTOPP_VERSION);
     sprintf(cryptopp_version_dotted, "%c.%c.%c", cryptopp_version[0], cryptopp_version[1], cryptopp_version[2]);
 
+    vector<string> algoList;
+
     /* supported hash algos */
-    vector<string> hashAlgoList = getHashAlgoList();
+    algoList = hashAlgoList.getAlgoList();
     string supportedHashList;
 
-    for (vector<string>::iterator it = hashAlgoList.begin(); it != hashAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
         supportedHashList.append(it->c_str());
         supportedHashList.append(" ");
     }
 
     /* supported MAC algos */
-    vector<string> macAlgoList = getMacAlgoList();
+    algoList = macAlgoList.getAlgoList();
     string supportedMacList;
 
-    for (vector<string>::iterator it = macAlgoList.begin(); it != macAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
         supportedMacList.append(it->c_str());
         supportedMacList.append(" ");
     }
 
     /* supported stream ciphers */
-    vector<string> streamCipherAlgoList = getStreamCipherAlgoList();
+    algoList = streamCipherAlgoList.getAlgoList();
     string supportedStreamCipherList;
 
-    for (vector<string>::iterator it = streamCipherAlgoList.begin(); it != streamCipherAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
         supportedStreamCipherList.append(it->c_str());
         supportedStreamCipherList.append(" ");
     }
 
     /* supported block ciphers */
-    vector<string> blockCipherAlgoList = getBlockCipherAlgoList();
+    algoList = blockCipherAlgoList.getAlgoList();
     string supportedBlockCipherList;
 
-    for (vector<string>::iterator it = blockCipherAlgoList.begin(); it != blockCipherAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
         supportedBlockCipherList.append(it->c_str());
         supportedBlockCipherList.append(" ");
     }
 
     /* supported authenticated ciphers */
-    vector<string> authenticatedCipherAlgoList = getAuthenticatedSymmetricCipherAlgoList();
+    algoList = authenticatedSymmetricCipherAlgoList.getAlgoList();
     string supportedAuthenticatedCipherList;
 
-    for (vector<string>::iterator it = authenticatedCipherAlgoList.begin(); it != authenticatedCipherAlgoList.end(); ++it) {
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
         supportedAuthenticatedCipherList.append(it->c_str());
         supportedAuthenticatedCipherList.append(" ");
     }
 
     /* supported cipher modes */
-    vector<string> modeAlgoList = getSymmetricModeList();
+    vector<string> modeAlgoList = symmetricModeList.getAlgoList();
     string supportedModeList;
 
     for (vector<string>::iterator it = modeAlgoList.begin(); it != modeAlgoList.end(); ++it) {

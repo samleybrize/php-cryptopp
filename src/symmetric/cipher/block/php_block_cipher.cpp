@@ -6,35 +6,7 @@
 
 using namespace std;
 
-/* {{{ block cipher algo list, and corresponding PHP classes */
-static vector<string> cipherAlgoList;
-static vector<string> cipherClassList;
-
-void addBlockCipherAlgo(const string algoName, const string cipherClassname) {
-    cipherAlgoList.push_back(algoName);
-    cipherClassList.push_back(cipherClassname);
-}
-
-vector<string> getBlockCipherAlgoList() {
-    vector<string> _algos(cipherAlgoList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getBlockCipherAlgoClass(const string &algoName) {
-    vector<string>::iterator iterator = find(cipherAlgoList.begin(), cipherAlgoList.end(), algoName);
-
-    if (iterator == cipherAlgoList.end()) {
-        // block cipher not found
-        return "";
-    } else {
-        // block cipher found
-        // return corresponding block cipher classname
-        int pos = iterator - cipherAlgoList.begin();
-        return cipherClassList[pos];
-    }
-}
-/* }}} */
+AlgoList blockCipherAlgoList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_BlockCipher_getAlgos, 0)
@@ -66,7 +38,7 @@ void init_class_BlockCipher(TSRMLS_D) {
    Get the list of supported block ciphers */
 PHP_METHOD(Cryptopp_BlockCipher, getAlgos) {
     array_init(return_value);
-    vector<string> _algos = getBlockCipherAlgoList();
+    vector<string> _algos = blockCipherAlgoList.getAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -85,7 +57,7 @@ PHP_METHOD(Cryptopp_BlockCipher, getClassname) {
     }
 
     string algoNameStr(algoName, algoNameSize);
-    string classname = getBlockCipherAlgoClass(algoNameStr);
+    string classname = blockCipherAlgoList.getAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

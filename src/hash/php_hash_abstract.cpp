@@ -79,7 +79,7 @@ void init_class_HashAbstractChild(const char *algoName, const char* className, z
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_HashAbstract, NULL TSRMLS_CC);
 
-    addHashAlgo(algoName, namespacedClassName.c_str());
+    hashAlgoList.addAlgo(algoName, namespacedClassName.c_str());
 }
 /* }}} */
 

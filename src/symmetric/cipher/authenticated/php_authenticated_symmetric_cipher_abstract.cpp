@@ -98,7 +98,7 @@ void init_class_AuthenticatedSymmetricCipherAbstractChild(const char *algoName, 
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_AuthenticatedSymmetricCipherAbstract, NULL TSRMLS_CC);
 
-    addAuthenticatedSymmetricCipherAlgo(algoName, namespacedClassName.c_str());
+    authenticatedSymmetricCipherAlgoList.addAlgo(algoName, namespacedClassName.c_str());
 }
 /* }}} */
 

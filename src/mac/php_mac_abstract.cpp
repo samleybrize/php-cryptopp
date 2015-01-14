@@ -83,7 +83,7 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_MacAbstract, NULL TSRMLS_CC);
 
-    addMacAlgo(algoName, namespacedClassName.c_str());
+    macAlgoList.addAlgo(algoName, namespacedClassName.c_str());
 }
 /* }}} */
 

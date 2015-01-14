@@ -2,11 +2,9 @@
 #define PHP_SYMMETRIC_MODE_H
 
 #include "../../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../../utils/algo_list.h"
 
-void addSymmetricMode(const std::string algoName, const std::string modeClassname);
-std::vector<std::string> getSymmetricModeList();
+extern AlgoList symmetricModeList;
 
 void init_class_SymmetricMode(TSRMLS_D);
 PHP_METHOD(Cryptopp_SymmetricMode, getModes);

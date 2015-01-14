@@ -6,35 +6,7 @@
 
 using namespace std;
 
-/* {{{ symmetric mode algo list, and corresponding PHP classes */
-static vector<string> modeNameList;
-static vector<string> modeClassList;
-
-void addSymmetricMode(const string modeName, const string modeClassname) {
-    modeNameList.push_back(modeName);
-    modeClassList.push_back(modeClassname);
-}
-
-vector<string> getSymmetricModeList() {
-    vector<string> _algos(modeNameList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getSymmetricModeClass(const string &modeName) {
-    vector<string>::iterator iterator = find(modeNameList.begin(), modeNameList.end(), modeName);
-
-    if (iterator == modeNameList.end()) {
-        // symmetric mode not found
-        return "";
-    } else {
-        // symmetric mode found
-        // return corresponding symmetric mode classname
-        int pos = iterator - modeNameList.begin();
-        return modeClassList[pos];
-    }
-}
-/* }}} */
+AlgoList symmetricModeList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricMode_getModes, 0)
@@ -66,7 +38,7 @@ void init_class_SymmetricMode(TSRMLS_D) {
    Get the list of supported symmetric modes */
 PHP_METHOD(Cryptopp_SymmetricMode, getModes) {
     array_init(return_value);
-    vector<string> _modes = getSymmetricModeList();
+    vector<string> _modes = symmetricModeList.getAlgoList();
 
     for (vector<string>::iterator it = _modes.begin(); it != _modes.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -85,7 +57,7 @@ PHP_METHOD(Cryptopp_SymmetricMode, getClassname) {
     }
 
     string modeNameStr(modeName, modeNameSize);
-    string classname = getSymmetricModeClass(modeNameStr);
+    string classname = symmetricModeList.getAlgoClass(modeNameStr);
 
     if (classname.empty()) {
         // return NULL if mode not found

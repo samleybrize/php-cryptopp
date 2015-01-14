@@ -2,11 +2,9 @@
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_H
 
 #include "../../../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../../../utils/algo_list.h"
 
-void addAuthenticatedSymmetricCipherAlgo(const std::string algoName, const std::string cipherClassname);
-std::vector<std::string> getAuthenticatedSymmetricCipherAlgoList();
+extern AlgoList authenticatedSymmetricCipherAlgoList;
 
 void init_class_AuthenticatedSymmetricCipher(TSRMLS_D);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getAlgos);

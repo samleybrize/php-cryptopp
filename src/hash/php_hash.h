@@ -2,11 +2,9 @@
 #define PHP_HASH_H
 
 #include "../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../utils/algo_list.h"
 
-void addHashAlgo(const std::string algoName, const std::string hashClassname);
-std::vector<std::string> getHashAlgoList();
+extern AlgoList hashAlgoList;
 
 void init_class_Hash(TSRMLS_D);
 PHP_METHOD(Cryptopp_Hash, getAlgos);

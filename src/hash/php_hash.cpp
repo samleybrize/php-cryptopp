@@ -6,35 +6,7 @@
 
 using namespace std;
 
-/* {{{ hash algo list, and corresponding PHP classes */
-static vector<string> hashAlgoList;
-static vector<string> hashClassList;
-
-void addHashAlgo(const string algoName, const string hashClassname) {
-    hashAlgoList.push_back(algoName);
-    hashClassList.push_back(hashClassname);
-}
-
-vector<string> getHashAlgoList() {
-    vector<string> _algos(hashAlgoList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getHashAlgoClass(const string &algoName) {
-    vector<string>::iterator iterator = find(hashAlgoList.begin(), hashAlgoList.end(), algoName);
-
-    if (iterator == hashAlgoList.end()) {
-        // hash algorithm not found
-        return "";
-    } else {
-        // hash algorithm found
-        // return corresponding hash classname
-        int pos = iterator - hashAlgoList.begin();
-        return hashClassList[pos];
-    }
-}
-/* }}} */
+AlgoList hashAlgoList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_Hash_getAlgos, 0)
@@ -66,7 +38,7 @@ void init_class_Hash(TSRMLS_D) {
    Get the list of supported hash algorithms */
 PHP_METHOD(Cryptopp_Hash, getAlgos) {
     array_init(return_value);
-    vector<string> _algos = getHashAlgoList();
+    vector<string> _algos = hashAlgoList.getAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -85,7 +57,7 @@ PHP_METHOD(Cryptopp_Hash, getClassname) {
     }
 
     string algoNameStr(algoName, algoNameSize);
-    string classname = getHashAlgoClass(algoNameStr);
+    string classname = hashAlgoList.getAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

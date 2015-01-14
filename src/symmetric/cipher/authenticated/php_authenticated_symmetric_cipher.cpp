@@ -7,35 +7,7 @@
 
 using namespace std;
 
-/* {{{ block cipher algo list, and corresponding PHP classes */
-static vector<string> cipherAlgoList;
-static vector<string> cipherClassList;
-
-void addAuthenticatedSymmetricCipherAlgo(const string algoName, const string cipherClassname) {
-    cipherAlgoList.push_back(algoName);
-    cipherClassList.push_back(cipherClassname);
-}
-
-vector<string> getAuthenticatedSymmetricCipherAlgoList() {
-    vector<string> _algos(cipherAlgoList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getAuthenticatedSymmetricCipherAlgoClass(const string &algoName) {
-    vector<string>::iterator iterator = find(cipherAlgoList.begin(), cipherAlgoList.end(), algoName);
-
-    if (iterator == cipherAlgoList.end()) {
-        // cipher not found
-        return "";
-    } else {
-        // cipher found
-        // return corresponding cipher classname
-        int pos = iterator - cipherAlgoList.begin();
-        return cipherClassList[pos];
-    }
-}
-/* }}} */
+AlgoList authenticatedSymmetricCipherAlgoList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipher_getAlgos, 0)
@@ -67,7 +39,7 @@ void init_class_AuthenticatedSymmetricCipher(TSRMLS_D) {
    Get the list of supported authenticated symmetric ciphers */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getAlgos) {
     array_init(return_value);
-    vector<string> _algos = getAuthenticatedSymmetricCipherAlgoList();
+    vector<string> _algos = authenticatedSymmetricCipherAlgoList.getAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -86,7 +58,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getClassname) {
     }
 
     string algoNameStr(algoName, algoNameSize);
-    string classname = getAuthenticatedSymmetricCipherAlgoClass(algoNameStr);
+    string classname = authenticatedSymmetricCipherAlgoList.getAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

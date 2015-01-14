@@ -6,35 +6,7 @@
 
 using namespace std;
 
-/* {{{ mac algo list, and corresponding PHP classes */
-static vector<string> macAlgoList;
-static vector<string> macClassList;
-
-void addMacAlgo(const string algoName, const string macClassname) {
-    macAlgoList.push_back(algoName);
-    macClassList.push_back(macClassname);
-}
-
-vector<string> getMacAlgoList() {
-    vector<string> _algos(macAlgoList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getMacAlgoClass(const string &algoName) {
-    vector<string>::iterator iterator = find(macAlgoList.begin(), macAlgoList.end(), algoName);
-
-    if (iterator == macAlgoList.end()) {
-        // mac algorithm not found
-        return "";
-    } else {
-        // mac algorithm found
-        // return corresponding mac classname
-        int pos = iterator - macAlgoList.begin();
-        return macClassList[pos];
-    }
-}
-/* }}} */
+AlgoList macAlgoList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_Mac_getAlgos, 0)
@@ -66,7 +38,7 @@ void init_class_Mac(TSRMLS_D) {
    Get the list of supported mac algorithms */
 PHP_METHOD(Cryptopp_Mac, getAlgos) {
     array_init(return_value);
-    vector<string> _algos = getMacAlgoList();
+    vector<string> _algos = macAlgoList.getAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -85,7 +57,7 @@ PHP_METHOD(Cryptopp_Mac, getClassname) {
     }
 
     string algoNameStr(algoName, algoNameSize);
-    string classname = getMacAlgoClass(algoNameStr);
+    string classname = macAlgoList.getAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

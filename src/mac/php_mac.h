@@ -2,11 +2,9 @@
 #define PHP_MAC_H
 
 #include "../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../utils/algo_list.h"
 
-void addMacAlgo(const std::string algoName, const std::string macClassname);
-std::vector<std::string> getMacAlgoList();
+extern AlgoList macAlgoList;
 
 void init_class_Mac(TSRMLS_D);
 PHP_METHOD(Cryptopp_Mac, getAlgos);

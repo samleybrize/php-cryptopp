@@ -2,11 +2,9 @@
 #define PHP_STREAM_CIPHER_H
 
 #include "../../../php_cryptopp.h"
-#include <string>
-#include <vector>
+#include "../../../utils/algo_list.h"
 
-void addStreamCipherAlgo(const std::string algoName, const std::string cipherClassname);
-std::vector<std::string> getStreamCipherAlgoList();
+extern AlgoList streamCipherAlgoList;
 
 void init_class_StreamCipher(TSRMLS_D);
 PHP_METHOD(Cryptopp_StreamCipher, getAlgos);

@@ -87,7 +87,7 @@ void init_class_StreamCipherAbstractChild(const char *algoName, const char* clas
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_StreamCipherAbstract, NULL TSRMLS_CC);
 
-    addStreamCipherAlgo(algoName, namespacedClassName.c_str());
+    streamCipherAlgoList.addAlgo(algoName, namespacedClassName.c_str());
 }
 /* }}} */
 

@@ -92,7 +92,7 @@ void init_class_SymmetricModeAbstractChild(const char *modeName, const char* cla
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_SymmetricModeAbstract, NULL TSRMLS_CC);
 
-    addSymmetricMode(modeName, namespacedClassName.c_str());
+    symmetricModeList.addAlgo(modeName, namespacedClassName.c_str());
 }
 /* }}} */
 

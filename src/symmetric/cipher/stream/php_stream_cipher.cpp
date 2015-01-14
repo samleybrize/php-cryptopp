@@ -6,35 +6,7 @@
 
 using namespace std;
 
-/* {{{ stream cipher algo list, and corresponding PHP classes */
-static vector<string> cipherAlgoList;
-static vector<string> cipherClassList;
-
-void addStreamCipherAlgo(const string algoName, const string cipherClassname) {
-    cipherAlgoList.push_back(algoName);
-    cipherClassList.push_back(cipherClassname);
-}
-
-vector<string> getStreamCipherAlgoList() {
-    vector<string> _algos(cipherAlgoList);
-    sort(_algos.begin(), _algos.end());
-    return _algos;
-}
-
-string getStreamCipherAlgoClass(const string &algoName) {
-    vector<string>::iterator iterator = find(cipherAlgoList.begin(), cipherAlgoList.end(), algoName);
-
-    if (iterator == cipherAlgoList.end()) {
-        // stream cipher not found
-        return "";
-    } else {
-        // stream cipher found
-        // return corresponding stream cipher classname
-        int pos = iterator - cipherAlgoList.begin();
-        return cipherClassList[pos];
-    }
-}
-/* }}} */
+AlgoList streamCipherAlgoList;
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_StreamCipher_getAlgos, 0)
@@ -66,7 +38,7 @@ void init_class_StreamCipher(TSRMLS_D) {
    Get the list of supported stream ciphers */
 PHP_METHOD(Cryptopp_StreamCipher, getAlgos) {
     array_init(return_value);
-    vector<string> _algos = getStreamCipherAlgoList();
+    vector<string> _algos = streamCipherAlgoList.getAlgoList();
 
     for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
         add_next_index_string(return_value, it->c_str(), it->length());
@@ -85,7 +57,7 @@ PHP_METHOD(Cryptopp_StreamCipher, getClassname) {
     }
 
     string algoNameStr(algoName, algoNameSize);
-    string classname = getStreamCipherAlgoClass(algoNameStr);
+    string classname = streamCipherAlgoList.getAlgoClass(algoNameStr);
 
     if (classname.empty()) {
         // return NULL if algo not found

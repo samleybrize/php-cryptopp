@@ -83,7 +83,7 @@ void init_class_BlockCipherAbstractChild(const char *algoName, const char* class
     INIT_CLASS_ENTRY_EX(ce, namespacedClassName.c_str(), namespacedClassName.length(), classMethods);
     *classEntryPtr = zend_register_internal_class_ex(&ce, cryptopp_ce_BlockCipherAbstract, NULL TSRMLS_CC);
 
-    addBlockCipherAlgo(algoName, namespacedClassName.c_str());
+    blockCipherAlgoList.addAlgo(algoName, namespacedClassName.c_str());
 }
 /* }}} */
 
