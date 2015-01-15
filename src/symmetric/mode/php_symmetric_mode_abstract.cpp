@@ -47,12 +47,12 @@ static zend_function_entry cryptopp_methods_SymmetricModeAbstract[] = {
 void init_class_SymmetricModeAbstract(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "SymmetricModeAbstract", cryptopp_methods_SymmetricModeAbstract);
-    cryptopp_ce_SymmetricModeAbstract               = zend_register_internal_class(&ce TSRMLS_CC);
-    cryptopp_ce_SymmetricModeAbstract->ce_flags    |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    cryptopp_ce_SymmetricModeAbstract                   = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_SymmetricModeAbstract->ce_flags        |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_SymmetricModeAbstract->create_object = zend_custom_create_handler<SymmetricModeAbstractContainer, SymmetricModeAbstract_free_storage, &SymmetricModeAbstract_object_handlers>;
+    cryptopp_ce_SymmetricModeAbstract->create_object    = zend_custom_create_handler<SymmetricModeAbstractContainer, SymmetricModeAbstract_free_storage, &SymmetricModeAbstract_object_handlers>;
     memcpy(&SymmetricModeAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    SymmetricModeAbstract_object_handlers.clone_obj = NULL;
+    SymmetricModeAbstract_object_handlers.clone_obj     = NULL;
 
     zend_class_implements(cryptopp_ce_SymmetricModeAbstract TSRMLS_CC, 1, cryptopp_ce_SymmetricModeInterface);
 

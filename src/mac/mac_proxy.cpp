@@ -22,8 +22,7 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
     zval *zBlockSize    = call_user_method(macObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(macObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(macObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
         zval_ptr_dtor(&funcName);
@@ -40,8 +39,7 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
     zval *zDigestSize   = call_user_method(macObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zDigestSize)) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(macObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(macObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid digest size returned", ce->name);
 
         zval_ptr_dtor(&funcName);
@@ -97,8 +95,7 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(m_macObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         zval_ptr_dtor(&zOutput);
@@ -120,8 +117,7 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_macObject M_TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(m_macObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         zval_ptr_dtor(&zInput);

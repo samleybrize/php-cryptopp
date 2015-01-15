@@ -21,8 +21,7 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     zval *zBlockSize    = call_user_method(symmetricTransformationObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(symmetricTransformationObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(symmetricTransformationObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
         zval_ptr_dtor(&funcName);
@@ -117,7 +116,6 @@ void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t le
 {
     zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
     zval *zIv       = makeZval(reinterpret_cast<const char*>(iv), ivLength);
-    zval *output;
     zval *output1   = call_user_method(m_symmetricTransformationObject, m_funcnameSetKey, zKey M_TSRMLS_CC);
     zval *output2   = call_user_method(m_symmetricTransformationObject, m_funcnameSetIv, zIv M_TSRMLS_CC);
 

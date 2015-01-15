@@ -43,12 +43,12 @@ static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
 void init_class_StreamCipherAbstract(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "StreamCipherAbstract", cryptopp_methods_StreamCipherAbstract);
-    cryptopp_ce_StreamCipherAbstract            = zend_register_internal_class(&ce TSRMLS_CC);
-    cryptopp_ce_StreamCipherAbstract->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    cryptopp_ce_StreamCipherAbstract                = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_StreamCipherAbstract->ce_flags     |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
     cryptopp_ce_StreamCipherAbstract->create_object = zend_custom_create_handler<StreamCipherAbstractContainer, StreamCipherAbstract_free_storage, &StreamCipherAbstract_object_handlers>;
     memcpy(&StreamCipherAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    StreamCipherAbstract_object_handlers.clone_obj = NULL;
+    StreamCipherAbstract_object_handlers.clone_obj  = NULL;
 
     zend_class_implements(cryptopp_ce_StreamCipherAbstract TSRMLS_CC, 1, cryptopp_ce_StreamCipherInterface);
 
@@ -73,8 +73,7 @@ void init_class_StreamCipherAbstractChild(const char *algoName, const char* clas
 
 /* {{{ get the pointer to the native encryptor object of a php cipher class */
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
+    CryptoPP::SymmetricCipher *encryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
     if (NULL == encryptor) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\StreamCipherAbstract cannot be extended by user classes");
@@ -86,8 +85,7 @@ CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TS
 
 /* {{{ get the pointer to the native decryptor object of a php cipher class */
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherDecryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::SymmetricCipher *decryptor;
-    decryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
+    CryptoPP::SymmetricCipher *decryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
     if (NULL == decryptor) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\StreamCipherAbstract cannot be extended by user classes");
@@ -111,8 +109,7 @@ void setCryptoppStreamCipherDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCiph
 
 /* {{{ verify that a key size is valid for a StreamCipherAbstract instance */
 static bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher, int keySize TSRMLS_DC, bool throwIfFalse = true) {
-    zend_class_entry *ce;
-    ce = zend_get_class_entry(object TSRMLS_CC);
+    zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!cipher->IsValidKeyLength(keySize)) {
         if (!throwIfFalse) {
@@ -130,8 +127,7 @@ static bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCiph
 }
 
 bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC) {
-    zval *key;
-    key         = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zval *key   = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
     return isCryptoppStreamCipherKeyValid(object, cipher, keySize TSRMLS_CC);
@@ -140,9 +136,8 @@ bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cip
 
 /* {{{ verify that an iv size is valid for a StreamCipherAbstract instance */
 static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher, int ivSize TSRMLS_DC, bool throwIfFalse = true) {
-    zend_class_entry *ce;
-    ce              = zend_get_class_entry(object TSRMLS_CC);
-    bool isValid    = false;
+    zend_class_entry *ce    = zend_get_class_entry(object TSRMLS_CC);
+    bool isValid            = false;
 
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
         isValid = dynamic_cast<SymmetricTransformationUserInterface*>(cipher)->IsValidIvLength(ivSize);
@@ -170,8 +165,7 @@ static bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCiphe
 }
 
 bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC) {
-    zval *iv;
-    iv          = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    zval *iv    = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize  = Z_STRLEN_P(iv);
 
     return isCryptoppStreamCipherIvValid(object, cipher, ivSize TSRMLS_CC);
@@ -181,10 +175,8 @@ bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *ciph
 /* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor TSRMLS_DC) {
     // get key and iv of the php object
-    zval *zKey;
-    zval *zIv;
-    zKey        = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
-    zIv         = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    zval *zKey  = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zval *zIv   = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(zKey);
     int ivSize  = Z_STRLEN_P(zIv);
 
@@ -192,16 +184,13 @@ static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, Cry
     if (keySize > 0 && !encryptor->IsResynchronizable()) {
         // an iv is not required
         // set key
-        byte *key;
-        key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
+        byte *key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
         encryptor->SetKey(key, keySize);
         decryptor->SetKey(key, keySize);
     } else if (keySize > 0 && ivSize > 0 && encryptor->IsResynchronizable()) {
         // set key and iv
-        byte *key;
-        byte *iv;
-        key = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
-        iv  = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
+        byte *key   = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
+        byte *iv    = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
         encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
         decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
     }
@@ -225,11 +214,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, __wakeup) {
 /* {{{ proto string StreamCipherAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getName) {
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-
-    zval *name;
-    name = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    CryptoPP::SymmetricCipher *encryptor    = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    zval *name                              = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
@@ -237,8 +223,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getName) {
 /* {{{ proto int StreamCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
@@ -252,8 +237,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     if (isCryptoppStreamCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
@@ -272,8 +256,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppStreamCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
@@ -294,10 +277,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor;
-    CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     if (!isCryptoppStreamCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -319,10 +300,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor;
-    CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     if (!isCryptoppStreamCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
         // invalid iv
@@ -338,8 +317,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
 /* {{{ proto string StreamCipherAbstract::getKey(void)
    Returns the key */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getKey) {
-    zval *key;
-    key = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    zval *key = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
     RETURN_ZVAL(key, 1, 0)
 }
 /* }}} */
@@ -347,8 +325,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getKey) {
 /* {{{ proto string StreamCipherAbstract::getIv(void)
    Returns the initialization vector */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getIv) {
-    zval *iv;
-    iv = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    zval *iv = zend_read_property(cryptopp_ce_StreamCipherAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
     RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
@@ -363,8 +340,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key and iv
     if (!isCryptoppStreamCipherKeyValid(getThis(), encryptor TSRMLS_CC) || !isCryptoppStreamCipherIvValid(getThis(), encryptor TSRMLS_CC)) {
@@ -375,8 +351,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt) {
     int blockSize = static_cast<int>(encryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }
@@ -399,8 +374,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *decryptor;
-    decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key and iv
     if (!isCryptoppStreamCipherKeyValid(getThis(), decryptor TSRMLS_CC) || !isCryptoppStreamCipherIvValid(getThis(), decryptor TSRMLS_CC)) {
@@ -411,8 +385,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
     int blockSize = static_cast<int>(decryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }
@@ -428,10 +401,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
 /* {{{ proto void StreamCipherAbstract::restart(void)
    Reset the initialization vector to its initial state (the one passed in setIv()) */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart) {
-    CryptoPP::SymmetricCipher *encryptor;
-    CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */

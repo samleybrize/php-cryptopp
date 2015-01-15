@@ -37,8 +37,7 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
         RETURN_FALSE;
     }
 
-    byte *plain;
-    plain               = reinterpret_cast<byte*>(data);
+    byte *plain         = reinterpret_cast<byte*>(data);
     long alignedSize    = ceil(static_cast<double>(dataLength) / static_cast<double>(blockSize)) * blockSize;
 
     if (blockSize < 1) {
@@ -59,8 +58,7 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
     memcpy(padded, plain, dataLength);
     memset(padded + dataLength, pad, alignedSize - dataLength);
 
-    char *returnData;
-    returnData = reinterpret_cast<char*>(padded);
+    char *returnData = reinterpret_cast<char*>(padded);
     RETURN_STRINGL(returnData, alignedSize, 1)
 }
 /* }}} */
@@ -76,8 +74,7 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
         RETURN_FALSE;
     }
 
-    byte *padded;
-    padded = reinterpret_cast<byte*>(data);
+    byte *padded = reinterpret_cast<byte*>(data);
 
     if (blockSize < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : block size cannot be lower than 1, %d given", cryptopp_ce_PaddingPkcs7->name, blockSize);
@@ -104,8 +101,7 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
     byte unpadded[length];
     memcpy(unpadded, padded, length);
 
-    char *plain;
-    plain = reinterpret_cast<char*>(padded);
+    char *plain = reinterpret_cast<char*>(padded);
     RETURN_STRINGL(plain, length, 1)
 }
 /* }}} */

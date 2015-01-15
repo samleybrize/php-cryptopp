@@ -35,11 +35,11 @@ static zend_function_entry cryptopp_methods_RandomByteGenerator[] = {
 void init_class_RandomByteGenerator(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "RandomByteGenerator", cryptopp_methods_RandomByteGenerator);
-    cryptopp_ce_RandomByteGenerator = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_RandomByteGenerator                 = zend_register_internal_class(&ce TSRMLS_CC);
 
-    cryptopp_ce_RandomByteGenerator->create_object = zend_custom_create_handler<RandomByteGeneratorContainer, RandomByteGenerator_free_storage, &RandomByteGenerator_object_handlers>;
+    cryptopp_ce_RandomByteGenerator->create_object  = zend_custom_create_handler<RandomByteGeneratorContainer, RandomByteGenerator_free_storage, &RandomByteGenerator_object_handlers>;
     memcpy(&RandomByteGenerator_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    RandomByteGenerator_object_handlers.clone_obj = NULL;
+    RandomByteGenerator_object_handlers.clone_obj   = NULL;
 
     zend_class_implements(cryptopp_ce_RandomByteGenerator TSRMLS_CC, 1, cryptopp_ce_RandomByteGeneratorInterface);
 }
@@ -47,9 +47,7 @@ void init_class_RandomByteGenerator(TSRMLS_D) {
 
 /* {{{ proto RandomByteGenerator::__construct(void) */
 PHP_METHOD(Cryptopp_RandomByteGenerator, __construct) {
-    CryptoPP::AutoSeededRandomPool *rbg;
-    rbg = new CryptoPP::AutoSeededRandomPool();
-
+    CryptoPP::AutoSeededRandomPool *rbg = new CryptoPP::AutoSeededRandomPool();
     static_cast<RandomByteGeneratorContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg = rbg;
 }
 /* }}} */
@@ -84,8 +82,7 @@ PHP_METHOD(Cryptopp_RandomByteGenerator, generate) {
     }
 
     // generate random bytes
-    CryptoPP::RandomNumberGenerator *rbg;
-    rbg = static_cast<RandomByteGeneratorContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg;
+    CryptoPP::RandomNumberGenerator *rbg = static_cast<RandomByteGeneratorContainer *>(zend_object_store_get_object(getThis() TSRMLS_CC))->rbg;
 
     if (NULL == rbg) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Parent constructor was not called");

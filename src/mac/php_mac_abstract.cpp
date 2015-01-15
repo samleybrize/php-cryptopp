@@ -40,12 +40,12 @@ static zend_function_entry cryptopp_methods_MacAbstract[] = {
 void init_class_MacAbstract(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "MacAbstract", cryptopp_methods_MacAbstract);
-    cryptopp_ce_MacAbstract             = zend_register_internal_class(&ce TSRMLS_CC);
-    cryptopp_ce_MacAbstract->ce_flags  |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    cryptopp_ce_MacAbstract                 = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_MacAbstract->ce_flags      |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_MacAbstract->create_object = zend_custom_create_handler<MacAbstractContainer, MacAbstract_free_storage, &MacAbstract_object_handlers>;
+    cryptopp_ce_MacAbstract->create_object  = zend_custom_create_handler<MacAbstractContainer, MacAbstract_free_storage, &MacAbstract_object_handlers>;
     memcpy(&MacAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    MacAbstract_object_handlers.clone_obj = NULL;
+    MacAbstract_object_handlers.clone_obj   = NULL;
 
     zend_class_implements(cryptopp_ce_MacAbstract TSRMLS_CC, 1, cryptopp_ce_MacInterface);
 
@@ -69,8 +69,7 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 
 /* {{{ verify that a key size is valid for a MacAbstract instance */
 static bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac, int keySize TSRMLS_DC) {
-    zend_class_entry *ce;
-    ce = zend_get_class_entry(object TSRMLS_CC);
+    zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!mac->IsValidKeyLength(keySize)) {
         if (0 == keySize) {
@@ -86,9 +85,7 @@ static bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationC
 }
 
 bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC) {
-    zend_class_entry *ce;
-    zval *key;
-    key         = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zval *key   = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
     return isCryptoppMacKeyValid(object, mac, keySize TSRMLS_CC);
@@ -97,8 +94,7 @@ bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *ma
 
 /* {{{ get the pointer to the native mac object of a php mac class */
 CryptoPP::MessageAuthenticationCode *getCryptoppMacNativePtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = static_cast<MacAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->mac;
+    CryptoPP::MessageAuthenticationCode *mac = static_cast<MacAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->mac;
 
     if (NULL == mac) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\MacAbstract cannot be extended by user classes");
@@ -131,8 +127,7 @@ PHP_METHOD(Cryptopp_MacAbstract, __wakeup) {
 /* {{{ proto int MacAbstract::getDigestSize(void)
    Returns the digest size */
 PHP_METHOD(Cryptopp_MacAbstract, getDigestSize) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     unsigned int digestSize = mac->DigestSize();
     RETURN_LONG(digestSize);
@@ -142,8 +137,7 @@ PHP_METHOD(Cryptopp_MacAbstract, getDigestSize) {
 /* {{{ proto int MacAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_MacAbstract, getBlockSize) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     unsigned int blockSize = mac->BlockSize();
     RETURN_LONG(blockSize);
@@ -159,8 +153,7 @@ PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (mac->IsValidKeyLength(keySize)) {
         RETURN_TRUE
@@ -173,11 +166,8 @@ PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
 /* {{{ proto string MacAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_MacAbstract, getName) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
-
-    zval *name;
-    name = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    CryptoPP::MessageAuthenticationCode *mac    = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    zval *name                                  = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
@@ -192,8 +182,7 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac);
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac);
 
     if (!isCryptoppMacKeyValid(getThis(), mac, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -209,8 +198,7 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
 /* {{{ proto string MacAbstract::getKey(void)
    Returns the key */
 PHP_METHOD(Cryptopp_MacAbstract, getKey) {
-    zval *key;
-    key = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    zval *key = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
     RETURN_ZVAL(key, 1, 0)
 }
 /* }}} */
@@ -225,8 +213,7 @@ PHP_METHOD(Cryptopp_MacAbstract, calculateDigest) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -254,8 +241,7 @@ PHP_METHOD(Cryptopp_MacAbstract, update) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -268,8 +254,7 @@ PHP_METHOD(Cryptopp_MacAbstract, update) {
 /* {{{ proto string MacAbstract::finalize(void)
    Finalize an incremental MAC and return resulting digest */
 PHP_METHOD(Cryptopp_MacAbstract, finalize) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -290,9 +275,7 @@ PHP_METHOD(Cryptopp_MacAbstract, finalize) {
 /* {{{ proto void MacAbstract::restart(void)
    Discard the current incremental MAC */
 PHP_METHOD(Cryptopp_MacAbstract, restart) {
-    CryptoPP::MessageAuthenticationCode *mac;
-    mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
-
+    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
     mac->Restart();
 }
 /* }}} */

@@ -23,10 +23,8 @@ void init_class_StreamCipherSosemanuk(TSRMLS_D) {
 
 /* {{{ proto StreamCipherSosemanuk::__construct(void) */
 PHP_METHOD(Cryptopp_StreamCipherSosemanuk, __construct) {
-    CryptoPP::Sosemanuk::Encryption *encryptor;
-    CryptoPP::Sosemanuk::Decryption *decryptor;
-    encryptor = new CryptoPP::Sosemanuk::Encryption();
-    decryptor = new CryptoPP::Sosemanuk::Decryption();
+    CryptoPP::Sosemanuk::Encryption *encryptor = new CryptoPP::Sosemanuk::Encryption();
+    CryptoPP::Sosemanuk::Decryption *decryptor = new CryptoPP::Sosemanuk::Decryption();
     setCryptoppStreamCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppStreamCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

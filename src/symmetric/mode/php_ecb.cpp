@@ -51,11 +51,8 @@ PHP_METHOD(Cryptopp_SymmetricModeEcb, __construct) {
     }
 
     // instanciate mode encryptor/decryptor
-    Ecb::Encryption *encryptor;
-    Ecb::Decryption *decryptor;
-
-    encryptor = new Ecb::Encryption(cipherEncryptor, cipherMustBeDestructed);
-    decryptor = new Ecb::Decryption(cipherDecryptor, cipherMustBeDestructed);
+    Ecb::Encryption *encryptor = new Ecb::Encryption(cipherEncryptor, cipherMustBeDestructed);
+    Ecb::Decryption *decryptor = new Ecb::Decryption(cipherDecryptor, cipherMustBeDestructed);
     setCryptoppSymmetricModeEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppSymmetricModeDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

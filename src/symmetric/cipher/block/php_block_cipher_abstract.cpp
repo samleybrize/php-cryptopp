@@ -40,12 +40,12 @@ static zend_function_entry cryptopp_methods_BlockCipherAbstract[] = {
 void init_class_BlockCipherAbstract(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "BlockCipherAbstract", cryptopp_methods_BlockCipherAbstract);
-    cryptopp_ce_BlockCipherAbstract             = zend_register_internal_class(&ce TSRMLS_CC);
-    cryptopp_ce_BlockCipherAbstract->ce_flags  |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
+    cryptopp_ce_BlockCipherAbstract                 = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_BlockCipherAbstract->ce_flags      |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_BlockCipherAbstract->create_object = zend_custom_create_handler<BlockCipherAbstractContainer, BlockCipherAbstract_free_storage, &BlockCipherAbstract_object_handlers>;
+    cryptopp_ce_BlockCipherAbstract->create_object  = zend_custom_create_handler<BlockCipherAbstractContainer, BlockCipherAbstract_free_storage, &BlockCipherAbstract_object_handlers>;
     memcpy(&BlockCipherAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    BlockCipherAbstract_object_handlers.clone_obj = NULL;
+    BlockCipherAbstract_object_handlers.clone_obj   = NULL;
 
     zend_class_implements(cryptopp_ce_BlockCipherAbstract TSRMLS_CC, 1, cryptopp_ce_BlockCipherInterface);
 
@@ -69,8 +69,7 @@ void init_class_BlockCipherAbstractChild(const char *algoName, const char* class
 
 /* {{{ get the pointer to the native encryptor object of a php cipher class */
 CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
+    CryptoPP::BlockCipher *encryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
     if (NULL == encryptor) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\BlockCipherAbstract cannot be extended by user classes");
@@ -82,8 +81,7 @@ CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_
 
 /* {{{ get the pointer to the native decryptor object of a php cipher class */
 CryptoPP::BlockCipher *getCryptoppBlockCipherDecryptorPtr(zval *this_ptr TSRMLS_DC) {
-    CryptoPP::BlockCipher *decryptor;
-    decryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
+    CryptoPP::BlockCipher *decryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
     if (NULL == decryptor) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\BlockCipherAbstract cannot be extended by user classes");
@@ -107,8 +105,7 @@ void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *d
 
 /* {{{ verify that a key size is valid for a BlockCipherAbstract instance */
 static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher, int keySize TSRMLS_DC) {
-    zend_class_entry *ce;
-    ce = zend_get_class_entry(object TSRMLS_CC);
+    zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
 
     if (!cipher->IsValidKeyLength(keySize)) {
         if (0 == keySize) {
@@ -124,8 +121,7 @@ static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *c
 }
 
 bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC) {
-    zval *key;
-    key         = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
+    zval *key   = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
     return isCryptoppBlockCipherKeyValid(object, cipher, keySize TSRMLS_CC);
@@ -149,11 +145,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, __wakeup) {
 /* {{{ proto string BlockCipherAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getName) {
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-
-    zval *name;
-    name = zend_read_property(cryptopp_ce_BlockCipherAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    CryptoPP::BlockCipher *encryptor    = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    zval *name                          = zend_read_property(cryptopp_ce_BlockCipherAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
@@ -161,8 +154,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, getName) {
 /* {{{ proto int BlockCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize) {
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     RETURN_LONG(encryptor->BlockSize())
 }
 /* }}} */
@@ -176,8 +168,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     if (encryptor->IsValidKeyLength(keySize)) {
         RETURN_TRUE
@@ -197,18 +188,15 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor;
-    CryptoPP::BlockCipher *decryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
     // set the key on both the php object and the native cryptopp objects
-    byte *bKey;
-    bKey = reinterpret_cast<byte*>(key);
+    byte *bKey = reinterpret_cast<byte*>(key);
     encryptor->SetKey(bKey, keySize);
     decryptor->SetKey(bKey, keySize);
     zend_update_property_stringl(cryptopp_ce_BlockCipherAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
@@ -218,8 +206,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
 /* {{{ proto string BlockCipherAbstract::getKey(void)
    Returns the key */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getKey) {
-    zval *key;
-    key = zend_read_property(cryptopp_ce_BlockCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
+    zval *key = zend_read_property(cryptopp_ce_BlockCipherAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
     RETURN_ZVAL(key, 1, 0)
 }
 /* }}} */
@@ -234,8 +221,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
@@ -244,8 +230,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock) {
 
     // check block size
     if (encryptor->BlockSize() != blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not equal to cipher block size (%d)", ce->name, blockSize, encryptor->BlockSize());
         RETURN_FALSE
     }
@@ -268,8 +253,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
         return;
     }
 
-    CryptoPP::BlockCipher *decryptor;
-    decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
@@ -278,8 +262,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
 
     // check block size
     if (decryptor->BlockSize() != blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not equal to cipher block size (%d)", ce->name, blockSize, decryptor->BlockSize());
         RETURN_FALSE
     }
@@ -302,8 +285,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor;
-    encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
@@ -314,8 +296,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
     int blockSize = static_cast<int>(encryptor->BlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }
@@ -344,8 +325,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
         return;
     }
 
-    CryptoPP::BlockCipher *decryptor;
-    decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
@@ -356,8 +336,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
     int blockSize = static_cast<int>(decryptor->BlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }

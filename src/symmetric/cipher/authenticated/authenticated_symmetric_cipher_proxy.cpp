@@ -20,8 +20,7 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
     zval *zBlockSize    = call_user_method(authenticatedCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize)) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(authenticatedCipherObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(authenticatedCipherObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
         zval_ptr_dtor(&funcName);
@@ -38,8 +37,7 @@ AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, c
     zval *zDigestSize   = call_user_method(authenticatedCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zDigestSize)) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(authenticatedCipherObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(authenticatedCipherObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
         zval_ptr_dtor(&funcName);
@@ -137,8 +135,7 @@ void AuthenticatedSymmetricCipherProxy::Base::TruncatedFinal(byte *digest, size_
         throw false;
     } else if (DigestSize() != Z_STRLEN_P(zOutput)) {
         // bad returned digest size
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(m_authenticatedCipherObject M_TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(m_authenticatedCipherObject M_TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"%s : digest size is %d bytes, returned %d bytes", ce->name, DigestSize(), Z_STRLEN_P(zOutput));
 
         zval_ptr_dtor(&zOutput);

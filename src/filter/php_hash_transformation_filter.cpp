@@ -72,11 +72,11 @@ static zend_function_entry cryptopp_methods_HashTransformationFilter[] = {
 void init_class_HashTransformationFilter(TSRMLS_D) {
     zend_class_entry ce;
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "HashTransformationFilter", cryptopp_methods_HashTransformationFilter);
-    cryptopp_ce_HashTransformationFilter = zend_register_internal_class(&ce TSRMLS_CC);
+    cryptopp_ce_HashTransformationFilter                = zend_register_internal_class(&ce TSRMLS_CC);
 
     cryptopp_ce_HashTransformationFilter->create_object = zend_custom_create_handler<HashTransformationFilterContainer, HashTransformationFilter_free_storage, &HashTransformationFilter_object_handlers>;
     memcpy(&HashTransformationFilter_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
-    HashTransformationFilter_object_handlers.clone_obj = NULL;
+    HashTransformationFilter_object_handlers.clone_obj  = NULL;
 
     zend_declare_property_null(cryptopp_ce_HashTransformationFilter, "hash", 4, ZEND_ACC_PRIVATE TSRMLS_CC);
 }
@@ -84,8 +84,7 @@ void init_class_HashTransformationFilter(TSRMLS_D) {
 
 /* {{{ get the pointer to the native htf object of the php class */
 static HashTransformationFilter *getCryptoppHashTransformationFilterNativePtr(zval *this_ptr TSRMLS_DC) {
-    HashTransformationFilter *htf;
-    htf = static_cast<HashTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->htf;
+    HashTransformationFilter *htf = static_cast<HashTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->htf;
 
     if (NULL == htf) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\HashTransformationFilter : constructor was not called");
@@ -103,8 +102,7 @@ static void setCryptoppHashTransformationFilterNativePtr(zval *this_ptr, HashTra
 
 /* {{{ indicates if the native hash object holded by a stf object is valid */
 static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
-    zval *hashObject;
-    hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, stfObject, "hash", 4, 0 TSRMLS_CC);
+    zval *hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, stfObject, "hash", 4, 0 TSRMLS_CC);
 
     if (IS_OBJECT != Z_TYPE_P(hashObject)) {
         // not an object
@@ -114,8 +112,7 @@ static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
         return true;
     } else if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_StreamCipherAbstract TSRMLS_CC)) {
         // MacAbstract
-        CryptoPP::MessageAuthenticationCode *mac;
-        mac = getCryptoppMacNativePtr(hashObject TSRMLS_CC);
+        CryptoPP::MessageAuthenticationCode *mac = getCryptoppMacNativePtr(hashObject TSRMLS_CC);
 
         if (!isCryptoppMacKeyValid(hashObject, mac TSRMLS_CC)) {
             return false;
@@ -128,11 +125,9 @@ static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
 
 /* {{{ restart the hash holded by a HashTransformationFilter php object */
 static void restartHashObject(zval *htfObject TSRMLS_DC) {
-    zval *hashObject;
-    hashObject      = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
-
-    zval *funcName  = makeZval("restart");
-    zval *output    = call_user_method(hashObject, funcName TSRMLS_CC);
+    zval *hashObject    = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
+    zval *funcName      = makeZval("restart");
+    zval *output        = call_user_method(hashObject, funcName TSRMLS_CC);
     zval_ptr_dtor(&funcName);
     zval_ptr_dtor(&output);
 }
@@ -140,9 +135,7 @@ static void restartHashObject(zval *htfObject TSRMLS_DC) {
 
 /* {{{ returns the hash object digest size */
 static int getHashObjectDigestSize(zval *htfObject TSRMLS_DC) {
-    zval *hashObject;
-    hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
-
+    zval *hashObject    = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
     zval *funcName      = makeZval("getDigestSize");
     zval *zDigestSize   = call_user_method(hashObject, funcName TSRMLS_CC);
 
@@ -213,8 +206,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
     }
 
     if (parentConstructorError) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(hashObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(hashObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : parent constructor was not called", ce->name);
         return;
     }
@@ -240,8 +232,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
 /* {{{ proto Cryptopp\HashTransformationInterface HashTransformationFilter::getHash(void)
        Returns the hash object */
 PHP_METHOD(Cryptopp_HashTransformationFilter, getHash) {
-    zval *hashObject;
-    hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, getThis(), "hash", 4, 0 TSRMLS_CC);
+    zval *hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, getThis(), "hash", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(hashObject, 1, 0)
 }
 /* }}} */
@@ -258,8 +249,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, calculateDigestString) {
         return;
     }
 
-    HashTransformationFilter *htf;
-    htf = CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(htf)
+    HashTransformationFilter *htf = CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(htf)
 
     // if the hash object is a native mac object, ensure that the key is valid
     if (!isNativeHashTransformationObjectValid(getThis() TSRMLS_CC)) {

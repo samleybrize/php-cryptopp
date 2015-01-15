@@ -69,10 +69,8 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct) {
     }
 
     // instanciate authenticated cipher encryptor/decryptor
-    GCM::Encryption *encryptor;
-    GCM::Decryption *decryptor;
-    encryptor = new GCM::Encryption(cipherEncryptor, cipherMustBeDestructed);
-    decryptor = new GCM::Decryption(cipherEncryptor, false);
+    GCM::Encryption *encryptor = new GCM::Encryption(cipherEncryptor, cipherMustBeDestructed);
+    GCM::Decryption *decryptor = new GCM::Decryption(cipherEncryptor, false);
     setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

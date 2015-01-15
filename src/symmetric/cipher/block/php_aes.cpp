@@ -23,10 +23,8 @@ void init_class_BlockCipherAes(TSRMLS_D) {
 
 /* {{{ proto BlockCipherAes::__construct(void) */
 PHP_METHOD(Cryptopp_BlockCipherAes, __construct) {
-    CryptoPP::AES::Encryption *encryptor;
-    CryptoPP::AES::Decryption *decryptor;
-    encryptor = new CryptoPP::AES::Encryption();
-    decryptor = new CryptoPP::AES::Decryption();
+    CryptoPP::AES::Encryption *encryptor = new CryptoPP::AES::Encryption();
+    CryptoPP::AES::Decryption *decryptor = new CryptoPP::AES::Decryption();
     setCryptoppBlockCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppBlockCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 

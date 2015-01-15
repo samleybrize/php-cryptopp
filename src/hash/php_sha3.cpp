@@ -54,32 +54,28 @@ void init_classes_HashSha3(TSRMLS_D)
 
 /* {{{ proto HashSha3_*::__construct(void) */
 PHP_METHOD(Cryptopp_HashSha3_224, __construct) {
-    SHA3_224 *hash;
-    hash = new SHA3_224();
+    SHA3_224 *hash = new SHA3_224();
     setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha3_224", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_256, __construct) {
-    SHA3_256 *hash;
-    hash = new SHA3_256();
+    SHA3_256 *hash = new SHA3_256();
     setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha3_256", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_384, __construct) {
-    SHA3_384 *hash;
-    hash = new SHA3_384();
+    SHA3_384 *hash = new SHA3_384();
     setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha3_384", 8 TSRMLS_CC);
 }
 
 PHP_METHOD(Cryptopp_HashSha3_512, __construct) {
-    SHA3_512 *hash;
-    hash = new SHA3_512();
+    SHA3_512 *hash = new SHA3_512();
     setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha3_512", 8 TSRMLS_CC);

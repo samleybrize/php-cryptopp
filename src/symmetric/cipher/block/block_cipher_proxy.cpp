@@ -21,8 +21,7 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     zval *zBlockSize    = call_user_method(blockCipherObject, funcName TSRMLS_CC);
 
     if (IS_LONG != Z_TYPE_P(zBlockSize) || Z_LVAL_P(zBlockSize) <= 0) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(blockCipherObject TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(blockCipherObject TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : invalid block size returned", ce->name);
 
         zval_ptr_dtor(&funcName);

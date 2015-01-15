@@ -23,8 +23,7 @@ void init_class_HashSha1(TSRMLS_D) {
 
 /* {{{ proto HashSha1::__construct(void) */
 PHP_METHOD(Cryptopp_HashSha1, __construct) {
-    CryptoPP::SHA1 *hash;
-    hash = new CryptoPP::SHA1();
+    CryptoPP::SHA1 *hash = new CryptoPP::SHA1();
     setCryptoppHashNativePtr(getThis(), hash TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_HashAbstract, getThis(), "name", 4, "sha1", 4 TSRMLS_CC);
