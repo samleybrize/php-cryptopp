@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../utils/zend_object_utils.h"
 #include "../hash/php_hash_transformation_interface.h"
 #include "php_mac.h"
 #include "php_mac_interface.h"
@@ -7,38 +8,17 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object create/free handler */
-zend_object_handlers MacAbstract_object_handlers;
-
+/* {{{ custom object free handler */
 void MacAbstract_free_storage(void *object TSRMLS_DC) {
     MacAbstractContainer *obj = static_cast<MacAbstractContainer *>(object);
     delete obj->mac;
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value MacAbstract_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    MacAbstractContainer *obj = static_cast<MacAbstractContainer *>(emalloc(sizeof(MacAbstractContainer)));
-    memset(obj, 0, sizeof(MacAbstractContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, MacAbstract_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &MacAbstract_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP abstract class declaration */
+zend_object_handlers MacAbstract_object_handlers;
 zend_class_entry *cryptopp_ce_MacAbstract;
 
 static zend_function_entry cryptopp_methods_MacAbstract[] = {
@@ -63,7 +43,7 @@ void init_class_MacAbstract(TSRMLS_D) {
     cryptopp_ce_MacAbstract             = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_MacAbstract->ce_flags  |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_MacAbstract->create_object = MacAbstract_create_handler;
+    cryptopp_ce_MacAbstract->create_object = zend_custom_create_handler<MacAbstractContainer, MacAbstract_free_storage, &MacAbstract_object_handlers>;
     memcpy(&MacAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     MacAbstract_object_handlers.clone_obj = NULL;
 

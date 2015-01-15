@@ -98,7 +98,7 @@ configFileList.append("src/filter/config/hash_transformation_filter.py")
 
 # process all config scripts
 phpMinitStatements  = []
-srcFileList         = ["php_cryptopp.cpp", "utils/php_hash_equals.cpp", "utils/algo_list.cpp"]
+srcFileList         = ["php_cryptopp.cpp", "utils/php_hash_equals.cpp", "utils/algo_list.cpp", "utils/zend_object_utils.cpp"]
 headerFileList      = []
 hashNativeAssoc     = {}
 hashCryptoppHeaders = []

@@ -88,7 +88,6 @@ struct AuthenticatedSymmetricTransformationFilterContainer {
 
 extern zend_object_handlers AuthenticatedSymmetricTransformationFilter_object_handlers;
 void AuthenticatedSymmetricTransformationFilter_free_storage(void *object TSRMLS_DC);
-zend_object_value AuthenticatedSymmetricTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

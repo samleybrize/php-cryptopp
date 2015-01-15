@@ -39,7 +39,6 @@ struct SymmetricModeAbstractContainer {
 
 extern zend_object_handlers SymmetricModeAbstract_object_handlers;
 void SymmetricModeAbstract_free_storage(void *object TSRMLS_DC);
-zend_object_value SymmetricModeAbstract_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

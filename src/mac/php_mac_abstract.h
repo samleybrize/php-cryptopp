@@ -27,7 +27,6 @@ struct MacAbstractContainer {
 
 extern zend_object_handlers MacAbstract_object_handlers;
 void MacAbstract_free_storage(void *object TSRMLS_DC);
-zend_object_value MacAbstract_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

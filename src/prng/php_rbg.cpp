@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../utils/zend_object_utils.h"
 #include "php_rbg_interface.h"
 #include "php_rbg.h"
 #include <osrng.h>
@@ -10,38 +11,17 @@ ZEND_BEGIN_ARG_INFO(arginfo_RandomByteGenerator_construct, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ custom object create/free handler */
-zend_object_handlers RandomByteGenerator_object_handlers;
-
+/* {{{ custom object free handler */
 void RandomByteGenerator_free_storage(void *object TSRMLS_DC) {
     RandomByteGeneratorContainer *obj = static_cast<RandomByteGeneratorContainer *>(object);
     delete obj->rbg;
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value RandomByteGenerator_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    RandomByteGeneratorContainer *obj = static_cast<RandomByteGeneratorContainer *>(emalloc(sizeof(RandomByteGeneratorContainer)));
-    memset(obj, 0, sizeof(RandomByteGeneratorContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, RandomByteGenerator_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &RandomByteGenerator_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP class déclaration */
+zend_object_handlers RandomByteGenerator_object_handlers;
 zend_class_entry *cryptopp_ce_RandomByteGenerator;
 
 static zend_function_entry cryptopp_methods_RandomByteGenerator[] = {
@@ -57,7 +37,7 @@ void init_class_RandomByteGenerator(TSRMLS_D) {
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "RandomByteGenerator", cryptopp_methods_RandomByteGenerator);
     cryptopp_ce_RandomByteGenerator = zend_register_internal_class(&ce TSRMLS_CC);
 
-    cryptopp_ce_RandomByteGenerator->create_object = RandomByteGenerator_create_handler;
+    cryptopp_ce_RandomByteGenerator->create_object = zend_custom_create_handler<RandomByteGeneratorContainer, RandomByteGenerator_free_storage, &RandomByteGenerator_object_handlers>;
     memcpy(&RandomByteGenerator_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     RandomByteGenerator_object_handlers.clone_obj = NULL;
 

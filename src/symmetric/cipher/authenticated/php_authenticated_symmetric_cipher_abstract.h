@@ -39,7 +39,6 @@ struct AuthenticatedSymmetricCipherAbstractContainer {
 
 extern zend_object_handlers AuthenticatedSymmetricCipherAbstract_object_handlers;
 void AuthenticatedSymmetricCipherAbstract_free_storage(void *object TSRMLS_DC);
-zend_object_value AuthenticatedSymmetricCipherAbstract_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

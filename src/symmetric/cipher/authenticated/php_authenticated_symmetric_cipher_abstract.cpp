@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../utils/zend_object_utils.h"
 #include "../../../utils/zval_utils.h"
 #include "../php_symmetric_cipher_interface.h"
 #include "../php_symmetric_transformation_interface.h"
@@ -11,9 +12,7 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object create/free handler */
-zend_object_handlers AuthenticatedSymmetricCipherAbstract_object_handlers;
-
+/* {{{ custom object free handler */
 void AuthenticatedSymmetricCipherAbstract_free_storage(void *object TSRMLS_DC) {
     AuthenticatedSymmetricCipherAbstractContainer *obj = static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(object);
     delete obj->encryptor;
@@ -21,29 +20,10 @@ void AuthenticatedSymmetricCipherAbstract_free_storage(void *object TSRMLS_DC) {
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value AuthenticatedSymmetricCipherAbstract_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    AuthenticatedSymmetricCipherAbstractContainer *obj = static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(emalloc(sizeof(AuthenticatedSymmetricCipherAbstractContainer)));
-    memset(obj, 0, sizeof(AuthenticatedSymmetricCipherAbstractContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, AuthenticatedSymmetricCipherAbstract_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &AuthenticatedSymmetricCipherAbstract_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP abstract class declaration */
+zend_object_handlers AuthenticatedSymmetricCipherAbstract_object_handlers;
 zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherAbstract;
 
 static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherAbstract[] = {
@@ -74,7 +54,7 @@ void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D) {
     cryptopp_ce_AuthenticatedSymmetricCipherAbstract            = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_AuthenticatedSymmetricCipherAbstract->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_AuthenticatedSymmetricCipherAbstract->create_object = AuthenticatedSymmetricCipherAbstract_create_handler;
+    cryptopp_ce_AuthenticatedSymmetricCipherAbstract->create_object = zend_custom_create_handler<AuthenticatedSymmetricCipherAbstractContainer, AuthenticatedSymmetricCipherAbstract_free_storage, &AuthenticatedSymmetricCipherAbstract_object_handlers>;
     memcpy(&AuthenticatedSymmetricCipherAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     AuthenticatedSymmetricCipherAbstract_object_handlers.clone_obj = NULL;
 

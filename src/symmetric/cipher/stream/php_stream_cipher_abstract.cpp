@@ -1,5 +1,6 @@
 #include "../../../php_cryptopp.h"
 #include "../../../exception/php_exception.h"
+#include "../../../utils/zend_object_utils.h"
 #include "../php_symmetric_cipher_interface.h"
 #include "../php_symmetric_transformation_interface.h"
 #include "php_stream_cipher.h"
@@ -8,9 +9,7 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object create/free handler */
-zend_object_handlers StreamCipherAbstract_object_handlers;
-
+/* {{{ custom object free handler */
 void StreamCipherAbstract_free_storage(void *object TSRMLS_DC) {
     StreamCipherAbstractContainer *obj = static_cast<StreamCipherAbstractContainer *>(object);
     delete obj->encryptor;
@@ -18,29 +17,10 @@ void StreamCipherAbstract_free_storage(void *object TSRMLS_DC) {
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value StreamCipherAbstract_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    StreamCipherAbstractContainer *obj = static_cast<StreamCipherAbstractContainer *>(emalloc(sizeof(StreamCipherAbstractContainer)));
-    memset(obj, 0, sizeof(StreamCipherAbstractContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, StreamCipherAbstract_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &StreamCipherAbstract_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP abstract class declaration */
+zend_object_handlers StreamCipherAbstract_object_handlers;
 zend_class_entry *cryptopp_ce_StreamCipherAbstract;
 
 static zend_function_entry cryptopp_methods_StreamCipherAbstract[] = {
@@ -66,7 +46,7 @@ void init_class_StreamCipherAbstract(TSRMLS_D) {
     cryptopp_ce_StreamCipherAbstract            = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_StreamCipherAbstract->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_StreamCipherAbstract->create_object = StreamCipherAbstract_create_handler;
+    cryptopp_ce_StreamCipherAbstract->create_object = zend_custom_create_handler<StreamCipherAbstractContainer, StreamCipherAbstract_free_storage, &StreamCipherAbstract_object_handlers>;
     memcpy(&StreamCipherAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     StreamCipherAbstract_object_handlers.clone_obj = NULL;
 

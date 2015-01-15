@@ -39,7 +39,6 @@ struct StreamCipherAbstractContainer {
 
 extern zend_object_handlers StreamCipherAbstract_object_handlers;
 void StreamCipherAbstract_free_storage(void *object TSRMLS_DC);
-zend_object_value StreamCipherAbstract_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

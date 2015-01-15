@@ -37,7 +37,6 @@ struct HashTransformationFilterContainer {
 
 extern zend_object_handlers HashTransformationFilter_object_handlers;
 void HashTransformationFilter_free_storage(void *object TSRMLS_DC);
-zend_object_value HashTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */

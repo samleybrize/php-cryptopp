@@ -7,6 +7,7 @@
 #include "../symmetric/cipher/stream/php_stream_cipher_abstract.h"
 #include "../symmetric/cipher/symmetric_transformation_proxy.h"
 #include "../symmetric/mode/php_symmetric_mode_abstract.h"
+#include "../utils/zend_object_utils.h"
 #include "../utils/zval_utils.h"
 #include "php_symmetric_transformation_filter.h"
 #include <exception>
@@ -291,9 +292,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationFilter_decryptString, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ custom object create/free handler */
-zend_object_handlers SymmetricTransformationFilter_object_handlers;
-
+/* {{{ custom object free handler */
 void SymmetricTransformationFilter_free_storage(void *object TSRMLS_DC) {
     SymmetricTransformationFilterContainer *obj = static_cast<SymmetricTransformationFilterContainer *>(object);
     delete obj->stfEncryptor;
@@ -301,29 +300,10 @@ void SymmetricTransformationFilter_free_storage(void *object TSRMLS_DC) {
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value SymmetricTransformationFilter_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    SymmetricTransformationFilterContainer *obj = static_cast<SymmetricTransformationFilterContainer *>(emalloc(sizeof(SymmetricTransformationFilterContainer)));
-    memset(obj, 0, sizeof(SymmetricTransformationFilterContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, SymmetricTransformationFilter_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &SymmetricTransformationFilter_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP class declaration */
+zend_object_handlers SymmetricTransformationFilter_object_handlers;
 zend_class_entry *cryptopp_ce_SymmetricTransformationFilter;
 
 static zend_function_entry cryptopp_methods_SymmetricTransformationFilter[] = {
@@ -342,7 +322,7 @@ void init_class_SymmetricTransformationFilter(TSRMLS_D) {
     INIT_NS_CLASS_ENTRY(ce, "Cryptopp", "SymmetricTransformationFilter", cryptopp_methods_SymmetricTransformationFilter);
     cryptopp_ce_SymmetricTransformationFilter = zend_register_internal_class(&ce TSRMLS_CC);
 
-    cryptopp_ce_SymmetricTransformationFilter->create_object = SymmetricTransformationFilter_create_handler;
+    cryptopp_ce_SymmetricTransformationFilter->create_object = zend_custom_create_handler<SymmetricTransformationFilterContainer, SymmetricTransformationFilter_free_storage, &SymmetricTransformationFilter_object_handlers>;
     memcpy(&SymmetricTransformationFilter_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     SymmetricTransformationFilter_object_handlers.clone_obj = NULL;
 

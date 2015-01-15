@@ -1,5 +1,6 @@
 #include "../php_cryptopp.h"
 #include "../exception/php_exception.h"
+#include "../utils/zend_object_utils.h"
 #include "php_hash.h"
 #include "php_hash_transformation_interface.h"
 #include "php_hash_interface.h"
@@ -7,38 +8,17 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object create/free handler */
-zend_object_handlers HashAbstract_object_handlers;
-
+/* {{{ custom object free handler */
 void HashAbstract_free_storage(void *object TSRMLS_DC) {
     HashAbstractContainer *obj = static_cast<HashAbstractContainer *>(object);
     delete obj->hash;
     zend_object_std_dtor(&obj->std TSRMLS_CC);
     efree(obj);
 }
-
-zend_object_value HashAbstract_create_handler(zend_class_entry *type TSRMLS_DC) {
-    zend_object_value retval;
-
-    HashAbstractContainer *obj = static_cast<HashAbstractContainer *>(emalloc(sizeof(HashAbstractContainer)));
-    memset(obj, 0, sizeof(HashAbstractContainer));
-
-    zend_object_std_init(&obj->std, type TSRMLS_CC);
-
-    #if PHP_VERSION_ID < 50399
-        zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
-    #else
-        object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
-    #endif
-
-    retval.handle   = zend_objects_store_put(obj, NULL, HashAbstract_free_storage, NULL TSRMLS_CC);
-    retval.handlers = &HashAbstract_object_handlers;
-
-    return retval;
-}
 /* }}} */
 
 /* {{{ PHP abstract class declaration */
+zend_object_handlers HashAbstract_object_handlers;
 zend_class_entry *cryptopp_ce_HashAbstract;
 
 static zend_function_entry cryptopp_methods_HashAbstract[] = {
@@ -60,7 +40,7 @@ void init_class_HashAbstract(TSRMLS_D) {
     cryptopp_ce_HashAbstract            = zend_register_internal_class(&ce TSRMLS_CC);
     cryptopp_ce_HashAbstract->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS;
 
-    cryptopp_ce_HashAbstract->create_object = HashAbstract_create_handler;
+    cryptopp_ce_HashAbstract->create_object = zend_custom_create_handler<HashAbstractContainer, HashAbstract_free_storage, &HashAbstract_object_handlers>;
     memcpy(&HashAbstract_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     HashAbstract_object_handlers.clone_obj = NULL;
 

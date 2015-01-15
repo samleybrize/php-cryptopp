@@ -27,7 +27,6 @@ struct HashAbstractContainer {
 
 extern zend_object_handlers HashAbstract_object_handlers;
 void HashAbstract_free_storage(void *object TSRMLS_DC);
-zend_object_value HashAbstract_create_handler(zend_class_entry *type TSRMLS_DC);
 /* }}} */
 
 /* {{{ methods declarations */
