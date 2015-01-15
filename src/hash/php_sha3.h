@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_SHA3_H
 #define PHP_HASH_SHA3_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include <sha3.h>
 
 void init_classes_HashSha3(TSRMLS_D);

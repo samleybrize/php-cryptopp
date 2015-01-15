@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_PROXY_H
 #define PHP_BLOCK_CIPHER_PROXY_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_block_cipher_interface.h"
 #include <string>
 

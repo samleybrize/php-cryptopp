@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_EQUALS_H
 #define PHP_HASH_EQUALS_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern const zend_function_entry hash_equals_function[];
 

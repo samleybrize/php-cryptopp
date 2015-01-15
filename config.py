@@ -129,7 +129,7 @@ for configFile in configFileList:
 headerFileIncludes = "";
 
 for i in headerFileList:
-    headerFileIncludes += "#include \"" + i + "\"\n"
+    headerFileIncludes += "#include \"src/" + i + "\"\n"
 
 # create main header file
 mainHeaderContent   = open("src/php_cryptopp.raw.h", "r").read()

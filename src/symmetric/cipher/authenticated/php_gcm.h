@@ -1,7 +1,7 @@
 #ifndef PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GCM_H
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GCM_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include <gcm.h>
 
 /* {{{ fork of CryptoPP::GCM that take a cipher as parameter instead of a template parameter */

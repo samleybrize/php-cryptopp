@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_TRANSFORMATION_FILTER_H
 #define PHP_HASH_TRANSFORMATION_FILTER_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include <filters.h>
 #include <string>
 

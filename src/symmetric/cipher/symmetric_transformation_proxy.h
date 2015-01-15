@@ -1,7 +1,7 @@
 #ifndef PHP_SYMMETRIC_TRANSFORMATION_PROXY_H
 #define PHP_SYMMETRIC_TRANSFORMATION_PROXY_H
 
-#include "../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "symmetric_transformation_user_interface.h"
 
 class SymmetricTransformationProxy

@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_PROXY_H
 #define PHP_HASH_PROXY_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 class HashProxy : public CryptoPP::HashTransformation
 {

@@ -1,4 +1,4 @@
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_hash_transformation_interface.h"
 
 /* {{{ PHP interface declaration */

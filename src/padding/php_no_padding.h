@@ -1,7 +1,7 @@
 #ifndef PHP_PADDING_NO_PADDING_H
 #define PHP_PADDING_NO_PADDING_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_PaddingNoPadding;
 void init_class_PaddingNoPadding(TSRMLS_D);

@@ -1,7 +1,7 @@
 #ifndef PHP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_H
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherAbstract;
 void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D);

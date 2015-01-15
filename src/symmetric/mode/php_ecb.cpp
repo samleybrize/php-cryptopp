@@ -1,5 +1,5 @@
-#include "../../php_cryptopp.h"
-#include "../cipher/block/php_block_cipher_interface.h"
+#include "src/php_cryptopp.h"
+#include "src/symmetric/cipher/block/php_block_cipher_interface.h"
 #include "php_symmetric_mode_abstract.h"
 #include "php_ecb.h"
 #include <modes.h>

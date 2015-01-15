@@ -1,5 +1,5 @@
-#include "../php_cryptopp.h"
-#include "../hash/php_hash_transformation_interface.h"
+#include "src/php_cryptopp.h"
+#include "src/hash/php_hash_transformation_interface.h"
 #include "php_mac_interface.h"
 
 /* {{{ PHP interface declaration */

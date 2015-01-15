@@ -1,5 +1,5 @@
-#include "../../php_cryptopp.h"
-#include "../cipher/php_symmetric_transformation_interface.h"
+#include "src/php_cryptopp.h"
+#include "src/symmetric/cipher/php_symmetric_transformation_interface.h"
 #include "php_symmetric_mode_interface.h"
 
 /* {{{ PHP interface declaration */

@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_SHA1_H
 #define PHP_HASH_SHA1_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 void init_class_HashSha1(TSRMLS_D);
 PHP_METHOD(Cryptopp_HashSha1, __construct);

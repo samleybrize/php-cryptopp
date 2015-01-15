@@ -1,7 +1,7 @@
 #ifndef PHP_STREAM_CIPHER_SOSEMANUK_H
 #define PHP_STREAM_CIPHER_SOSEMANUK_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 void init_class_StreamCipherSosemanuk(TSRMLS_D);
 PHP_METHOD(Cryptopp_StreamCipherSosemanuk, __construct);

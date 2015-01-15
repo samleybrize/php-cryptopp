@@ -1,7 +1,7 @@
 #ifndef PHP_MAC_INTERFACE_H
 #define PHP_MAC_INTERFACE_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ php Mac classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_MacInterface_setKey, 0)

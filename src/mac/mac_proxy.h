@@ -1,7 +1,7 @@
 #ifndef PHP_MAC_PROXY_H
 #define PHP_MAC_PROXY_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 class MacProxy : public CryptoPP::MessageAuthenticationCode
 {

@@ -1,4 +1,4 @@
-#include "../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_symmetric_mode.h"
 #include <algorithm>
 #include <string>

@@ -1,7 +1,7 @@
 #ifndef PHP_PADDING_INTERFACE_H
 #define PHP_PADDING_INTERFACE_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ php padding classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_pad, 0)

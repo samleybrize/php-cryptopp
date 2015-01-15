@@ -1,6 +1,6 @@
 #include "php_authenticated_symmetric_cipher.h"
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include <algorithm>
 #include <string>
 #include <vector>

@@ -1,6 +1,6 @@
-#include "../../../php_cryptopp.h"
-#include "../../../exception/php_exception.h"
-#include "../block/php_block_cipher_interface.h"
+#include "src/php_cryptopp.h"
+#include "src/exception/php_exception.h"
+#include "src/symmetric/cipher/block/php_block_cipher_interface.h"
 #include "php_authenticated_symmetric_cipher_abstract.h"
 #include "php_gcm.h"
 #include <zend_exceptions.h>

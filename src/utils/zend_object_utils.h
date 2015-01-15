@@ -1,7 +1,7 @@
 #ifndef PHP_ZEND_OBJECT_UTILS_H
 #define PHP_ZEND_OBJECT_UTILS_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 typedef void(*zend_object_free_storage)(void* TSRMLS_DC);
 

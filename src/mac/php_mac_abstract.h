@@ -1,7 +1,7 @@
 #ifndef PHP_MAC_ABSTRACT_H
 #define PHP_MAC_ABSTRACT_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_MacAbstract;
 void init_class_MacAbstract(TSRMLS_D);

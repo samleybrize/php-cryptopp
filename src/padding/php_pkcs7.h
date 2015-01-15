@@ -1,7 +1,7 @@
 #ifndef PHP_PADDING_PKCS7_H
 #define PHP_PADDING_PKCS7_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_PaddingPkcs7;
 void init_class_PaddingPkcs7(TSRMLS_D);

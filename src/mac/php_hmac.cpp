@@ -1,8 +1,8 @@
-#include "../php_cryptopp.h"
-#include "../hash/php_hash_interface.h"
-#include "../hash/php_hash_abstract.h"
-#include "../hash/hash_proxy.h"
-#include "../utils/zval_utils.h"
+#include "src/php_cryptopp.h"
+#include "src/hash/php_hash_interface.h"
+#include "src/hash/php_hash_abstract.h"
+#include "src/hash/hash_proxy.h"
+#include "src/utils/zval_utils.h"
 #include "php_mac_abstract.h"
 #include "php_hmac.h"
 #include <hmac.h>

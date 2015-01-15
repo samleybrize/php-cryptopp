@@ -1,7 +1,7 @@
 #ifndef PHP_HASH_MD5_H
 #define PHP_HASH_MD5_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 void init_class_HashMd5(TSRMLS_D);
 PHP_METHOD(Cryptopp_HashMd5, __construct);

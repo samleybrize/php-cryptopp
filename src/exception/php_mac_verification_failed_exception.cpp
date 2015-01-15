@@ -1,4 +1,4 @@
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_exception.h"
 #include "php_mac_verification_failed_exception.h"
 #include <zend_exceptions.h>

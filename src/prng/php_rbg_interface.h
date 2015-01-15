@@ -1,7 +1,7 @@
 #ifndef PHP_RBG_INTERFACE_H
 #define PHP_RBG_INTERFACE_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_RandomByteGeneratorInterface;
 void init_interface_RandomByteGeneratorInterface(TSRMLS_D);

@@ -1,7 +1,7 @@
 #ifndef PHP_SYMMETRIC_CIPHER_INTERFACE_H
 #define PHP_SYMMETRIC_CIPHER_INTERFACE_H
 
-#include "../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ php symmetric cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getName, 0)

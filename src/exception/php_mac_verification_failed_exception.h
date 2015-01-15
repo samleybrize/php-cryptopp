@@ -1,7 +1,7 @@
 #ifndef PHP_CRYPTOPP_MAC_VERIFICATION_FAILED_EXCEPTION_H
 #define PHP_CRYPTOPP_MAC_VERIFICATION_FAILED_EXCEPTION_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 void init_class_CryptoppMacVerificationFailedException(TSRMLS_D);
 zend_class_entry *getCryptoppMacVerificationFailedException();

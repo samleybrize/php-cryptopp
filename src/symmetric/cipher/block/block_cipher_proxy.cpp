@@ -1,6 +1,6 @@
-#include "../../../php_cryptopp.h"
-#include "../../../exception/php_exception.h"
-#include "../../../utils/zval_utils.h"
+#include "src/php_cryptopp.h"
+#include "src/exception/php_exception.h"
+#include "src/utils/zval_utils.h"
 #include "php_block_cipher_interface.h"
 #include "block_cipher_proxy.h"
 #include <zend_exceptions.h>

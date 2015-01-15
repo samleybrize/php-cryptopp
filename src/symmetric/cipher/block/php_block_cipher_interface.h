@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_INTERFACE_H
 #define PHP_BLOCK_CIPHER_INTERFACE_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ php block cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_encryptBlock, 0)

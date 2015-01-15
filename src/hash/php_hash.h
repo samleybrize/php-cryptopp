@@ -1,8 +1,8 @@
 #ifndef PHP_HASH_H
 #define PHP_HASH_H
 
-#include "../php_cryptopp.h"
-#include "../utils/algo_list.h"
+#include "src/php_cryptopp.h"
+#include "src/utils/algo_list.h"
 
 extern AlgoList hashAlgoList;
 

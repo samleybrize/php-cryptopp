@@ -1,7 +1,7 @@
 #ifndef PHP_BLOCK_CIPHER_ABSTRACT_H
 #define PHP_BLOCK_CIPHER_ABSTRACT_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_BlockCipherAbstract;
 void init_class_BlockCipherAbstract(TSRMLS_D);

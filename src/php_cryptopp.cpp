@@ -2,13 +2,13 @@
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 
 #include "php_cryptopp.h"
-#include "hash/php_hash.h"
-#include "mac/php_mac.h"
-#include "symmetric/cipher/authenticated/php_authenticated_symmetric_cipher.h"
-#include "symmetric/cipher/block/php_block_cipher.h"
-#include "symmetric/cipher/stream/php_stream_cipher.h"
-#include "symmetric/mode/php_symmetric_mode.h"
-#include "utils/php_hash_equals.h"
+#include "src/hash/php_hash.h"
+#include "src/mac/php_mac.h"
+#include "src/symmetric/cipher/authenticated/php_authenticated_symmetric_cipher.h"
+#include "src/symmetric/cipher/block/php_block_cipher.h"
+#include "src/symmetric/cipher/stream/php_stream_cipher.h"
+#include "src/symmetric/mode/php_symmetric_mode.h"
+#include "src/utils/php_hash_equals.h"
 #include <ext/standard/info.h>
 #include <string>
 #include <vector>

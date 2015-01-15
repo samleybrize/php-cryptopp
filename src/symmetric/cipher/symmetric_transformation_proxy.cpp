@@ -1,6 +1,6 @@
-#include "../../php_cryptopp.h"
-#include "../../exception/php_exception.h"
-#include "../../utils/zval_utils.h"
+#include "src/php_cryptopp.h"
+#include "src/exception/php_exception.h"
+#include "src/utils/zval_utils.h"
 #include "php_symmetric_transformation_interface.h"
 #include "symmetric_transformation_proxy.h"
 #include <zend_exceptions.h>

@@ -1,7 +1,7 @@
 #ifndef PHP_MAC_HMAC_H
 #define PHP_MAC_HMAC_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include <hmac.h>
 #include <seckey.h>
 

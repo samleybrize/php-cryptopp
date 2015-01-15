@@ -1,7 +1,7 @@
 #ifndef PHP_SYMMETRIC_MODE_ABSTRACT_H
 #define PHP_SYMMETRIC_MODE_ABSTRACT_H
 
-#include "../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_SymmetricModeAbstract;
 void init_class_SymmetricModeAbstract(TSRMLS_D);

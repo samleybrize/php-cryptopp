@@ -1,7 +1,7 @@
 #ifndef PHP_RBG_H
 #define PHP_RBG_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 void init_class_RandomByteGenerator(TSRMLS_D);
 PHP_METHOD(Cryptopp_RandomByteGenerator, __construct);

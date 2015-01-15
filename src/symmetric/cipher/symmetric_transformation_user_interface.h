@@ -1,7 +1,7 @@
 #ifndef PHP_SYMMETRIC_TRANSFORMATION_USER_INTERFACE_H
 #define PHP_SYMMETRIC_TRANSFORMATION_USER_INTERFACE_H
 
-#include "../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 class SymmetricTransformationUserInterface
 {

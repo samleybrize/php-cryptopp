@@ -1,7 +1,7 @@
 #ifndef PHP_STREAM_CIPHER_INTERFACE_H
 #define PHP_STREAM_CIPHER_INTERFACE_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* inits the StreamCipherInterface php interface */
 extern zend_class_entry *cryptopp_ce_StreamCipherInterface;

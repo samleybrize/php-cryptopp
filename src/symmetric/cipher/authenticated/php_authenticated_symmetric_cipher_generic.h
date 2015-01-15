@@ -1,7 +1,7 @@
 #ifndef PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GENERIC_H
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GENERIC_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 extern zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherGeneric;
 void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D);

@@ -1,4 +1,4 @@
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_stream_cipher_abstract.h"
 #include "php_sosemanuk.h"
 #include <sosemanuk.h>

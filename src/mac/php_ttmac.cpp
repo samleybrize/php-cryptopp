@@ -1,4 +1,4 @@
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_mac_abstract.h"
 #include "php_ttmac.h"
 #include <ttmac.h>

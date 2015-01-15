@@ -1,7 +1,7 @@
 #ifndef PHP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_H
 #define PHP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 #include "php_symmetric_transformation_filter.h"
 #include <filters.h>
 #include <string>

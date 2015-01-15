@@ -1,7 +1,7 @@
 #ifndef PHP_ZVAL_UTILS_H
 #define PHP_ZVAL_UTILS_H
 
-#include "../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ create a zval */
 inline zval *makeZval(const char *str) {

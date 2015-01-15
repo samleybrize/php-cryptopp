@@ -1,7 +1,7 @@
 #ifndef PHP_AUTHENTICATED_SYMMETRIC_CIPHER_INTERFACE_H
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_INTERFACE_H
 
-#include "../../../php_cryptopp.h"
+#include "src/php_cryptopp.h"
 
 /* {{{ php authenticated cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherInterface_getDigestSize, 0)
