@@ -104,27 +104,11 @@ void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *d
 /* }}} */
 
 /* {{{ verify that a key size is valid for a BlockCipherAbstract instance */
-static bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher, int keySize TSRMLS_DC) {
-    zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
-
-    if (!cipher->IsValidKeyLength(keySize)) {
-        if (0 == keySize) {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
-        } else {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize);
-        }
-
-        return false;
-    }
-
-    return true;
-}
-
 bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC) {
     zval *key   = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
-    return isCryptoppBlockCipherKeyValid(object, cipher, keySize TSRMLS_CC);
+    return isCryptoppSymmetricKeyValid(object, cipher, keySize TSRMLS_CC);
 }
 /* }}} */
 
@@ -191,7 +175,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
     CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
+    if (!isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 

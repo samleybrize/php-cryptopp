@@ -182,104 +182,34 @@ static inline zval *getCipherKey(zval *object TSRMLS_DC) {
 /* }}} */
 
 /* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-static bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize TSRMLS_DC, bool throwIfFalse = true) {
-    if (!cipher->IsValidKeyLength(keySize)) {
-        zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
-
-        if (!throwIfFalse) {
-            return false;
-        } else if (0 == keySize) {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
-        } else {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize);
-        }
-
-        return false;
-    }
-
-    return true;
-}
-
 bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *key   = getCipherKey(object TSRMLS_CC);
     int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
     zval_ptr_dtor(&key);
 
-    return isCryptoppAuthenticatedSymmetricCipherKeyValid(object, cipher, keySize TSRMLS_CC) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher TSRMLS_CC);
+    return isCryptoppSymmetricKeyValid(object, cipher, keySize TSRMLS_CC) && isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-static bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int ivSize TSRMLS_DC, bool throwIfFalse = true) {
-    bool isValid = false;
-
-    if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(cipher)) {
-        isValid = dynamic_cast<SymmetricTransformationUserInterface*>(cipher)->IsValidIvLength(ivSize);
-    } else if(!cipher->IsResynchronizable()) {
-        isValid = (0 == ivSize);
-    } else {
-        isValid = ivSize >= cipher->MinIVLength() && ivSize <= cipher->MaxIVLength();
-    }
-
-    if(!isValid) {
-        zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
-
-        if (!throwIfFalse) {
-            return false;
-        } else if (!cipher->IsResynchronizable()) {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : no initialization vector needed", ce->name, ivSize);
-        } else if (0 == ivSize) {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : an initialization vector is required", ce->name, ivSize);
-        } else {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid initialization vector length", ce->name, ivSize);
-        }
-
-        return false;
-    }
-
-    return true;
-}
-
 bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *iv    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize  = Z_STRLEN_P(iv);
 
-    return isCryptoppAuthenticatedSymmetricCipherIvValid(object, cipher, ivSize TSRMLS_CC);
+    return isCryptoppSymmetricIvValid(object, cipher, ivSize TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
-    zval *zIv                                       = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
-    int ivSize                                      = Z_STRLEN_P(zIv);
-    CryptoPP::AuthenticatedSymmetricCipher *cipher  = NULL != encryptor ? encryptor : decryptor;
+    zval *zKey      = getCipherKey(object TSRMLS_CC);
+    zval *zIv       = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    bool ivSetted   = setSymmetricCipherKeyIv(object, encryptor, decryptor, zKey, zIv TSRMLS_CC);
+    zval_ptr_dtor(&zKey);
 
-    zval *zKey                                      = getCipherKey(object TSRMLS_CC);
-    int keySize                                     = IS_STRING == Z_TYPE_P(zKey) ? Z_STRLEN_P(zKey) : 0;
-
-    // set the key and the iv (if applicable) of native mode objects
-    if (keySize > 0 && !cipher->IsResynchronizable()) {
-        // an iv is not required
-        // indicates that the iv is setted
-        zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
-    } else if (keySize > 0 && ivSize > 0 && cipher->IsResynchronizable()) {
-        // set key and iv
-        byte *key   = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
-        byte *iv    = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));
-
-        if (NULL != encryptor) {
-            encryptor->SetKeyWithIV(key, keySize, iv, ivSize);
-        }
-
-        if (NULL != decryptor) {
-            decryptor->SetKeyWithIV(key, keySize, iv, ivSize);
-        }
-
-        // indicates that the iv is setted
+    if (ivSetted) {
         zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
     }
-
-    zval_ptr_dtor(&zKey);
 }
 /* }}} */
 
@@ -353,7 +283,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
 
     CryptoPP::AuthenticatedSymmetricCipher *encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
-    if (isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
+    if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
@@ -373,7 +303,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
-    if (isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
+    if (isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
         RETURN_TRUE
     } else {
         RETURN_FALSE
@@ -394,7 +324,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setKey) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     CryptoPP::AuthenticatedSymmetricCipher *decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppAuthenticatedSymmetricCipherKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
+    if (!isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
@@ -424,7 +354,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     CryptoPP::AuthenticatedSymmetricCipher *decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
-    if (!isCryptoppAuthenticatedSymmetricCipherIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
+    if (!isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
         // invalid iv
         RETURN_FALSE;
     }

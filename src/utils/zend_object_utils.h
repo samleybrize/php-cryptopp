@@ -3,6 +3,18 @@
 
 #include "src/php_cryptopp.h"
 
+bool isCryptoppSymmetricKeyValid(zval *object, CryptoPP::SimpleKeyingInterface *keying, int keySize TSRMLS_DC, bool throwIfFalse = true);
+bool isCryptoppSymmetricIvValid(zval *object, CryptoPP::SimpleKeyingInterface *keying, int ivSize TSRMLS_DC, bool throwIfFalse = true);
+
+bool setSymmetricCipherKeyIv(
+    zval *object,
+    CryptoPP::SimpleKeyingInterface *encryptor,
+    CryptoPP::SimpleKeyingInterface *decryptor,
+    zval *zKey,
+    zval *zIv
+    TSRMLS_DC
+);
+
 typedef void(*zend_object_free_storage)(void* TSRMLS_DC);
 
 template<class CONTAINER, zend_object_free_storage FREE_STORAGE, zend_object_handlers *OBJECT_HANDLERS>

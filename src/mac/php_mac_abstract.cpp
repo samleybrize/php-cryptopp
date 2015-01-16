@@ -68,27 +68,11 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 /* }}} */
 
 /* {{{ verify that a key size is valid for a MacAbstract instance */
-static bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac, int keySize TSRMLS_DC) {
-    zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
-
-    if (!mac->IsValidKeyLength(keySize)) {
-        if (0 == keySize) {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a key is required", ce->name, keySize);
-        } else {
-            zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid key length", ce->name, keySize);
-        }
-
-        return false;
-    }
-
-    return true;
-}
-
 bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC) {
     zval *key   = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
-    return isCryptoppMacKeyValid(object, mac, keySize TSRMLS_CC);
+    return isCryptoppSymmetricKeyValid(object, mac, keySize TSRMLS_CC);
 }
 /* }}} */
 
@@ -184,7 +168,7 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
 
     CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac);
 
-    if (!isCryptoppMacKeyValid(getThis(), mac, keySize TSRMLS_CC)) {
+    if (!isCryptoppSymmetricKeyValid(getThis(), mac, keySize TSRMLS_CC)) {
         RETURN_FALSE;
     }
 
