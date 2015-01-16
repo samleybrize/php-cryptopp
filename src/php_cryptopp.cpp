@@ -23,6 +23,17 @@ static PHP_MINIT_FUNCTION(cryptopp) {
 /* }}} */
 
 /* {{{ PHP_MINFO_FUNCTION */
+static string getAlgoList(vector<string> algoList) {
+    string strAlgoList;
+
+    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
+        strAlgoList.append(it->c_str());
+        strAlgoList.append(" ");
+    }
+
+    return strAlgoList;
+}
+
 static PHP_MINFO_FUNCTION(cryptopp) {
     /* libcrypto++ version */
     char cryptopp_version[3];
@@ -30,61 +41,12 @@ static PHP_MINFO_FUNCTION(cryptopp) {
     sprintf(cryptopp_version, "%d", CRYPTOPP_VERSION);
     sprintf(cryptopp_version_dotted, "%c.%c.%c", cryptopp_version[0], cryptopp_version[1], cryptopp_version[2]);
 
-    vector<string> algoList;
-
-    /* supported hash algos */
-    algoList = hashAlgoList.getAlgoList();
-    string supportedHashList;
-
-    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
-        supportedHashList.append(it->c_str());
-        supportedHashList.append(" ");
-    }
-
-    /* supported MAC algos */
-    algoList = macAlgoList.getAlgoList();
-    string supportedMacList;
-
-    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
-        supportedMacList.append(it->c_str());
-        supportedMacList.append(" ");
-    }
-
-    /* supported stream ciphers */
-    algoList = streamCipherAlgoList.getAlgoList();
-    string supportedStreamCipherList;
-
-    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
-        supportedStreamCipherList.append(it->c_str());
-        supportedStreamCipherList.append(" ");
-    }
-
-    /* supported block ciphers */
-    algoList = blockCipherAlgoList.getAlgoList();
-    string supportedBlockCipherList;
-
-    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
-        supportedBlockCipherList.append(it->c_str());
-        supportedBlockCipherList.append(" ");
-    }
-
-    /* supported authenticated ciphers */
-    algoList = authenticatedSymmetricCipherAlgoList.getAlgoList();
-    string supportedAuthenticatedCipherList;
-
-    for (vector<string>::iterator it = algoList.begin(); it != algoList.end(); ++it) {
-        supportedAuthenticatedCipherList.append(it->c_str());
-        supportedAuthenticatedCipherList.append(" ");
-    }
-
-    /* supported cipher modes */
-    vector<string> modeAlgoList = symmetricModeList.getAlgoList();
-    string supportedModeList;
-
-    for (vector<string>::iterator it = modeAlgoList.begin(); it != modeAlgoList.end(); ++it) {
-        supportedModeList.append(it->c_str());
-        supportedModeList.append(" ");
-    }
+    string supportedHashList                = getAlgoList(hashAlgoList.getAlgoList());
+    string supportedMacList                 = getAlgoList(macAlgoList.getAlgoList());
+    string supportedStreamCipherList        = getAlgoList(streamCipherAlgoList.getAlgoList());
+    string supportedBlockCipherList         = getAlgoList(blockCipherAlgoList.getAlgoList());
+    string supportedAuthenticatedCipherList = getAlgoList(authenticatedSymmetricCipherAlgoList.getAlgoList());
+    string supportedModeList                = getAlgoList(symmetricModeList.getAlgoList());
 
     php_info_print_table_start();
     php_info_print_table_header(2, "Crypto++ support", "enabled");
