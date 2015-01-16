@@ -37,12 +37,7 @@ void init_class_Mac(TSRMLS_D) {
 /* {{{ proto array Mac::getAlgos(void)
    Get the list of supported mac algorithms */
 PHP_METHOD(Cryptopp_Mac, getAlgos) {
-    array_init(return_value);
-    vector<string> _algos = macAlgoList.getAlgoList();
-
-    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    macAlgoList.getAlgoList(return_value);
 }
 /* }}} */
 

@@ -37,12 +37,7 @@ void init_class_StreamCipher(TSRMLS_D) {
 /* {{{ proto array StreamCipher::getAlgos(void)
    Get the list of supported stream ciphers */
 PHP_METHOD(Cryptopp_StreamCipher, getAlgos) {
-    array_init(return_value);
-    vector<string> _algos = streamCipherAlgoList.getAlgoList();
-
-    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    streamCipherAlgoList.getAlgoList(return_value);
 }
 /* }}} */
 

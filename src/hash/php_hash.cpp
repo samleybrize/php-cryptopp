@@ -37,12 +37,7 @@ void init_class_Hash(TSRMLS_D) {
 /* {{{ proto array Hash::getAlgos(void)
    Get the list of supported hash algorithms */
 PHP_METHOD(Cryptopp_Hash, getAlgos) {
-    array_init(return_value);
-    vector<string> _algos = hashAlgoList.getAlgoList();
-
-    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    hashAlgoList.getAlgoList(return_value);
 }
 /* }}} */
 

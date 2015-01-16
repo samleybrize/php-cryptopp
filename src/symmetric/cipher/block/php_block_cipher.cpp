@@ -37,12 +37,7 @@ void init_class_BlockCipher(TSRMLS_D) {
 /* {{{ proto array BlockCipher::getAlgos(void)
    Get the list of supported block ciphers */
 PHP_METHOD(Cryptopp_BlockCipher, getAlgos) {
-    array_init(return_value);
-    vector<string> _algos = blockCipherAlgoList.getAlgoList();
-
-    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    blockCipherAlgoList.getAlgoList(return_value);
 }
 /* }}} */
 

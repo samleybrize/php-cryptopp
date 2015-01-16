@@ -1,6 +1,7 @@
 #ifndef PHP_ALGO_LIST_H
 #define PHP_ALGO_LIST_H
 
+#include "src/php_cryptopp.h"
 #include <string>
 #include <vector>
 
@@ -11,6 +12,7 @@ class AlgoList
 public:
     void addAlgo(const std::string algoName, const std::string hashClassname);
     vector<string> getAlgoList();
+    void getAlgoList(zval *returnValue);
     string getAlgoClass(const string &algoName);
 
 protected:

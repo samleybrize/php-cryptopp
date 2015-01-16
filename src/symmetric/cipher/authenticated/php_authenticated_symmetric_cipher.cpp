@@ -38,12 +38,7 @@ void init_class_AuthenticatedSymmetricCipher(TSRMLS_D) {
 /* {{{ proto array AuthenticatedSymmetricCipher::getAlgos(void)
    Get the list of supported authenticated symmetric ciphers */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipher, getAlgos) {
-    array_init(return_value);
-    vector<string> _algos = authenticatedSymmetricCipherAlgoList.getAlgoList();
-
-    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    authenticatedSymmetricCipherAlgoList.getAlgoList(return_value);
 }
 /* }}} */
 

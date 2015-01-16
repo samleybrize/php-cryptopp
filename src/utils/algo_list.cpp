@@ -1,3 +1,4 @@
+#include "src/php_cryptopp.h"
 #include "algo_list.h"
 #include <algorithm>
 #include <string>
@@ -16,6 +17,16 @@ vector<string> AlgoList::getAlgoList()
     vector<string> _algos(algoList);
     sort(_algos.begin(), _algos.end());
     return _algos;
+}
+
+void AlgoList::getAlgoList(zval *returnValue)
+{
+    array_init(returnValue);
+    vector<string> _algos = getAlgoList();
+
+    for (vector<string>::iterator it = _algos.begin(); it != _algos.end(); ++it) {
+        add_next_index_string(returnValue, it->c_str(), it->length());
+    }
 }
 
 string AlgoList::getAlgoClass(const string &algoName)

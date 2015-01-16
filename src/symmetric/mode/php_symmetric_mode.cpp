@@ -37,12 +37,7 @@ void init_class_SymmetricMode(TSRMLS_D) {
 /* {{{ proto array SymmetricMode::getModes(void)
    Get the list of supported symmetric modes */
 PHP_METHOD(Cryptopp_SymmetricMode, getModes) {
-    array_init(return_value);
-    vector<string> _modes = symmetricModeList.getAlgoList();
-
-    for (vector<string>::iterator it = _modes.begin(); it != _modes.end(); ++it) {
-        add_next_index_string(return_value, it->c_str(), it->length());
-    }
+    symmetricModeList.getAlgoList(return_value);
 }
 /* }}} */
 
