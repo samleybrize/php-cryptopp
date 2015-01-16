@@ -552,7 +552,8 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString) {
         return;
     }
 
-    SymmetricTransformationFilter *stfEncryptor = CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(stfEncryptor)
+    SymmetricTransformationFilter *stfEncryptor;
+    CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(stfEncryptor)
 
     // if the mode object is a native object, ensure that the key/iv is valid
     if (!isNativeSymmetricTransformationObjectValid(getThis() TSRMLS_CC)) {
@@ -593,7 +594,8 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, decryptString) {
         return;
     }
 
-    SymmetricTransformationFilter *stfDecryptor = CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
+    SymmetricTransformationFilter *stfDecryptor;
+    CRYPTOPP_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(stfDecryptor)
 
     // if the mode object is a native object, ensure that the key/iv is valid
     if (!isNativeSymmetricTransformationObjectValid(getThis() TSRMLS_CC)) {

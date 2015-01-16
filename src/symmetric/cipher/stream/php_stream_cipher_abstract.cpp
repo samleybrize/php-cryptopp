@@ -159,7 +159,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getName) {
 /* {{{ proto int StreamCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
     RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
@@ -173,7 +174,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
@@ -192,7 +194,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
     encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
@@ -213,8 +216,10 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setKey) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     if (!isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -236,8 +241,10 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, setIv) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     if (!isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
         // invalid iv
@@ -276,7 +283,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     // check key and iv
     if (!isCryptoppStreamCipherKeyValid(getThis(), encryptor TSRMLS_CC) || !isCryptoppStreamCipherIvValid(getThis(), encryptor TSRMLS_CC)) {
@@ -310,7 +318,8 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
         return;
     }
 
-    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *decryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     // check key and iv
     if (!isCryptoppStreamCipherKeyValid(getThis(), decryptor TSRMLS_CC) || !isCryptoppStreamCipherIvValid(getThis(), decryptor TSRMLS_CC)) {
@@ -337,8 +346,10 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
 /* {{{ proto void StreamCipherAbstract::restart(void)
    Reset the initialization vector to its initial state (the one passed in setIv()) */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, restart) {
-    CryptoPP::SymmetricCipher *encryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    CryptoPP::SymmetricCipher *decryptor = CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::SymmetricCipher *encryptor;
+    CryptoPP::SymmetricCipher *decryptor;
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */

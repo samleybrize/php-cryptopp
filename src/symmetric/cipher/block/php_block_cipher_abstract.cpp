@@ -138,7 +138,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, getName) {
 /* {{{ proto int BlockCipherAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_BlockCipherAbstract, getBlockSize) {
-    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
     RETURN_LONG(encryptor->BlockSize())
 }
 /* }}} */
@@ -152,7 +153,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     if (encryptor->IsValidKeyLength(keySize)) {
         RETURN_TRUE
@@ -172,8 +174,10 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, setKey) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *encryptor;
+    CryptoPP::BlockCipher *decryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     if (!isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -205,7 +209,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encryptBlock) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
@@ -237,7 +242,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decryptBlock) {
         return;
     }
 
-    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *decryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {
@@ -269,7 +275,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
         return;
     }
 
-    CryptoPP::BlockCipher *encryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CryptoPP::BlockCipher *encryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), encryptor TSRMLS_CC)) {
@@ -309,7 +316,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
         return;
     }
 
-    CryptoPP::BlockCipher *decryptor = CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CryptoPP::BlockCipher *decryptor;
+    CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor)
 
     // check key
     if (!isCryptoppBlockCipherKeyValid(getThis(), decryptor TSRMLS_CC)) {

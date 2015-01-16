@@ -98,7 +98,8 @@ PHP_METHOD(Cryptopp_HashAbstract, __wakeup) {
 /* {{{ proto int HashAbstract::getDigestSize(void)
    Returns the digest size */
 PHP_METHOD(Cryptopp_HashAbstract, getDigestSize) {
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     unsigned int digestSize = hash->DigestSize();
     RETURN_LONG(digestSize);
@@ -108,7 +109,8 @@ PHP_METHOD(Cryptopp_HashAbstract, getDigestSize) {
 /* {{{ proto int HashAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_HashAbstract, getBlockSize) {
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     unsigned int blockSize = hash->BlockSize();
     RETURN_LONG(blockSize);
@@ -118,8 +120,9 @@ PHP_METHOD(Cryptopp_HashAbstract, getBlockSize) {
 /* {{{ proto string HashAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_HashAbstract, getName) {
-    CryptoPP::HashTransformation *hash  = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
-    zval *name                          = zend_read_property(cryptopp_ce_HashAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    zval *name = zend_read_property(cryptopp_ce_HashAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
@@ -134,7 +137,8 @@ PHP_METHOD(Cryptopp_HashAbstract, calculateDigest) {
         return;
     }
 
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     byte digest[hash->DigestSize()];
     hash->CalculateDigest(digest, reinterpret_cast<byte*>(msg), msgSize);
@@ -153,7 +157,8 @@ PHP_METHOD(Cryptopp_HashAbstract, update) {
         return;
     }
 
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     hash->Update(reinterpret_cast<byte*>(msg), msgSize);
 }
@@ -162,7 +167,8 @@ PHP_METHOD(Cryptopp_HashAbstract, update) {
 /* {{{ proto string HashAbstract::finalize(void)
    Finalize an incremental hash and return resulting digest */
 PHP_METHOD(Cryptopp_HashAbstract, finalize) {
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
 
     byte digest[hash->DigestSize()];
     hash->Final(digest);
@@ -174,7 +180,8 @@ PHP_METHOD(Cryptopp_HashAbstract, finalize) {
 /* {{{ proto void HashAbstract::restart(void)
    Discard the current incremental hash */
 PHP_METHOD(Cryptopp_HashAbstract, restart) {
-    CryptoPP::HashTransformation *hash = CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
+    CryptoPP::HashTransformation *hash;
+    CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(hash)
     hash->Restart();
 }
 /* }}} */

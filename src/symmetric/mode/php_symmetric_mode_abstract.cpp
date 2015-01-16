@@ -267,7 +267,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, __wakeup) {
    Return algorithm name */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName) {
     CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
 
     zval *name;
     name = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
@@ -279,7 +279,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getName) {
    Returns the block size */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getBlockSize) {
     CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     RETURN_LONG(encryptor->MandatoryBlockSize())
 }
 /* }}} */
@@ -294,7 +294,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength) {
     }
 
     CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
@@ -314,7 +314,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidIvLength) {
     }
 
     CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
     encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
@@ -337,8 +337,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setKey) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     if (!isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -369,8 +369,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, setIv) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     if (!isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC)) {
         // invalid iv
@@ -395,8 +395,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, getKey) {
 /* {{{ proto string SymmetricModeAbstract::getIv(void)
    Returns the initialization vector */
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, getIv) {
-    zval *iv;
-    iv = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    zval *iv = zend_read_property(cryptopp_ce_SymmetricModeAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
     RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
@@ -412,7 +411,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, encrypt) {
     }
 
     CryptoPP::SymmetricCipher *encryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
 
     // check key and iv
     if (!isCryptoppSymmetricModeKeyValid(getThis(), encryptor TSRMLS_CC) || !isCryptoppSymmetricModeIvValid(getThis(), encryptor TSRMLS_CC)) {
@@ -425,8 +424,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, encrypt) {
     int blockSize = static_cast<int>(encryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }
@@ -455,7 +453,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt) {
     }
 
     CryptoPP::SymmetricCipher *decryptor;
-    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
 
     // check key and iv
     if (!isCryptoppSymmetricModeKeyValid(getThis(), decryptor TSRMLS_CC) || !isCryptoppSymmetricModeIvValid(getThis(), decryptor TSRMLS_CC)) {
@@ -468,8 +466,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt) {
     int blockSize = static_cast<int>(decryptor->MandatoryBlockSize());
 
     if (0 != dataSize % blockSize) {
-        zend_class_entry *ce;
-        ce  = zend_get_class_entry(getThis() TSRMLS_CC);
+        zend_class_entry *ce = zend_get_class_entry(getThis() TSRMLS_CC);
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: data size (%d) is not a multiple of block size (%d)", ce->name, dataSize, blockSize);
         RETURN_FALSE
     }
@@ -492,8 +489,8 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, decrypt) {
 PHP_METHOD(Cryptopp_SymmetricModeAbstract, restart) {
     CryptoPP::SymmetricCipher *encryptor;
     CryptoPP::SymmetricCipher *decryptor;
-    encryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    decryptor = CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */

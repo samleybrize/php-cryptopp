@@ -111,7 +111,8 @@ PHP_METHOD(Cryptopp_MacAbstract, __wakeup) {
 /* {{{ proto int MacAbstract::getDigestSize(void)
    Returns the digest size */
 PHP_METHOD(Cryptopp_MacAbstract, getDigestSize) {
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     unsigned int digestSize = mac->DigestSize();
     RETURN_LONG(digestSize);
@@ -121,7 +122,8 @@ PHP_METHOD(Cryptopp_MacAbstract, getDigestSize) {
 /* {{{ proto int MacAbstract::getBlockSize(void)
    Returns the block size */
 PHP_METHOD(Cryptopp_MacAbstract, getBlockSize) {
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     unsigned int blockSize = mac->BlockSize();
     RETURN_LONG(blockSize);
@@ -137,7 +139,8 @@ PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (mac->IsValidKeyLength(keySize)) {
         RETURN_TRUE
@@ -150,8 +153,9 @@ PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
 /* {{{ proto string MacAbstract::getName(void)
    Return algorithm name */
 PHP_METHOD(Cryptopp_MacAbstract, getName) {
-    CryptoPP::MessageAuthenticationCode *mac    = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
-    zval *name                                  = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    zval *name = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "name", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(name, 1, 0);
 }
 /* }}} */
@@ -166,7 +170,8 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac);
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppSymmetricKeyValid(getThis(), mac, keySize TSRMLS_CC)) {
         RETURN_FALSE;
@@ -197,7 +202,8 @@ PHP_METHOD(Cryptopp_MacAbstract, calculateDigest) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -225,7 +231,8 @@ PHP_METHOD(Cryptopp_MacAbstract, update) {
         return;
     }
 
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -238,7 +245,8 @@ PHP_METHOD(Cryptopp_MacAbstract, update) {
 /* {{{ proto string MacAbstract::finalize(void)
    Finalize an incremental MAC and return resulting digest */
 PHP_METHOD(Cryptopp_MacAbstract, finalize) {
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
 
     if (!isCryptoppMacKeyValid(getThis(), mac TSRMLS_CC)) {
         RETURN_FALSE;
@@ -259,7 +267,8 @@ PHP_METHOD(Cryptopp_MacAbstract, finalize) {
 /* {{{ proto void MacAbstract::restart(void)
    Discard the current incremental MAC */
 PHP_METHOD(Cryptopp_MacAbstract, restart) {
-    CryptoPP::MessageAuthenticationCode *mac = CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    CryptoPP::MessageAuthenticationCode *mac;
+    CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
     mac->Restart();
 }
 /* }}} */

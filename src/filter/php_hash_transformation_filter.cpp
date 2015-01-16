@@ -249,7 +249,8 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, calculateDigestString) {
         return;
     }
 
-    HashTransformationFilter *htf = CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(htf)
+    HashTransformationFilter *htf;
+    CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(htf)
 
     // if the hash object is a native mac object, ensure that the key is valid
     if (!isNativeHashTransformationObjectValid(getThis() TSRMLS_CC)) {
