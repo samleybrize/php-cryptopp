@@ -1,6 +1,14 @@
-#include "php_authenticated_symmetric_cipher.h"
+/*
+ * This file is part of php-cryptopp.
+ *
+ * (c) Stephen Berquet <stephen.berquet@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 #include "src/php_cryptopp.h"
+#include "php_authenticated_symmetric_cipher.h"
 #include <algorithm>
 #include <string>
 #include <vector>
