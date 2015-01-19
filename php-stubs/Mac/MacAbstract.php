@@ -58,7 +58,7 @@ abstract class MacAbstract implements MacInterface
      * Disables object serialization
      */
     final public function __sleep() {}
-    
+
     /**
      * Disables object serialization
      */
