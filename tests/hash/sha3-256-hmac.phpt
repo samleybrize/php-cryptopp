@@ -34,7 +34,7 @@ $hmac->setKey(hex2bin(str_repeat("aa", 120)));
 var_dump(bin2hex($hmac->calculateDigest("Test Using Larger Than Block-Size Key and Larger Than One Block-Size Data 12345678901234567890123456789012345")));
 
 ?>
---EXPECTF--
+--EXPECT--
 string(64) "a41507de38ad9575f27ed2265b5e146bf51859c6599f0f50cfe1c39e82387b28"
 string(64) "e6ba99b63c127a426957a950a96fdd53adc99df3e7e599cd1fbe6a29b0d4de2a"
 string(64) "edf5122e336a6e478091bb69e142148a7be1d2457bd287e0b288dd3f3bebffc7"

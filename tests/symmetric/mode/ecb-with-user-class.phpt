@@ -102,54 +102,6 @@ var_dump(bin2hex($o->decrypt(hex2bin("402ee2bec16b"))));
 $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("5ca3461cc830"))));
 
-// invalid key
-echo "- invalid key:\n";
-try {
-    $o->setKey("123456789012345678901234567890123");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-try {
-    $o->setKey("");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-// invalid iv
-echo "- invalid iv:\n";
-try {
-    $o->setIv("123");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-// encrypt without key
-echo "- no key:\n";
-$o = new Cryptopp\SymmetricModeEcb(new BlockCipherUser());
-
-try {
-    $o->encrypt("123456");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-// block size = 0
-echo "- block size 0:\n";
-class BlockCipherUser2 extends BlockCipherUser
-{
-    public function getBlockSize()
-    {
-        return 0;
-    }
-}
-
-try {
-    $o = new Cryptopp\SymmetricModeEcb(new BlockCipherUser2());
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
 ?>
 --EXPECT--
 string(9) "ecb(user)"
@@ -177,12 +129,3 @@ string(12) "5ca3461cc830"
 - restart decryption:
 string(12) "6bc1bee22e40"
 string(12) "30c81c46a35c"
-- invalid key:
-Cryptopp\SymmetricModeEcb : 33 is not a valid key length
-Cryptopp\SymmetricModeEcb : a key is required
-- invalid iv:
-Cryptopp\SymmetricModeEcb : no initialization vector needed
-- no key:
-Cryptopp\SymmetricModeEcb : a key is required
-- block size 0:
-BlockCipherUser2 : invalid block size returned

@@ -116,46 +116,6 @@ $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("5d45eda64796"))));
 var_dump(bin2hex($o->finalizeDecryption()));
 
-// invalid key
-echo "- invalid key:\n";
-try {
-    $o->setKey("123456789012345678901234567890123");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-try {
-    $o->setKey("");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-// encrypt without key
-echo "- no key:\n";
-$o = new Cryptopp\AuthenticatedSymmetricCipherGcm(new BlockCipherUser());
-
-try {
-    $o->encrypt("123456");
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
-// block size = 0
-echo "- invalid block size:\n";
-class BlockCipherUser2 extends BlockCipherUser
-{
-    public function getBlockSize()
-    {
-        return 8;
-    }
-}
-
-try {
-    $o = new Cryptopp\AuthenticatedSymmetricCipherGcm(new BlockCipherUser2());
-} catch (Cryptopp\CryptoppException $e) {
-    echo $e->getMessage() . "\n";
-}
-
 ?>
 --EXPECT--
 string(9) "gcm(user)"
@@ -189,10 +149,3 @@ string(32) "ab7c3052893459107df39eb3291139b2"
 string(12) "6bc1bee22e40"
 string(12) "63e9bb24f2ce"
 string(32) "0d0ea2ff5b784b98c48849998f2ef87e"
-- invalid key:
-Cryptopp\AuthenticatedSymmetricCipherGcm : 33 is not a valid key length
-Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
-- no key:
-Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
-- invalid block size:
-Cryptopp\AuthenticatedSymmetricCipherGcm require a block cipher with a block size of 128 bits (16 bytes)
