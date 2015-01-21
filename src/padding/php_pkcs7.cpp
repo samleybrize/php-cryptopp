@@ -63,12 +63,13 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, pad) {
 
     // pad
     const byte pad = byte(alignedSize - dataLength);
-    byte padded[alignedSize];
+    byte *padded = new byte[alignedSize];
     memcpy(padded, plain, dataLength);
     memset(padded + dataLength, pad, alignedSize - dataLength);
 
     char *returnData = reinterpret_cast<char*>(padded);
-    RETURN_STRINGL(returnData, alignedSize, 1)
+    RETVAL_STRINGL(returnData, alignedSize, 1);
+    delete[] padded;
 }
 /* }}} */
 
@@ -107,11 +108,12 @@ PHP_METHOD(Cryptopp_PaddingPkcs7, unpad) {
 
     // unpad
     long length = dataLength - pad;
-    byte unpadded[length];
+    byte *unpadded = new byte[length];
     memcpy(unpadded, padded, length);
 
     char *plain = reinterpret_cast<char*>(padded);
-    RETURN_STRINGL(plain, length, 1)
+    RETVAL_STRINGL(plain, length, 1);
+    delete[] unpadded;
 }
 /* }}} */
 

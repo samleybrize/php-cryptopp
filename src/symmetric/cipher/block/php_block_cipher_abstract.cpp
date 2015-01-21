@@ -302,8 +302,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
     }
 
     // encrypt
-    byte *input = reinterpret_cast<byte*>(data);
-    byte output[dataSize];
+    byte *input     = reinterpret_cast<byte*>(data);
+    byte *output    = new byte[dataSize];
     byte block[blockSize];
     int blocks = dataSize / blockSize;
 
@@ -311,7 +311,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, encrypt) {
         encryptor->ProcessAndXorBlock(&input[i * blockSize], NULL, &output[i * blockSize]);
     }
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 }
 /* }}} */
 
@@ -343,8 +344,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
     }
 
     // encrypt
-    byte *input = reinterpret_cast<byte*>(data);
-    byte output[dataSize];
+    byte *input     = reinterpret_cast<byte*>(data);
+    byte *output    = new byte[dataSize];
     byte block[blockSize];
     int blocks = dataSize / blockSize;
 
@@ -352,7 +353,8 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, decrypt) {
         decryptor->ProcessAndXorBlock(&input[i * blockSize], NULL, &output[i * blockSize]);
     }
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 }
 /* }}} */
 

@@ -310,10 +310,11 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, encrypt) {
     }
 
     // encrypt
-    byte output[dataSize];
+    byte *output = new byte[dataSize];
     encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 }
 /* }}} */
 
@@ -345,10 +346,11 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
     }
 
     // encrypt
-    byte output[dataSize];
+    byte *output = new byte[dataSize];
     decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1)
+    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 }
 /* }}} */
 

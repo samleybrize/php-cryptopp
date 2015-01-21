@@ -98,10 +98,11 @@ PHP_METHOD(Cryptopp_RandomByteGenerator, generate) {
         RETURN_FALSE;
     }
 
-    byte block[size];
+    byte *block = new byte[size];
     rbg->GenerateBlock(block, size);
 
     RETVAL_STRINGL(reinterpret_cast<char*>(block), size, 1);
+    delete[] block;
 }
 /* }}} */
 

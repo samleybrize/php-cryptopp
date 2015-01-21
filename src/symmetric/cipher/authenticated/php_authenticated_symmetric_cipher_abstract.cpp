@@ -430,10 +430,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt) {
     }
 
     // encrypt
-    byte output[dataSize];
+    byte *output = new byte[dataSize];
     encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
     RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 
     // indicate that encryption has started
     zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "encryptionStarted", 17, 1 TSRMLS_CC);
@@ -470,10 +471,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt) {
     }
 
     // encrypt
-    byte output[dataSize];
+    byte *output = new byte[dataSize];
     decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
     RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    delete[] output;
 
     // indicate that decryption has started
     zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "decryptionStarted", 17, 1 TSRMLS_CC);

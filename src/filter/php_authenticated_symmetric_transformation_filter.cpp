@@ -462,9 +462,12 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, encryptString) {
 
         if (retrievable > dataSize) {
             // return ciphertext
-            byte ciphertext[retrievable];
+            byte *ciphertext = new byte[retrievable];
             stfEncryptor->Get(ciphertext, retrievable);
-            RETURN_STRINGL(reinterpret_cast<char*>(ciphertext), retrievable, 1)
+            RETVAL_STRINGL(reinterpret_cast<char*>(ciphertext), retrievable, 1);
+            delete[] ciphertext;
+
+            return;
         } else {
             // something goes wrong
             RETURN_FALSE
@@ -520,9 +523,12 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
 
         if (retrievable > 0 && retrievable <= ciphertextSize) {
             // return plain text
-            byte plaintext[retrievable];
+            byte *plaintext = new byte[retrievable];
             stfDecryptor->Get(plaintext, retrievable);
-            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1)
+            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1);
+            delete[] plaintext;
+
+            return;
         } else {
             // something goes wrong
             RETURN_FALSE
