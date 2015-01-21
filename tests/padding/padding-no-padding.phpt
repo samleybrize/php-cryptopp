@@ -12,6 +12,10 @@ var_dump($padding->pad("qwerty", 8));
 var_dump($padding->unpad("wxcvbn", 6));
 var_dump($padding->unpad("qscvbn", 8));
 
+$data = str_repeat("a", 10485760);
+var_dump(strlen($padding->pad($data, 16)));
+var_dump(strlen($padding->unpad($data, 16)));
+
 var_dump($padding->canPad());
 var_dump($padding->canUnpad());
 
@@ -33,6 +37,8 @@ string(6) "azerty"
 string(6) "qwerty"
 string(6) "wxcvbn"
 string(6) "qscvbn"
+int(10485760)
+int(10485760)
 bool(false)
 bool(false)
 - bad arguments:

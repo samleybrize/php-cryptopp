@@ -49,6 +49,13 @@ echo "- Cryptopp\Hash:\n";
 var_dump(in_array("sha3_224", Cryptopp\Hash::getAlgos()));
 var_dump(Cryptopp\Hash::getClassname("sha3_224"));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigest($data)));
+$o->update($data);
+var_dump(strlen($o->finalize()));
+
 ?>
 --EXPECT--
 bool(true)
@@ -67,3 +74,6 @@ string(56) "bcd289219436dabe3b03048bd00913dfe26e86a80a55137f50fc569b"
 - Cryptopp\Hash:
 bool(true)
 string(21) "Cryptopp\HashSha3_224"
+- large data:
+int(28)
+int(28)

@@ -55,6 +55,13 @@ echo "- Cryptopp\Mac:\n";
 var_dump(in_array("two_track_mac", Cryptopp\Mac::getAlgos()));
 var_dump(Cryptopp\Mac::getClassname("two_track_mac"));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigest($data)));
+$o->update($data);
+var_dump(strlen($o->finalize()));
+
 ?>
 --EXPECT--
 bool(true)
@@ -79,3 +86,6 @@ string(40) "b3bcefdbee9284259388c565fc4a16a6d7304709"
 - Cryptopp\Mac:
 bool(true)
 string(23) "Cryptopp\MacTwoTrackMac"
+- large data:
+int(20)
+int(20)

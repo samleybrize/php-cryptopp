@@ -43,6 +43,13 @@ echo "- Cryptopp\Hash:\n";
 var_dump(in_array("md5", Cryptopp\Hash::getAlgos()));
 var_dump(Cryptopp\Hash::getClassname("md5"));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigest($data)));
+$o->update($data);
+var_dump(strlen($o->finalize()));
+
 ?>
 --EXPECT--
 bool(true)
@@ -61,3 +68,6 @@ string(32) "ba266745410d3c888ad3ca53f55e3b4f"
 - Cryptopp\Hash:
 bool(true)
 string(16) "Cryptopp\HashMd5"
+- large data:
+int(16)
+int(16)

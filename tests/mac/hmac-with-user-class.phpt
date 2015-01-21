@@ -95,6 +95,13 @@ $o->update("uio");
 $o->update("p");
 var_dump(bin2hex($o->finalize()));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigest($data)));
+$o->update($data);
+var_dump(strlen($o->finalize()));
+
 // hash algorithm with block size = 0
 echo "- block size 0:\n";
 class HashUser2 extends HashUser
@@ -165,6 +172,9 @@ string(24) "363671776572747975696f70"
 string(24) "363671776572747975696f70"
 - restart:
 string(24) "363636363636363675696f70"
+- large data:
+int(12)
+int(12)
 - block size 0:
 Cryptopp\MacHmac can only be used with a block-based hash function (block size > 0)
 - block size < digest size:

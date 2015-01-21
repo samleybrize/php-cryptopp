@@ -68,6 +68,13 @@ echo "- Cryptopp\Mac:\n";
 var_dump(in_array("hmac", Cryptopp\Mac::getAlgos()));
 var_dump(Cryptopp\Mac::getClassname("hmac"));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigest($data)));
+$o->update($data);
+var_dump(strlen($o->finalize()));
+
 ?>
 --EXPECT--
 bool(true)
@@ -99,3 +106,6 @@ string(32) "9294727a3638bb1c13f48ef8158bfc9d"
 - Cryptopp\Mac:
 bool(true)
 string(16) "Cryptopp\MacHmac"
+- large data:
+int(16)
+int(16)

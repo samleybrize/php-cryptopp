@@ -102,6 +102,12 @@ var_dump(bin2hex($o->decrypt(hex2bin("402ee2bec16b"))));
 $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("5ca3461cc830"))));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 1747626);
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 ?>
 --EXPECT--
 string(9) "ecb(user)"
@@ -129,3 +135,6 @@ string(12) "5ca3461cc830"
 - restart decryption:
 string(12) "6bc1bee22e40"
 string(12) "30c81c46a35c"
+- large data:
+int(1747626)
+int(1747626)

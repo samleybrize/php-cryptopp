@@ -10,6 +10,13 @@ $o = new Cryptopp\BlockCipherAes();
 var_dump($o->getName());
 var_dump($o->getBlockSize());
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+$o->setKey("1234567890123456");
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 // encrypt block > block size
 $o->setKey("1234567890123456");
 echo "- encrypt block != block size:\n";
@@ -115,6 +122,9 @@ try {
 bool(true)
 string(3) "aes"
 int(16)
+- large data:
+int(10485760)
+int(10485760)
 - encrypt block != block size:
 Cryptopp\BlockCipherAes: data size (9) is not equal to cipher block size (16)
 - decrypt block != block size:

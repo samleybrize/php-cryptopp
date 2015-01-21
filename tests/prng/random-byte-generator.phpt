@@ -9,10 +9,12 @@ $rbg    = new Cryptopp\RandomByteGenerator();
 $gen1   = $rbg->generate(5);
 $gen2   = $rbg->generate(5);
 $gen3   = $rbg->generate(8);
+$gen4   = $rbg->generate(10485760);
 
 var_dump(strlen($gen1));
 var_dump(strlen($gen2));
 var_dump(strlen($gen3));
+var_dump(strlen($gen4));
 var_dump($gen1 != $gen2);
 
 // test errors
@@ -62,6 +64,7 @@ bool(true)
 int(5)
 int(5)
 int(8)
+int(10485760)
 bool(true)
 - errors:
 Size must be a positive integer, 0 given

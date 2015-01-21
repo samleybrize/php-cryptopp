@@ -116,6 +116,12 @@ $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("5d45eda64796"))));
 var_dump(bin2hex($o->finalizeDecryption()));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 ?>
 --EXPECT--
 string(9) "gcm(user)"
@@ -149,3 +155,6 @@ string(32) "ab7c3052893459107df39eb3291139b2"
 string(12) "6bc1bee22e40"
 string(12) "63e9bb24f2ce"
 string(32) "0d0ea2ff5b784b98c48849998f2ef87e"
+- large data:
+int(10485760)
+int(10485760)

@@ -76,6 +76,12 @@ $o->restart();
 $o->addDecryptionAdditionalData(hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
 var_dump(bin2hex($o->finalizeDecryption()));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 ?>
 --EXPECT--
 bool(true)
@@ -108,3 +114,6 @@ string(40) "ccc6f4a1ccb0c3e03a0b3e103613bef65d5f61de"
 string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
 - decrypt aad only:
 string(40) "02a2913e1a34d07005ebf2ba59a1008ba1f1307f"
+- large data:
+int(10485760)
+int(10485760)

@@ -64,6 +64,12 @@ var_dump(bin2hex($o->decrypt(hex2bin("3ad77bb40d7a3660a89ecaf32466ef97f5d3d58503
 $o->restart();
 var_dump(bin2hex($o->decrypt(hex2bin("43b1cd7f598ece23881b00e3ed0306887b0c785e27e8ad3f8223207104725dd4"))));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 ?>
 --EXPECT--
 bool(true)
@@ -94,3 +100,6 @@ string(64) "43b1cd7f598ece23881b00e3ed0306887b0c785e27e8ad3f8223207104725dd4"
 - restart decryption:
 string(64) "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"
 string(64) "30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"
+- large data:
+int(10485760)
+int(10485760)

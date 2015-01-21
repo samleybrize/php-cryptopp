@@ -198,6 +198,12 @@ $o->restart();
 $o->addDecryptionAdditionalData("feedfacedead");
 var_dump($o->finalizeDecryption());
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encrypt($data)));
+var_dump(strlen($o->decrypt($data)));
+
 ?>
 --EXPECT--
 string(11) "userc/userm"
@@ -233,3 +239,6 @@ restarted restarted restarted restarted string(10) "18ce872628"
 restarted restarted string(10) "d3b1071126"
 - decrypt aad only:
 restarted restarted restarted restarted string(10) "d3b1071126"
+- large data:
+int(10485760)
+int(10485760)
