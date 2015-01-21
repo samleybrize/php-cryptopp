@@ -80,6 +80,13 @@ var_dump($o->decryptString(hex2bin("706f6975797472657a610505050505")));
 var_dump($o->decryptString(hex2bin("706f6975797472657a610505050505")));
 var_dump($o->decryptString(hex2bin("666473716e62766378770404040467")));
 
+// large data
+echo "- large data:\n";
+$data   = str_repeat("a", 10485760);
+$pad    = str_repeat(chr(5), 5);
+var_dump(strlen($o->encryptString($data)));
+var_dump(strlen($o->decryptString($data . $pad)));
+
 ?>
 --EXPECT--
 string(4) "user"
@@ -91,3 +98,6 @@ restarted string(30) "666473716e62766378770404040467"
 restarted string(10) "azertyuiop"
 restarted string(10) "azertyuiop"
 restarted string(11) "wxcvbnqsdfg"
+- large data:
+restarted int(10485765)
+restarted int(10485760)

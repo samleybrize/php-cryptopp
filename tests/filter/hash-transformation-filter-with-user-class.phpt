@@ -53,6 +53,11 @@ var_dump($o->calculateDigestString("azertyuiop"));
 var_dump($o->calculateDigestString("azertyuiop"));
 var_dump($o->calculateDigestString("wxcvbnqsdfg"));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigestString($data)));
+
 // digest size = 0
 echo "- digest size 0:\n";
 class HashTransformationUser2 extends HashTransformationUser
@@ -94,6 +99,8 @@ string(4) "user"
 string(8) "poiuytre"
 string(8) "poiuytre"
 string(8) "gfdsqnbv"
+- large data:
+int(8)
 - digest size 0:
 digest size 0 ok
 - bad returned digest size:

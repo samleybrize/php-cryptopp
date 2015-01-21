@@ -141,6 +141,12 @@ var_dump(bin2hex($o->encryptString(null, hex2bin("7a43ec1d9c0a5a78a0b16533a6213c
 echo "- decrypt aad only:\n";
 var_dump(bin2hex($o->decryptString(hex2bin("ab3c21a63365b1a0"), hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"))));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encryptString($data)));
+var_dump(strlen($o->decryptString($data)));
+
 // mac verification failed
 echo "- mac verification failed:\n";
 try {
@@ -168,5 +174,8 @@ string(120) "d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3
 string(16) "ab3c21a63365b1a0"
 - decrypt aad only:
 string(0) ""
+- large data:
+int(10485768)
+int(10485752)
 - mac verification failed:
 Cryptopp\AuthenticatedSymmetricTransformationFilter : MAC verification failed

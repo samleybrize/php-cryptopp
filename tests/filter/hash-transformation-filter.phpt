@@ -34,6 +34,11 @@ var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
 var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
 var_dump(bin2hex($o->calculateDigestString("wxcvbnqsdfg")));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->calculateDigestString($data)));
+
 ?>
 --EXPECT--
 string(4) "sha1"
@@ -50,3 +55,5 @@ string(40) "0593a3f434eacdbf5c56faf578b2139ef91e3bc0"
 string(40) "8254f31ab6a9b0fae9a47205b71396ecc94775e5"
 string(40) "8254f31ab6a9b0fae9a47205b71396ecc94775e5"
 string(40) "2e9c4a1885c06bffe3c6e745cf688950e021c7e0"
+- large data:
+int(20)

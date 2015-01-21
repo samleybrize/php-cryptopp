@@ -16,9 +16,10 @@ var_dump($padding->unpad(hex2bin("617a65727479060606060606"), 6));
 var_dump($padding->unpad(hex2bin("7177657274790202"), 8));
 var_dump($padding->unpad(hex2bin("77786376626e0202"), 8));
 
-$data = str_repeat("a", 10485760);
+$data   = str_repeat("a", 10485760);
+$pad    = str_repeat(chr(16), 16);
 var_dump(strlen($padding->pad($data, 16)));
-var_dump(strlen($padding->unpad($data, 16)));
+var_dump(strlen($padding->unpad($data . $pad, 16)));
 
 var_dump($padding->canPad());
 var_dump($padding->canUnpad());
@@ -34,7 +35,7 @@ string(0) ""
 string(6) "azerty"
 string(6) "qwerty"
 string(6) "wxcvbn"
-int(10485760)
+int(10485776)
 int(10485760)
 bool(true)
 bool(true)

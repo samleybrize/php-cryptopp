@@ -48,6 +48,12 @@ var_dump(bin2hex($o->encryptString("azertyuiop")));
 var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
 var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
 
+// large data
+echo "- large data:\n";
+$data = str_repeat("a", 10485760);
+var_dump(strlen($o->encryptString($data)));
+var_dump(strlen($o->decryptString($data)));
+
 ?>
 --EXPECT--
 string(9) "sosemanuk"
@@ -72,3 +78,6 @@ string(20) "76312c85afc0bbdf7821"
 string(20) "76312c85afc0bbdf7821"
 string(10) "azertyuiop"
 string(10) "azertyuiop"
+- large data:
+int(10485760)
+int(10485760)

@@ -66,6 +66,13 @@ var_dump(bin2hex($o->encryptString(null, hex2bin("7a43ec1d9c0a5a78a0b16533a6213c
 echo "- decrypt aad only:\n";
 var_dump(bin2hex($o->decryptString(hex2bin("209fcc8d3675ed938e9c7166709dd946"), hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"))));
 
+// large data
+echo "- large data:\n";
+$data       = str_repeat("a", 10485760);
+$ciphertext = $o->encryptString($data);
+var_dump(strlen($ciphertext));
+var_dump(strlen($o->decryptString($ciphertext)));
+
 ?>
 --EXPECT--
 string(8) "gcm(aes)"
@@ -93,3 +100,6 @@ string(120) "d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3
 string(32) "209fcc8d3675ed938e9c7166709dd946"
 - decrypt aad only:
 string(0) ""
+- large data:
+int(10485776)
+int(10485760)
