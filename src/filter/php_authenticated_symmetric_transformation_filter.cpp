@@ -525,7 +525,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricTransformationFilter, decryptString) {
             // return plain text
             byte *plaintext = new byte[retrievable];
             stfDecryptor->Get(plaintext, retrievable);
-            RETURN_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1);
+            RETVAL_STRINGL(reinterpret_cast<char*>(plaintext), retrievable, 1);
             delete[] plaintext;
 
             return;

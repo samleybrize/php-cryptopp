@@ -349,7 +349,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, decrypt) {
     byte *output = new byte[dataSize];
     decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
 
-    RETURN_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
+    RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
     delete[] output;
 }
 /* }}} */
