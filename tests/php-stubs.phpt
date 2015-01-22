@@ -114,6 +114,7 @@ $fileList = array(
     "Symmetric/Cipher/Authenticated/AuthenticatedSymmetricCipherAbstract.php",
     "Symmetric/Cipher/Authenticated/AuthenticatedSymmetricCipherGeneric.php",
     "Symmetric/Cipher/Authenticated/AuthenticatedSymmetricCipherGcm.php",
+    "Symmetric/Cipher/Authenticated/AuthenticatedSymmetricCipherCcm.php",
     "Symmetric/Cipher/Authenticated/AuthenticatedSymmetricCipher.php",
     "Symmetric/Mode/SymmetricModeInterface.php",
     "Symmetric/Mode/SymmetricModeAbstract.php",
