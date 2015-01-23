@@ -1,0 +1,32 @@
+language: php
+php:
+    - 5.6
+    - 5.5
+    - 5.4
+    - 5.3
+
+env: REPORT_EXIT_STATUS=1
+
+install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -qq build-essential python unzip
+    - mkdir libcryptopp
+    - cd libcryptopp
+    - wget http://www.cryptopp.com/cryptopp562.zip
+    - unzip cryptopp562.zip
+    - sed -i -e 's/^CXXFLAGS/#CXXFLAGS/' GNUmakefile
+    - export CXXFLAGS="${CXXFLAGS} -DNDEBUG -fPIC"
+    - make -f GNUmakefile
+    - make libcryptopp.so
+    - cd ..
+
+before_script:
+    - phpize && ./configure --with-libcryptopp-dir=`pwd`/libcryptopp && make && sudo make install
+
+script:
+    - MYPHP=`which php`
+    - USE_ZEND_ALLOC=0 ZEND_DONT_UNLOAD_MODULES=1 REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE=$MYPHP $MYPHP run-tests.php -q --show-diff -d extension=cryptopp.so
+
+notifications:
+    email:
+        - stephen.berquet@gmail.com
