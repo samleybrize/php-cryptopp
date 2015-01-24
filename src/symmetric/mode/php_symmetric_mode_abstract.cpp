@@ -304,6 +304,7 @@ PHP_METHOD(Cryptopp_SymmetricModeAbstract, isValidKeyLength) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
+    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE

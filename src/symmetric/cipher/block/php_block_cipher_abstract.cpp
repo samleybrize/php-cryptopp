@@ -164,6 +164,7 @@ PHP_METHOD(Cryptopp_BlockCipherAbstract, isValidKeyLength) {
 
     CryptoPP::BlockCipher *encryptor;
     CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (encryptor->IsValidKeyLength(keySize)) {
         RETURN_TRUE

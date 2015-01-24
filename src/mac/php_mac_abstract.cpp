@@ -150,6 +150,7 @@ PHP_METHOD(Cryptopp_MacAbstract, isValidKeyLength) {
 
     CryptoPP::MessageAuthenticationCode *mac;
     CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(mac)
+    mac->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (mac->IsValidKeyLength(keySize)) {
         RETURN_TRUE

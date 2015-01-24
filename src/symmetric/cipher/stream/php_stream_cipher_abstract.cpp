@@ -185,6 +185,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
