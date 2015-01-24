@@ -36,6 +36,7 @@ zend_object_value zend_custom_create_handler(zend_class_entry *type TSRMLS_DC) {
     zend_object_std_init(&obj->std, type TSRMLS_CC);
 
     #if PHP_VERSION_ID < 50399
+        zval *tmp;
         zend_hash_copy(obj->std.properties, &type->properties_info, (copy_ctor_func_t)zval_add_ref, (void *)&tmp, sizeof(zval *));
     #else
         object_properties_init(static_cast<zend_object*>(&(obj->std)), type);
