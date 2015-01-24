@@ -34,6 +34,7 @@ after_failure:
     - sudo apt-get install -qq gdb
     - MYPHP=$(phpenv which php)
     - for i in $(find . -name 'core*' -print); do gdb -c "$i" "$MYPHP" -ex "thread apply all bt" -ex "set pagination 0" -ex "backtrace full" -ex "info registers" -ex "x/16i \$pc" -batch; done;
+    - $MYPHP -i
 
 notifications:
     email:
