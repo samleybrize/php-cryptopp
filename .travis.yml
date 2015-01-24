@@ -23,6 +23,7 @@ install:
 
 before_script:
     - ulimit -c unlimited || true
+    - phpenv config-rm xdebug.ini
     - phpize && ./configure && make && sudo make install
 
 script:
