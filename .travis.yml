@@ -18,7 +18,7 @@ install:
     - export CXXFLAGS="${CXXFLAGS} -DNDEBUG -fPIC"
     - make -f GNUmakefile
     - make libcryptopp.so
-    - make install
+    - sudo make install
     - cd ..
 
 before_script:
