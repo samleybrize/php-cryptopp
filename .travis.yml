@@ -26,13 +26,13 @@ before_script:
     - phpize && ./configure && make && sudo make install
 
 script:
-    - MYPHP=`which php`
+    - MYPHP=$(phpenv which php)
     - ZEND_DONT_UNLOAD_MODULES=1 REPORT_EXIT_STATUS=1 TEST_PHP_EXECUTABLE=$MYPHP $MYPHP run-tests.php -q --show-diff -d extension=cryptopp.so
 
 after_failure:
     - sudo apt-get install -qq gdb
-    - MYPHP=`which php`
-    - for i in $(find . -name 'core*' -print); do gdb -c "$i" "$MYPHP" -ex "thread apply all bt" -ex "set pagination 0" -batch; done;
+    - MYPHP=$(phpenv which php)
+    - for i in $(find . -name 'core*' -print); do gdb -c "$i" "$MYPHP" -ex "thread apply all bt" -ex "set pagination 0" -ex "backtrace full" -ex "info registers" -ex "x/16i \$pc" -batch; done;
 
 notifications:
     email:
