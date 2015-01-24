@@ -31,7 +31,7 @@ SymmetricTransformationFilter::SymmetricTransformationFilter(CryptoPP::StreamTra
     , m_optimalBufferSize(0)
     , m_cipherMustBeDestructed(cipherMustBeDestructed)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 
     // check paddingObject
     if (NULL == paddingObject || !instanceof_function(Z_OBJCE_P(paddingObject), cryptopp_ce_PaddingInterface TSRMLS_CC)) {

@@ -16,7 +16,7 @@
 
 AuthenticatedSymmetricCipherProxy::Base::Base(zval *authenticatedCipherObject, const char* processDataFuncname, const char* updateFuncname, const char* finalizeFuncname TSRMLS_DC)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 
     // verify that authenticatedCipherObject is an instance of AuthenticatedSymmetricCipherInterface
     if (IS_OBJECT != Z_TYPE_P(authenticatedCipherObject) ||

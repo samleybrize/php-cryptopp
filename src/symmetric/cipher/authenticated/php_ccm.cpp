@@ -21,7 +21,7 @@ CCM::Base::Base(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed TSRML
     : m_cipher(cipher)
     , m_cipherMustBeDestructed(cipherMustBeDestructed)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 }
 
 CCM::Base::~Base()

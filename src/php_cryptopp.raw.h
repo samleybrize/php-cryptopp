@@ -26,12 +26,14 @@ extern "C" {
 #define M_TSRMLS_D  void ***m_tsrm_ls
 #define M_TSRMLS_C  m_tsrm_ls
 #define M_TSRMLS_CC , M_TSRMLS_C
+#define SET_M_TSRMLS_C() M_TSRMLS_C = TSRMLS_C;
 
 #else /* non ZTS */
 
-#define M_TSRMLS_D  void
+#define M_TSRMLS_D
 #define M_TSRMLS_C
 #define M_TSRMLS_CC
+#define SET_M_TSRMLS_C()
 
 #endif /* ZTS */
 

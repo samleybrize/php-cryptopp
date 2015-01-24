@@ -17,7 +17,7 @@
 
 BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname TSRMLS_DC)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 
     // verify that blockCipherObject is an instance of BlockCipherInterface
     if (IS_OBJECT != Z_TYPE_P(blockCipherObject) ||

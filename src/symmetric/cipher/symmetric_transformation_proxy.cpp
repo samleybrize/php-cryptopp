@@ -17,7 +17,7 @@
 
 SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, const char* processDataFuncname TSRMLS_DC)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 
     // verify that symmetricTransformationObject is an instance of SymmetricTransformationInterface
     if (IS_OBJECT != Z_TYPE_P(symmetricTransformationObject) ||

@@ -18,7 +18,7 @@
 
 MacProxy::MacProxy(zval *macObject TSRMLS_DC)
 {
-    M_TSRMLS_C = TSRMLS_C;
+    SET_M_TSRMLS_C()
 
     // verify that hashObject is an instance of HashInterface
     if (IS_OBJECT != Z_TYPE_P(macObject) ||
