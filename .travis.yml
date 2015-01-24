@@ -18,10 +18,11 @@ install:
     - export CXXFLAGS="${CXXFLAGS} -DNDEBUG -fPIC"
     - make -f GNUmakefile
     - make libcryptopp.so
+    - make install
     - cd ..
 
 before_script:
-    - phpize && ./configure --with-libcryptopp-dir=`pwd`/libcryptopp && make && sudo make install
+    - phpize && ./configure && make && sudo make install
 
 script:
     - MYPHP=`which php`
