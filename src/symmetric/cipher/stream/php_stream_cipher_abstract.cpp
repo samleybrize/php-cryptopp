@@ -177,7 +177,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, getBlockSize) {
 /* {{{ proto bool StreamCipherAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
-    int keySize = 0;
+    long keySize = 0;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
         return;
@@ -185,7 +185,6 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
@@ -198,7 +197,7 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidKeyLength) {
 /* {{{ proto bool StreamCipherAbstract::isValidIvLength(int length)
    Indicates if an iv length is valid */
 PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
-    int ivSize = 0;
+    long ivSize = 0;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &ivSize)) {
         return;
@@ -206,7 +205,6 @@ PHP_METHOD(Cryptopp_StreamCipherAbstract, isValidIvLength) {
 
     CryptoPP::SymmetricCipher *encryptor;
     CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
         RETURN_TRUE

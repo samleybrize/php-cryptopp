@@ -287,7 +287,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getDigestSize) {
 /* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidKeyLength(int keyLength)
    Indicates if a key length is valid */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
-    int keySize = 0;
+    long keySize = 0;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
         return;
@@ -295,7 +295,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
 
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
         RETURN_TRUE
@@ -308,7 +307,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidKeyLength) {
 /* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidIvLength(int length)
    Indicates if an iv length is valid */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
-    int ivSize = 0;
+    long ivSize = 0;
 
     if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &ivSize)) {
         return;
@@ -316,7 +315,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, isValidIvLength) {
 
     CryptoPP::AuthenticatedSymmetricCipher *encryptor;
     CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
-    encryptor->AlgorithmName(); // TODO without this statement, a segfault occur ?!
 
     if (isCryptoppSymmetricIvValid(getThis(), encryptor, ivSize TSRMLS_CC, false)) {
         RETURN_TRUE
