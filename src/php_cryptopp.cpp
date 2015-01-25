@@ -74,7 +74,7 @@ static PHP_MINFO_FUNCTION(cryptopp) {
 zend_module_entry cryptopp_module_entry = {
     STANDARD_MODULE_HEADER,
     PHP_CRYPTOPP_EXTNAME,
-    hash_equals_function,
+    php_cryptopp_functions,
     PHP_MINIT(cryptopp),
     NULL,
     NULL,

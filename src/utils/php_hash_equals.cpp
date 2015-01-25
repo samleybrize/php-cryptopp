@@ -31,16 +31,6 @@
 /* add PHP's hash_equals() function if not available */
 #if PHP_API_VERSION < 20131106
 
-ZEND_BEGIN_ARG_INFO(arginfo_hash_equals, 0)
-    ZEND_ARG_INFO(0, known_string)
-    ZEND_ARG_INFO(0, user_string)
-ZEND_END_ARG_INFO()
-
-const zend_function_entry hash_equals_function[] = {
-    PHP_FE(hash_equals, arginfo_hash_equals)
-    PHP_FE_END
-};
-
 /* {{{ proto bool hash_equals(string known_string, string user_string)
    Compares two strings using the same time whether they're equal or not.
    A difference in length will leak */
@@ -80,12 +70,6 @@ PHP_FUNCTION(hash_equals)
     RETURN_BOOL(0 == result);
 }
 /* }}} */
-
-#else
-
-const zend_function_entry hash_equals_function[] = {
-    PHP_FE_END
-};
 
 #endif
 

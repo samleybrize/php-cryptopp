@@ -49,6 +49,11 @@ extern zend_module_entry cryptopp_module_entry;
 
 //%configure_inclusion%
 
+const zend_function_entry php_cryptopp_functions[] = {
+//%configure_functions%
+    PHP_FE_END
+};
+
 #endif /* PHP_CRYPTOPP_H */
 
 /*

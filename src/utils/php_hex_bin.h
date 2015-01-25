@@ -25,23 +25,23 @@
   +----------------------------------------------------------------------+
 */
 
-#ifndef PHP_HASH_EQUALS_H
-#define PHP_HASH_EQUALS_H
+#ifndef PHP_HEX_BIN_H
+#define PHP_HEX_BIN_H
 
 #include "src/php_cryptopp.h"
 
-#if PHP_API_VERSION < 20131106
+#if PHP_API_VERSION < 20100412
 
-PHP_FUNCTION(hash_equals);
-#define PHP_HASH_EQUALS_DECLARATION PHP_FE(hash_equals, NULL)
+PHP_FUNCTION(hex2bin);
+#define PHP_HEX_BIN_DECLARATION PHP_FE(hex2bin, NULL)
 
 #else
 
-#define PHP_HASH_EQUALS_DECLARATION
+#define PHP_HEX_BIN_DECLARATION
 
 #endif
 
-#endif /* PHP_HASH_EQUALS_H */
+#endif /* PHP_HEX_BIN_H */
 
 /*
  * Local variables:

@@ -46,6 +46,9 @@ if cryptoppVersion < "561":
 
 # config file list
 configFileList = []
+configFileList.append("src/utils/config/hash_equals.py")
+configFileList.append("src/utils/config/hex_bin.py")
+
 configFileList.append("src/exception/config/exception.py")
 configFileList.append("src/exception/config/mac_verification_failed_exception.py")
 
@@ -105,11 +108,12 @@ configFileList.append("src/filter/config/authenticated_symmetric_transformation_
 configFileList.append("src/filter/config/hash_transformation_filter.py")
 
 # process all config scripts
-phpMinitStatements  = []
-srcFileList         = ["php_cryptopp.cpp", "utils/php_hash_equals.cpp", "utils/algo_list.cpp", "utils/zend_object_utils.cpp"]
-headerFileList      = []
-hashNativeAssoc     = {}
-hashCryptoppHeaders = []
+phpMinitStatements      = []
+srcFileList             = ["php_cryptopp.cpp", "utils/algo_list.cpp", "utils/zend_object_utils.cpp"]
+headerFileList          = []
+functionDeclarationList = []
+hashNativeAssoc         = {}
+hashCryptoppHeaders     = []
 
 for configFile in configFileList:
     # verify that config file exists
@@ -133,16 +137,26 @@ for configFile in configFileList:
     if "phpMinitStatements" in config:
         phpMinitStatements.extend(config["phpMinitStatements"])
 
+    if "functionDeclarationList" in config:
+        functionDeclarationList.extend(config["functionDeclarationList"])
+
 # build includes for main header file
-headerFileIncludes = "";
+headerFileIncludes = ""
 
 for i in headerFileList:
     headerFileIncludes += "#include \"src/" + i + "\"\n"
+
+# build function list for main header file
+headerFileFunctions = ""
+
+for i in functionDeclarationList:
+    headerFileFunctions += "    " + i + "\n"
 
 # create main header file
 mainHeaderContent   = open("src/php_cryptopp.raw.h", "r").read()
 configureInclusion  = headerFileIncludes + "\n\n#define PHP_MINIT_STATEMENTS " + " ".join(phpMinitStatements)
 mainHeaderContent   = mainHeaderContent.replace("//%configure_inclusion%", configureInclusion)
+mainHeaderContent   = mainHeaderContent.replace("//%configure_functions%", headerFileFunctions)
 mainHeaderContent   = mainHeaderContent.replace("%ext_version%", EXTENSION_VERSION)
 
 open("src/php_cryptopp.h", "w").write(mainHeaderContent)
