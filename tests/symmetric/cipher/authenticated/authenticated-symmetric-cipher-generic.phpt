@@ -15,6 +15,20 @@ var_dump($o->getDigestSize());
 var_dump($o->getCipher()->getName());
 var_dump($o->getMac()->getName());
 
+// key length check
+echo "- key length check:\n";
+var_dump($o->isValidKeyLength(16));
+var_dump($o->isValidKeyLength(0));
+var_dump($o->isValidKeyLength(33));
+
+// iv length check
+echo "- iv length check:\n";
+var_dump($o->isValidIvLength(16));
+var_dump($o->isValidIvLength(2));
+var_dump($o->isValidIvLength(20));
+
+// TODO isValidMacKeyLength
+
 // encrypt
 echo "- encrypt:\n";
 $o->setMacKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
@@ -90,6 +104,14 @@ int(1)
 int(20)
 string(9) "sosemanuk"
 string(10) "hmac(sha1)"
+- key length check:
+bool(true)
+bool(false)
+bool(false)
+- iv length check:
+bool(true)
+bool(false)
+bool(false)
 - encrypt:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "be6a431a935cb90e2221ebb7ef502328"
