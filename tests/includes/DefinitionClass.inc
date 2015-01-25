@@ -32,7 +32,7 @@ class DefinitionClass
     {
         $definition = array(
             "name"          => $this->reflector->getShortName(),
-            "isTrait"       => $this->reflector->isTrait(),
+            "isTrait"       => version_compare(phpversion(), "5.4.0", ">=") && $this->reflector->isTrait(),
             "isInterface"   => $this->reflector->isInterface(),
             "isAbstract"    => $this->reflector->isAbstract(),
             "isFinal"       => $this->reflector->isFinal(),
@@ -121,7 +121,7 @@ class DefinitionClass
     {
         $methodName     = $method->getName();
         $class          = $method->getDeclaringClass();
-        $traitList      = $class->getTraits();
+        $traitList      = version_compare(phpversion(), "5.4.0", ">=") ? $class->getTraits() : null;
 
         if ($traitList) {
             $generatorMethod    = new GeneratorClassMethod($class->getName(), $methodName);
