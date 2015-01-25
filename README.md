@@ -2,6 +2,8 @@
 
 Provides an API to use various cryptographic algorithms based on the Crypto++ library. The API is not strictly identical to the original Crypto++ API and has been simplified to be usable to anyone that has not any knowledge in cryptography.
 
+[![Build Status](https://travis-ci.org/samleybrize/php-cryptopp.svg?branch=master)](https://travis-ci.org/samleybrize/php-cryptopp)
+
 ## Requirements
 
 - PHP 5.3+
