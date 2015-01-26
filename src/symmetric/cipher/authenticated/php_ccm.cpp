@@ -39,6 +39,39 @@ void CCM::Base::SetDigestSize(int digestSize)
 
     m_digestSize = digestSize;
 }
+
+void CCM::Base::ProcessData(byte *outString, const byte *inString, size_t length)
+{
+    if (m_totalMessageLength + length > m_messageLength) {
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%d expected, %d given)", m_messageLength, m_totalMessageLength + length);
+        throw false;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipherBase::ProcessData(outString, inString, length);
+}
+
+void CCM::Base::Update(const byte *input, size_t length)
+{
+    if (m_totalHeaderLength + length > m_aadLength) {
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%d expected, %d given)", m_aadLength, m_totalHeaderLength + length);
+        throw false;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipherBase::Update(input, length);
+}
+
+void CCM::Base::Final(byte *digest)
+{
+    if (m_totalMessageLength != m_messageLength) {
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%d expected, %d given)", m_messageLength, m_totalMessageLength);
+        throw false;
+    } else if (m_totalHeaderLength != m_aadLength) {
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%d expected, %d given)", m_aadLength, m_totalHeaderLength);
+        throw false;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipherBase::Final(digest);
+}
 /* }}} */
 
 /* {{{ arginfo */
@@ -202,8 +235,6 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, specifyDataSize) {
     setDataSizeAndDigestSize(getThis(), static_cast<CCM::Base *>(encryptor), static_cast<CCM::Base *>(decryptor) TSRMLS_CC);
 }
 /* }}} */
-
-// TODO encryption/decryption should check encrypted/decrypted data length
 
 /*
  * Local variables:

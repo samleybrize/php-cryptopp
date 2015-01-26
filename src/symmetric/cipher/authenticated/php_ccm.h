@@ -11,18 +11,22 @@
 #define PHP_AUTHENTICATED_SYMMETRIC_CIPHER_CCM_H
 
 #include "src/php_cryptopp.h"
+#include "authenticated_symmetric_cipher_prespecified_lengths.h"
 #include <ccm.h>
 
 /* {{{ fork of CryptoPP::CCM that take a cipher as parameter instead of a template parameter */
-class CCM : public CryptoPP::CCM_Base
+class CCM
 {
 public:
     /* {{{ base class */
-    class Base : public CryptoPP::CCM_Base
+    class Base : public CryptoPP::CCM_Base, public AuthenticatedSymmetricCipherPrespecifiedLengths
     {
     public:
         ~Base();
         void SetDigestSize(int digestSize);
+        void ProcessData(byte *outString, const byte *inString, size_t length);
+        void Update(const byte *input, size_t length);
+        void Final(byte *digest);
         static std::string StaticAlgorithmName() {return std::string("CCM");}
 
     protected:

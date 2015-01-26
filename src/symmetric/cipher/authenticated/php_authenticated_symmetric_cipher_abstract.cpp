@@ -18,6 +18,7 @@
 #include "php_authenticated_symmetric_cipher_interface.h"
 #include "php_authenticated_symmetric_cipher_abstract.h"
 #include "php_authenticated_symmetric_cipher_generic.h"
+#include "authenticated_symmetric_cipher_prespecified_lengths.h"
 #include <zend_exceptions.h>
 #include <string>
 
@@ -430,7 +431,16 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, encrypt) {
 
     // encrypt
     byte *output = new byte[dataSize];
-    encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    try {
+        if (encryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(encryptor)->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+        } else {
+            encryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+        }
+    } catch (bool e) {
+        return;
+    }
 
     RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
     delete[] output;
@@ -471,7 +481,16 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, decrypt) {
 
     // encrypt
     byte *output = new byte[dataSize];
-    decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+
+    try {
+        if (decryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(decryptor)->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+        } else {
+            decryptor->ProcessData(output, reinterpret_cast<byte*>(data), dataSize);
+        }
+    } catch (bool e) {
+        return;
+    }
 
     RETVAL_STRINGL(reinterpret_cast<char*>(output), dataSize, 1);
     delete[] output;
@@ -508,7 +527,15 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addEncryptionAdditiona
         RETURN_FALSE;
     }
 
-    encryptor->Update(reinterpret_cast<byte*>(msg), msgSize);
+    try {
+        if (encryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(encryptor)->Update(reinterpret_cast<byte*>(msg), msgSize);
+        } else {
+            encryptor->Update(reinterpret_cast<byte*>(msg), msgSize);
+        }
+    } catch (bool e) {
+        return;
+    }
 }
 /* }}} */
 
@@ -539,7 +566,15 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, addDecryptionAdditiona
         RETURN_FALSE;
     }
 
-    decryptor->Update(reinterpret_cast<byte*>(msg), msgSize);
+    try {
+        if (decryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(decryptor)->Update(reinterpret_cast<byte*>(msg), msgSize);
+        } else {
+            decryptor->Update(reinterpret_cast<byte*>(msg), msgSize);
+        }
+    } catch (bool e) {
+        return;
+    }
 }
 /* }}} */
 
@@ -556,7 +591,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeEncryption) {
     byte digest[encryptor->DigestSize()];
 
     try {
-        encryptor->Final(digest);
+        if (encryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(encryptor)->Final(digest);
+        } else {
+            encryptor->Final(digest);
+        }
 
         // restart
         CryptoPP::AuthenticatedSymmetricCipher *decryptor;
@@ -583,7 +622,11 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, finalizeDecryption) {
     byte digest[decryptor->DigestSize()];
 
     try {
-        decryptor->Final(digest);
+        if (decryptor->NeedsPrespecifiedDataLengths()) {
+            dynamic_cast<AuthenticatedSymmetricCipherPrespecifiedLengths*>(decryptor)->Final(digest);
+        } else {
+            decryptor->Final(digest);
+        }
 
         // restart
         CryptoPP::AuthenticatedSymmetricCipher *encryptor;
