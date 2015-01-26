@@ -29,6 +29,15 @@ var_dump($o->isValidIvLength(20));
 
 // TODO isValidMacKeyLength
 
+// check that key/iv are set properly
+echo "- key/iv:\n";
+$o->setMacKey("123456789");
+$o->setKey("123456");
+$o->setIv("1234567890123456");
+var_dump($c->getKey());
+var_dump($c->getIv());
+var_dump($m->getKey());
+
 // encrypt
 echo "- encrypt:\n";
 $o->setMacKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
@@ -112,6 +121,10 @@ bool(false)
 bool(true)
 bool(false)
 bool(false)
+- key/iv:
+string(6) "123456"
+string(16) "1234567890123456"
+string(9) "123456789"
 - encrypt:
 string(32) "fe81d2162c9a100d04895c454a77515b"
 string(32) "be6a431a935cb90e2221ebb7ef502328"

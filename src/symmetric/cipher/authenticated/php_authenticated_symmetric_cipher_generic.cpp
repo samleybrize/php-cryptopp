@@ -156,7 +156,6 @@ static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherGeneric[
 void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D) {
     init_class_AuthenticatedSymmetricCipherAbstractChild("generic", "AuthenticatedSymmetricCipherGeneric", &cryptopp_ce_AuthenticatedSymmetricCipherGeneric, cryptopp_methods_AuthenticatedSymmetricCipherGeneric TSRMLS_CC);
     zend_declare_property_null(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, "mac", 3, ZEND_ACC_PRIVATE TSRMLS_CC);
-    zend_declare_property_string(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, "macKey", 6, "", ZEND_ACC_PRIVATE TSRMLS_CC);
 }
 /* }}} */
 
@@ -244,15 +243,27 @@ static bool getCipherMacElements(
 }
 /* }}} */
 
+/* {{{ returns the mac key */
+static inline zval *getMacKey(zval *object TSRMLS_DC) {
+    zval *mac               = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, object, "mac", 3, 1 TSRMLS_CC);
+    zval *funcname          = makeZval("getKey");
+    zval *key               = call_user_method(mac, funcname TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    return key;
+}
+/* }}} */
+
 /* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherGeneric instance */
-static bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize TSRMLS_DC) {
+static bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize TSRMLS_DC, bool throwIfFalse = true) {
     AuthenticatedSymmetricCipherGeneric::Base *c = dynamic_cast<AuthenticatedSymmetricCipherGeneric::Base*>(cipher);
 
     if (0 == c) {
         // the cipher is not an instance of AuthenticatedSymmetricCipherGeneric
         return true;
     } else if (!c->IsValidMacKeyLength(keySize)) {
-        if (0 == keySize) {
+        if (!throwIfFalse) {
+            return false;
+        } else if (0 == keySize) {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : a MAC key is required", cryptopp_ce_AuthenticatedSymmetricCipherGeneric->name, keySize);
         } else {
             zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s : %d is not a valid MAC key length", cryptopp_ce_AuthenticatedSymmetricCipherGeneric->name, keySize);
@@ -265,8 +276,9 @@ static bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *objec
 }
 
 bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
-    zval *key   = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, object, "macKey", 6, 1 TSRMLS_CC);
-    int keySize = Z_STRLEN_P(key);
+    zval *key   = getMacKey(object TSRMLS_CC);
+    int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
+    zval_ptr_dtor(&key);
 
     return isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(object, cipher, keySize TSRMLS_CC);
 }
@@ -332,17 +344,14 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, setMacKey) {
         return;
     }
 
-    CryptoPP::AuthenticatedSymmetricCipher *encryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor);
-    CryptoPP::AuthenticatedSymmetricCipher *decryptor = CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(decryptor);
-
-    if (!isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(getThis(), encryptor, keySize TSRMLS_CC)) {
-        RETURN_FALSE;
-    }
-
-    // set the key on both the php object and the native cryptopp object
-    zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, getThis(), "macKey", 6, key, keySize TSRMLS_CC);
-    dynamic_cast<AuthenticatedSymmetricCipherGeneric::Base*>(encryptor)->SetMacKey(reinterpret_cast<byte*>(key), keySize);
-    dynamic_cast<AuthenticatedSymmetricCipherGeneric::Base*>(decryptor)->SetMacKey(reinterpret_cast<byte*>(key), keySize);
+    // call mac's setKey()
+    zval *mac       = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, getThis(), "mac", 3, 1 TSRMLS_CC);
+    zval *zKey      = makeZval(key, keySize);
+    zval *funcname  = makeZval("setKey");
+    zval *output    = call_user_method(mac, funcname, zKey TSRMLS_CC);
+    zval_ptr_dtor(&zKey);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&output);
 }
 /* }}} */
 
