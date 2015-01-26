@@ -19,6 +19,7 @@ interface SymmetricTransformationInterface extends SymmetricCipherInterface
 
     /**
      * Indicates if a given iv length is valid for this algorithm
+     * @param int $length
      * @return bool
      */
     public function isValidIvLength($length);

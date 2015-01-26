@@ -18,6 +18,7 @@ interface SymmetricCipherInterface
 
     /**
      * Indicates if a given key length is valid for this algorithm
+     * @param int $keyLength
      * @return bool
      */
     public function isValidKeyLength($keyLength);
