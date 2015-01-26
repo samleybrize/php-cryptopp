@@ -9,6 +9,7 @@
 
 #include "src/php_cryptopp.h"
 #include "src/exception/php_exception.h"
+#include "src/symmetric/cipher/symmetric_transformation_user_interface.h"
 #include "zend_object_utils.h"
 #include <zend_exceptions.h>
 

@@ -10,6 +10,7 @@
 #define CRYPTOPP_ENABLE_NAMESPACE_WEAK 1
 
 #include "php_cryptopp.h"
+#include "php_init.h"
 #include "src/hash/php_hash.h"
 #include "src/mac/php_mac.h"
 #include "src/symmetric/cipher/authenticated/php_authenticated_symmetric_cipher.h"

@@ -14,6 +14,8 @@
 #include "symmetric_transformation_proxy.h"
 #include <zend_exceptions.h>
 #include <exception>
+#include <algparam.h>
+#include <argnames.h>
 
 SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, const char* processDataFuncname TSRMLS_DC)
 {

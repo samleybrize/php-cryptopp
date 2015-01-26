@@ -8,6 +8,7 @@
  */
 
 #include "src/php_cryptopp.h"
+#include "src/exception/php_exception.h"
 #include "src/hash/php_hash_interface.h"
 #include "src/hash/php_hash_abstract.h"
 #include "src/hash/hash_proxy.h"

@@ -15,12 +15,14 @@
 #include "src/symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_interface.h"
 #include "src/symmetric/cipher/authenticated/php_authenticated_symmetric_cipher_abstract.h"
 #include "src/symmetric/cipher/authenticated/authenticated_symmetric_cipher_proxy.h"
+#include "src/symmetric/cipher/php_symmetric_transformation_interface.h"
 #include "src/utils/zend_object_utils.h"
 #include "src/utils/zval_utils.h"
 #include "php_authenticated_symmetric_transformation_filter.h"
 #include <exception>
 #include <filters.h>
 #include <zend_exceptions.h>
+#include <argnames.h>
 
 /* {{{ fork of CryptoPP::AuthenticatedEncryptionFilter to support padding schemes as objects */
 AuthenticatedEncryptionFilter::AuthenticatedEncryptionFilter(CryptoPP::AuthenticatedSymmetricCipher &c, zval *paddingObject, bool cipherMustBeDestructed TSRMLS_DC)

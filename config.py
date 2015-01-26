@@ -154,12 +154,15 @@ for i in functionDeclarationList:
 
 # create main header file
 mainHeaderContent   = open("src/php_cryptopp.raw.h", "r").read()
-configureInclusion  = headerFileIncludes + "\n\n#define PHP_MINIT_STATEMENTS " + " ".join(phpMinitStatements)
-mainHeaderContent   = mainHeaderContent.replace("//%configure_inclusion%", configureInclusion)
-mainHeaderContent   = mainHeaderContent.replace("//%configure_functions%", headerFileFunctions)
 mainHeaderContent   = mainHeaderContent.replace("%ext_version%", EXTENSION_VERSION)
-
 open("src/php_cryptopp.h", "w").write(mainHeaderContent)
+
+# create init header file
+initHeaderContent   = open("src/php_init.raw.h", "r").read()
+configureInclusion  = headerFileIncludes + "\n\n#define PHP_MINIT_STATEMENTS " + " ".join(phpMinitStatements)
+initHeaderContent   = initHeaderContent.replace("//%configure_inclusion%", configureInclusion)
+initHeaderContent   = initHeaderContent.replace("//%configure_functions%", headerFileFunctions)
+open("src/php_init.h", "w").write(initHeaderContent)
 
 # print the list of source files to add
 for key, srcFile in enumerate(srcFileList):
