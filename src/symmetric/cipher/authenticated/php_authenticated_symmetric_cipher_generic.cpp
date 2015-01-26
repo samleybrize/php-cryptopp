@@ -137,6 +137,10 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherGeneric_getMac, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherGeneric_isValidMacKeyLength, 0)
+    ZEND_ARG_INFO(0, length)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherGeneric_setMacKey, 0)
     ZEND_ARG_INFO(0, key)
 ZEND_END_ARG_INFO()
@@ -149,6 +153,7 @@ static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherGeneric[
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct, arginfo_AuthenticatedSymmetricCipherGeneric___construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherGeneric, getCipher, arginfo_AuthenticatedSymmetricCipherGeneric_getCipher, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherGeneric, getMac, arginfo_AuthenticatedSymmetricCipherGeneric_getMac, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
+    PHP_ME(Cryptopp_AuthenticatedSymmetricCipherGeneric, isValidMacKeyLength, arginfo_AuthenticatedSymmetricCipherGeneric_isValidMacKeyLength, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_ME(Cryptopp_AuthenticatedSymmetricCipherGeneric, setMacKey, arginfo_AuthenticatedSymmetricCipherGeneric_setMacKey, ZEND_ACC_PUBLIC | ZEND_ACC_FINAL)
     PHP_FE_END
 };
@@ -331,6 +336,26 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getCipher) {
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getMac) {
     zval *macObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, getThis(), "mac", 3, 0 TSRMLS_CC);
     RETURN_ZVAL(macObject, 1, 0)
+}
+/* }}} */
+
+/* {{{ proto bool AuthenticatedSymmetricCipherAbstract::isValidMacKeyLength(int length)
+   Indicates if a mac key length is valid */
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, isValidMacKeyLength) {
+    long keySize = 0;
+
+    if (FAILURE == zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &keySize)) {
+        return;
+    }
+
+    CryptoPP::AuthenticatedSymmetricCipher *encryptor;
+    CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(encryptor)
+
+    if (isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(getThis(), encryptor, keySize TSRMLS_CC, false)) {
+        RETURN_TRUE
+    } else {
+        RETURN_FALSE
+    }
 }
 /* }}} */
 

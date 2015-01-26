@@ -20,6 +20,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct);
 /* {{{ methods declarations */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getCipher);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getMac);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, isValidMacKeyLength);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, setMacKey);
 /* }}} */
 

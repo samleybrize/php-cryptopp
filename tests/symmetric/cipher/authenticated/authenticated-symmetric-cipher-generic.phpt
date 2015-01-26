@@ -15,6 +15,19 @@ var_dump($o->getDigestSize());
 var_dump($o->getCipher()->getName());
 var_dump($o->getMac()->getName());
 
+// check final methods
+echo "- final methods:\n";
+$reflection = new ReflectionClass("Cryptopp\AuthenticatedSymmetricCipherGeneric");
+$methods    = $reflection->getMethods();
+
+foreach ($methods as $method) {
+    if (!$method->isFinal()) {
+        continue;
+    }
+
+    var_dump($method->getName());
+}
+
 // key length check
 echo "- key length check:\n";
 var_dump($o->isValidKeyLength(16));
@@ -27,7 +40,11 @@ var_dump($o->isValidIvLength(16));
 var_dump($o->isValidIvLength(2));
 var_dump($o->isValidIvLength(20));
 
-// TODO isValidMacKeyLength
+// mac key length check
+echo "- mac key length check:\n";
+var_dump($o->isValidMacKeyLength(16));
+var_dump($o->isValidMacKeyLength(0));
+var_dump($o->isValidMacKeyLength(33));
 
 // check that key/iv are set properly
 echo "- key/iv:\n";
@@ -113,6 +130,29 @@ int(1)
 int(20)
 string(9) "sosemanuk"
 string(10) "hmac(sha1)"
+- final methods:
+string(9) "getCipher"
+string(6) "getMac"
+string(19) "isValidMacKeyLength"
+string(9) "setMacKey"
+string(7) "__sleep"
+string(8) "__wakeup"
+string(7) "getName"
+string(12) "getBlockSize"
+string(13) "getDigestSize"
+string(16) "isValidKeyLength"
+string(15) "isValidIvLength"
+string(6) "setKey"
+string(5) "setIv"
+string(6) "getKey"
+string(5) "getIv"
+string(7) "encrypt"
+string(7) "decrypt"
+string(27) "addEncryptionAdditionalData"
+string(27) "addDecryptionAdditionalData"
+string(18) "finalizeEncryption"
+string(18) "finalizeDecryption"
+string(7) "restart"
 - key length check:
 bool(true)
 bool(false)
@@ -121,6 +161,10 @@ bool(false)
 bool(true)
 bool(false)
 bool(false)
+- mac key length check:
+bool(true)
+bool(true)
+bool(true)
 - key/iv:
 string(6) "123456"
 string(16) "1234567890123456"

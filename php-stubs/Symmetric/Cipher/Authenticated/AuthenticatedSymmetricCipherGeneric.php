@@ -37,4 +37,11 @@ class AuthenticatedSymmetricCipherGeneric extends AuthenticatedSymmetricCipherAb
      * @throws \Cryptopp\CryptoppException
      */
     final public function setMacKey($key) {}
+
+    /**
+     * Indicates if a given key length is valid for the MAC algorithm
+     * @param int $length
+     * @return bool
+     */
+    final public function isValidMacKeyLength($length) {}
 }
