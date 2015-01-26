@@ -119,6 +119,9 @@ var_dump(bin2hex($o->finalizeDecryption()));
 // large data
 echo "- large data:\n";
 $data = str_repeat("a", 10485760);
+$o->restart();
+$o->addEncryptionAdditionalData($data);
+$o->addDecryptionAdditionalData($data);
 var_dump(strlen($o->encrypt($data)));
 var_dump(strlen($o->decrypt($data)));
 
