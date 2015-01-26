@@ -191,6 +191,37 @@ static inline zval *getCipherKey(zval *object TSRMLS_DC) {
 }
 /* }}} */
 
+/* {{{ returns the cipher iv */
+static inline zval *getCipherIv(zval *object TSRMLS_DC) {
+    zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
+    zend_class_entry *ce    = zend_get_class_entry(cipher TSRMLS_CC);
+    zval *iv;
+
+    if (instanceof_function(ce, cryptopp_ce_SymmetricTransformationInterface TSRMLS_CC)) {
+        // retrieve from the underlying cipher
+        zval *funcname  = makeZval("getIv");
+        iv              = call_user_method(cipher, funcname TSRMLS_CC);
+        zval_ptr_dtor(&funcname);
+    } else {
+        // retrieve from the current object
+        iv = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
+    }
+
+    return iv;
+}
+/* }}} */
+
+/* {{{ destruct an IV zval if it was retrieved from an underlying cipher object */
+static inline void ivDtor(zval *object, zval *iv TSRMLS_DC) {
+    zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
+    zend_class_entry *ce    = zend_get_class_entry(cipher TSRMLS_CC);
+
+    if (instanceof_function(ce, cryptopp_ce_SymmetricTransformationInterface TSRMLS_CC)) {
+        zval_ptr_dtor(&iv);
+    }
+}
+/* }}} */
+
 /* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
 bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *key   = getCipherKey(object TSRMLS_CC);
@@ -203,8 +234,9 @@ bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::Auth
 
 /* {{{ verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
 bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
-    zval *iv    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
-    int ivSize  = Z_STRLEN_P(iv);
+    zval *iv                = getCipherIv(object TSRMLS_CC);
+    int ivSize              = Z_STRLEN_P(iv);
+    ivDtor(object, iv TSRMLS_CC);
 
     return isCryptoppSymmetricIvValid(object, cipher, ivSize TSRMLS_CC);
 }
@@ -212,10 +244,11 @@ bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::Authe
 
 /* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
-    zval *zKey      = getCipherKey(object TSRMLS_CC);
-    zval *zIv       = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
-    bool ivSetted   = setSymmetricCipherKeyIv(object, encryptor, decryptor, zKey, zIv TSRMLS_CC);
+    zval *zKey              = getCipherKey(object TSRMLS_CC);
+    zval *zIv               = getCipherIv(object TSRMLS_CC);
+    bool ivSetted           = setSymmetricCipherKeyIv(object, encryptor, decryptor, zKey, zIv TSRMLS_CC);
     zval_ptr_dtor(&zKey);
+    ivDtor(object, zIv TSRMLS_CC);
 
     if (ivSetted) {
         zend_update_property_bool(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);
@@ -378,7 +411,23 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, setIv) {
     }
 
     // set the iv on both the php object and the native cryptopp object
-    zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
+    zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
+    zend_class_entry *ce    = zend_get_class_entry(cipher TSRMLS_CC);
+
+    if (instanceof_function(ce, cryptopp_ce_SymmetricTransformationInterface TSRMLS_CC)) {
+        // set the iv on the underlying cipher
+        zval *funcname  = makeZval("setIv");
+        zval *zIv       = makeZval(iv, ivSize);
+        zval *cipher    = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 1 TSRMLS_CC);
+        zval *output    = call_user_method(cipher, funcname, zIv TSRMLS_CC);
+        zval_ptr_dtor(&funcname);
+        zval_ptr_dtor(&zIv);
+        zval_ptr_dtor(&output);
+    } else {
+        // set the iv on the current object
+        zend_update_property_stringl(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, iv, ivSize TSRMLS_CC);
+    }
+
     setKeyWithIv(getThis(), encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */
@@ -395,7 +444,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getKey) {
 /* {{{ proto string AuthenticatedSymmetricCipherAbstract::getIv(void)
    Returns the initialization vector */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherAbstract, getIv) {
-    zval *iv = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "iv", 2, 1 TSRMLS_CC);
+    zval *iv = getCipherIv(getThis() TSRMLS_CC);
     RETURN_ZVAL(iv, 1, 0)
 }
 /* }}} */
