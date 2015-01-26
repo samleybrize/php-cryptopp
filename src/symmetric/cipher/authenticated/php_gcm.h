@@ -14,7 +14,7 @@
 #include <gcm.h>
 
 /* {{{ fork of CryptoPP::GCM that take a cipher as parameter instead of a template parameter */
-class GCM : public CryptoPP::GCM_Base
+class GCM
 {
 public:
     /* {{{ base class */

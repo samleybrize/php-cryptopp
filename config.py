@@ -92,6 +92,7 @@ configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_s
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_generic.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_gcm.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_ccm.py")
+configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_eax.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_proxy.py")
 
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
