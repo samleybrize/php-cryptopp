@@ -51,6 +51,18 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// empty iv
+echo "- empty iv:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherEax(new Cryptopp\BlockCipherAes());
+$o->setKey("1234567890123456");
+
+try {
+    $o->encrypt("123456");
+    echo "empty iv ok\n";
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // encrypt before aad
 echo "- encrypt before aad:\n";
 $o->restart();
@@ -131,6 +143,8 @@ Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
 Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
 - invalid iv:
 iv size 3 ok
+- empty iv:
+empty iv ok
 - encrypt before aad:
 Cryptopp\AuthenticatedSymmetricCipherEax: additional authenticated data must be added before any encryption
 - decrypt before aad:

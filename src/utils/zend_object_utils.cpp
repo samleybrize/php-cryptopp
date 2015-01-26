@@ -85,7 +85,7 @@ bool setSymmetricCipherKeyIv(
     if (keySize > 0 && !cipher->IsResynchronizable()) {
         // an iv is not required
         ivSetted = true;
-    } else if (keySize > 0 && ivSize > 0 && cipher->IsResynchronizable()) {
+    } else if (keySize > 0 && isCryptoppSymmetricIvValid(object, cipher, ivSize TSRMLS_CC, false) && cipher->IsResynchronizable()) {
         // set key and iv
         byte *key   = reinterpret_cast<byte*>(Z_STRVAL_P(zKey));
         byte *iv    = reinterpret_cast<byte*>(Z_STRVAL_P(zIv));

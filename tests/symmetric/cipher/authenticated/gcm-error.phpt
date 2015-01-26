@@ -51,6 +51,17 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// empty iv
+echo "- empty iv:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm(new Cryptopp\BlockCipherAes());
+$o->setKey("1234567890123456");
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // encrypt before aad
 echo "- encrypt before aad:\n";
 $o->restart();
@@ -131,6 +142,8 @@ Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 - invalid iv:
 iv size 3 ok
+- empty iv:
+Cryptopp\AuthenticatedSymmetricCipherGcm : an initialization vector is required
 - encrypt before aad:
 Cryptopp\AuthenticatedSymmetricCipherGcm: additional authenticated data must be added before any encryption
 - decrypt before aad:

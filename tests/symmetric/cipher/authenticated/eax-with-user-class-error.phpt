@@ -92,6 +92,18 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// empty iv
+echo "- empty iv:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherEax(new BlockCipherUser());
+$o->setKey("123");
+
+try {
+    $o->encrypt("123456");
+    echo "empty iv ok\n";
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // block size = 0
 echo "- invalid block size:\n";
 class BlockCipherUser2 extends BlockCipherUser
@@ -118,5 +130,7 @@ Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
 Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
 - aad no key:
 Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
+- empty iv:
+empty iv ok
 - invalid block size:
 block size 8 ok

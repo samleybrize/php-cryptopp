@@ -92,6 +92,17 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// empty iv
+echo "- empty iv:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherGcm(new BlockCipherUser());
+$o->setKey("123");
+
+try {
+    $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // block size = 0
 echo "- invalid block size:\n";
 class BlockCipherUser2 extends BlockCipherUser
@@ -117,5 +128,7 @@ Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
 - aad no key:
 Cryptopp\AuthenticatedSymmetricCipherGcm : a key is required
+- empty iv:
+Cryptopp\AuthenticatedSymmetricCipherGcm : an initialization vector is required
 - invalid block size:
 Cryptopp\AuthenticatedSymmetricCipherGcm require a block cipher with a block size of 128 bits (16 bytes)
