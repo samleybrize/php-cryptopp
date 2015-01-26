@@ -73,11 +73,21 @@ try {
 }
 
 // encrypt without key
-echo "- no key:\n";
+echo "- encrypt no key:\n";
 $o = new Cryptopp\AuthenticatedSymmetricCipherEax(new BlockCipherUser());
 
 try {
     $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// aad without key
+echo "- aad no key:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherEax(new BlockCipherUser());
+
+try {
+    $o->addEncryptionAdditionalData("123456");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -104,7 +114,9 @@ try {
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherEax : 33 is not a valid key length
 Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
-- no key:
+- encrypt no key:
+Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
+- aad no key:
 Cryptopp\AuthenticatedSymmetricCipherEax : a key is required
 - invalid block size:
 block size 8 ok

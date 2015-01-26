@@ -23,11 +23,21 @@ try {
 }
 
 // encrypt without key
-echo "- no key:\n";
+echo "- encrypt no key:\n";
 $o = new Cryptopp\AuthenticatedSymmetricCipherCcm(new Cryptopp\BlockCipherAes());
 
 try {
     $o->encrypt("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
+// aad without key
+echo "- aad no key:\n";
+$o = new Cryptopp\AuthenticatedSymmetricCipherCcm(new Cryptopp\BlockCipherAes());
+
+try {
+    $o->addEncryptionAdditionalData("123456");
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }
@@ -204,7 +214,9 @@ try {
 - invalid key:
 Cryptopp\AuthenticatedSymmetricCipherCcm : 33 is not a valid key length
 Cryptopp\AuthenticatedSymmetricCipherCcm : a key is required
-- no key:
+- encrypt no key:
+Cryptopp\AuthenticatedSymmetricCipherCcm : a key is required
+- aad no key:
 Cryptopp\AuthenticatedSymmetricCipherCcm : a key is required
 - invalid iv:
 Cryptopp\AuthenticatedSymmetricCipherCcm : 3 is not a valid initialization vector length
