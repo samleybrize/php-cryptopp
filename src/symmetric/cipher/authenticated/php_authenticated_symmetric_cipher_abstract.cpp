@@ -238,7 +238,7 @@ bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::Auth
 /* {{{ verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
 bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *iv                = getCipherIv(object TSRMLS_CC);
-    int ivSize              = Z_STRLEN_P(iv);
+    int ivSize              = IS_STRING == Z_TYPE_P(iv) ? Z_STRLEN_P(iv) : 0;
     ivDtor(object, iv TSRMLS_CC);
 
     return isCryptoppSymmetricIvValid(object, cipher, ivSize TSRMLS_CC);
