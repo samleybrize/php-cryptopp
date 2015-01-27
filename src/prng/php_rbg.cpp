@@ -20,7 +20,8 @@ ZEND_BEGIN_ARG_INFO(arginfo_RandomByteGenerator_construct, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ custom object free handler */
+/* {{{ RandomByteGenerator_free_storage
+   custom object free handler */
 void RandomByteGenerator_free_storage(void *object TSRMLS_DC) {
     RandomByteGeneratorContainer *obj = static_cast<RandomByteGeneratorContainer *>(object);
     delete obj->rbg;
@@ -29,7 +30,7 @@ void RandomByteGenerator_free_storage(void *object TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_object_handlers RandomByteGenerator_object_handlers;
 zend_class_entry *cryptopp_ce_RandomByteGenerator;
 

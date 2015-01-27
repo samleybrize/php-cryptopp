@@ -12,6 +12,7 @@
 
 #include "src/php_cryptopp.h"
 
+/* {{{ TODO */
 class HashProxy : public CryptoPP::HashTransformation
 {
 public:
@@ -47,6 +48,7 @@ protected:
     zval *m_funcnameRestart;
     M_TSRMLS_D;
 };
+/* }}} */
 
 #endif /* PHP_HASH_PROXY_H */
 

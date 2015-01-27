@@ -12,6 +12,9 @@
 
 #include "src/php_cryptopp.h"
 
+extern zend_class_entry *cryptopp_ce_BlockCipherInterface;
+void init_interface_BlockCipherInterface(TSRMLS_D);
+
 /* {{{ php block cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_encryptBlock, 0)
     ZEND_ARG_INFO(0, block)
@@ -29,10 +32,6 @@ ZEND_BEGIN_ARG_INFO(arginfo_BlockCipherInterface_decrypt, 0)
     ZEND_ARG_INFO(0, data)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* inits the BlockCipherInterface php interface */
-extern zend_class_entry *cryptopp_ce_BlockCipherInterface;
-void init_interface_BlockCipherInterface(TSRMLS_D);
 
 #endif /* PHP_BLOCK_CIPHER_INTERFACE_H */
 

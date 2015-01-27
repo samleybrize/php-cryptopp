@@ -19,7 +19,8 @@ void init_class_HashAbstractChild(const char *algoName, const char* className, z
 CryptoPP::HashTransformation *getCryptoppHashNativePtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppHashNativePtr(zval *this_ptr, CryptoPP::HashTransformation *nativePtr TSRMLS_DC);
 
-/* {{{ get the pointer to the native hash object of a php hash class */
+/* {{{ CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR
+   get the pointer to the native hash object of a php hash class */
 #define CRYPTOPP_HASH_ABSTRACT_GET_NATIVE_PTR(ptrName)          \
     ptrName = getCryptoppHashNativePtr(getThis() TSRMLS_CC);    \
                                                                 \

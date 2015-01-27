@@ -17,7 +17,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ BlockCipherAbstract_free_storage
+   custom object free handler */
 void BlockCipherAbstract_free_storage(void *object TSRMLS_DC) {
     BlockCipherAbstractContainer *obj = static_cast<BlockCipherAbstractContainer *>(object);
     delete obj->encryptor;
@@ -63,7 +64,8 @@ void init_class_BlockCipherAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_BlockCipherAbstractChild
+   inits a child class */
 void init_class_BlockCipherAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -76,7 +78,8 @@ void init_class_BlockCipherAbstractChild(const char *algoName, const char* class
 }
 /* }}} */
 
-/* {{{ get the pointer to the native encryptor object of a php cipher class */
+/* {{{ getCryptoppBlockCipherEncryptorPtr
+   get the pointer to the native encryptor object of a php cipher class */
 CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::BlockCipher *encryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
@@ -88,7 +91,8 @@ CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_
 }
 /* }}} */
 
-/* {{{ get the pointer to the native decryptor object of a php cipher class */
+/* {{{ getCryptoppBlockCipherDecryptorPtr
+   get the pointer to the native decryptor object of a php cipher class */
 CryptoPP::BlockCipher *getCryptoppBlockCipherDecryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::BlockCipher *decryptor = static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
@@ -100,19 +104,22 @@ CryptoPP::BlockCipher *getCryptoppBlockCipherDecryptorPtr(zval *this_ptr TSRMLS_
 }
 /* }}} */
 
-/* {{{ set the pointer to the native encryptor object of a php cipher class */
+/* {{{ setCryptoppBlockCipherEncryptorPtr
+   set the pointer to the native encryptor object of a php cipher class */
 void setCryptoppBlockCipherEncryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *encryptorPtr TSRMLS_DC) {
     static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor = encryptorPtr;
 }
 /* }}} */
 
-/* {{{ set the pointer to the native decryptor object of a php cipher class */
+/* {{{ setCryptoppBlockCipherDecryptorPtr
+   set the pointer to the native decryptor object of a php cipher class */
 void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *decryptorPtr TSRMLS_DC) {
     static_cast<BlockCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor = decryptorPtr;
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a BlockCipherAbstract instance */
+/* {{{ isCryptoppBlockCipherKeyValid
+   verify that a key size is valid for a BlockCipherAbstract instance */
 bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC) {
     zval *key   = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);

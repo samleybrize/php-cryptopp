@@ -16,6 +16,7 @@
 #include <exception>
 #include <algorithm>
 
+/* {{{ HashProxy::HashProxy */
 HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
 {
     SET_M_TSRMLS_C()
@@ -70,7 +71,9 @@ HashProxy::HashProxy(zval *hashObject TSRMLS_DC)
     m_hashObject = hashObject;
     Z_ADDREF_P(m_hashObject);
 }
+/* }}} */
 
+/* {{{ HashProxy::~HashProxy */
 HashProxy::~HashProxy()
 {
     zval_ptr_dtor(&m_hashObject);
@@ -79,19 +82,27 @@ HashProxy::~HashProxy()
     zval_ptr_dtor(&m_funcnameFinal);
     zval_ptr_dtor(&m_funcnameRestart);
 }
+/* }}} */
 
+/* {{{ HashProxy::DigestSize */
 unsigned int HashProxy::DigestSize() const {
     return m_digestSize;
 }
+/* }}} */
 
+/* {{{ HashProxy::BlockSize */
 unsigned int HashProxy::BlockSize() const {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ HashProxy::OptimalBlockSize */
 unsigned int HashProxy::OptimalBlockSize() const {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ HashProxy::TruncatedFinal */
 void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     zval *zOutput = call_user_method(m_hashObject, m_funcnameFinal M_TSRMLS_CC);
 
@@ -111,7 +122,9 @@ void HashProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     memcpy(digest, Z_STRVAL_P(zOutput), length);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ HashProxy::CalculateDigest */
 void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_hashObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
@@ -134,7 +147,9 @@ void HashProxy::CalculateDigest(byte *digest, const byte *input, size_t length) 
     zval_ptr_dtor(&zInput);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ HashProxy::Update */
 void HashProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_hashObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
@@ -142,15 +157,20 @@ void HashProxy::Update(const byte *input, size_t length) {
     zval_ptr_dtor(&zInput);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ HashProxy::Final */
 void HashProxy::Final(byte *digest) {
     TruncatedFinal(digest, m_digestSize);
 }
+/* }}} */
 
+/* {{{ HashProxy::Restart */
 void HashProxy::Restart() {
     zval *zOutput = call_user_method(m_hashObject, m_funcnameRestart M_TSRMLS_CC);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
 /*
  * Local variables:

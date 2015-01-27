@@ -23,7 +23,7 @@
 #include "php_authenticated_symmetric_cipher_generic.h"
 #include <zend_exceptions.h>
 
-/* {{{ AuthenticatedSymmetricCipher that take an instance of CryptoPP::SymmetricCipher and an instance of CryptoPP::MessageAuthenticationCode */
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::Base */
 AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
 {
     m_zCipher                   = zCipher;
@@ -34,7 +34,9 @@ AuthenticatedSymmetricCipherGeneric::Base::Base(zval *zCipher, zval *zMac, Crypt
     m_cipherMustBeDestructed    = cipherMustBeDestructed;
     m_macMustBeDestructed       = macMustBeDestructed;
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::~Base */
 AuthenticatedSymmetricCipherGeneric::Base::~Base()
 {
     zval_ptr_dtor(&m_funcnameRestart);
@@ -47,19 +49,25 @@ AuthenticatedSymmetricCipherGeneric::Base::~Base()
         delete m_mac;
     }
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Encryption::Encryption */
 AuthenticatedSymmetricCipherGeneric::Encryption::Encryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
     : Base(zCipher, zMac, cipher, mac, cipherMustBeDestructed, macMustBeDestructed)
 {
     assert(cipher->IsForwardTransformation());
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Decryption::Decryption */
 AuthenticatedSymmetricCipherGeneric::Decryption::Decryption(zval *zCipher, zval *zMac, CryptoPP::SymmetricCipher *cipher, CryptoPP::MessageAuthenticationCode *mac, bool cipherMustBeDestructed, bool macMustBeDestructed)
     : Base(zCipher, zMac, cipher, mac, cipherMustBeDestructed, macMustBeDestructed)
 {
     // can't assert that the cipher is not a forward transformation, because some ciphers use the same transformation for both encryption and decryption
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::ProcessData */
 void AuthenticatedSymmetricCipherGeneric::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
     m_cipher->ProcessData(outString, inString, length);
@@ -72,35 +80,47 @@ void AuthenticatedSymmetricCipherGeneric::Base::ProcessData(byte *outString, con
         m_mac->Update(inString, length);
     }
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::SetKeyWithIV */
 void AuthenticatedSymmetricCipherGeneric::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
     m_cipher->SetKeyWithIV(key, length, iv, ivLength);
     m_mac->Restart();
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::SetKey */
 void AuthenticatedSymmetricCipherGeneric::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     m_cipher->SetKey(key, length, params);
     m_mac->Restart();
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::Resynchronize */
 void AuthenticatedSymmetricCipherGeneric::Base::Resynchronize(const byte *iv, int ivLength)
 {
     m_cipher->Resynchronize(iv, ivLength);
     m_mac->Restart();
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::SetMacKey */
 void AuthenticatedSymmetricCipherGeneric::Base::SetMacKey(const byte *key, size_t length)
 {
     m_mac->SetKey(key, length);
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::IsValidKeyLength */
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidKeyLength(size_t n) const
 {
     return m_cipher->IsValidKeyLength(n);
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::IsValidIvLength */
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidIvLength(size_t n)
 {
     if (0 != dynamic_cast<SymmetricTransformationUserInterface*>(m_cipher)) {
@@ -109,12 +129,16 @@ bool AuthenticatedSymmetricCipherGeneric::Base::IsValidIvLength(size_t n)
         return m_cipher->IsResynchronizable() && n >= m_cipher->MinIVLength() && n <= m_cipher->MaxIVLength();
     }
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::IsValidMacKeyLength */
 bool AuthenticatedSymmetricCipherGeneric::Base::IsValidMacKeyLength(size_t n) const
 {
     return m_mac->IsValidKeyLength(n);
 }
+/* }}} */
 
+/* {{{ AuthenticatedSymmetricCipherGeneric::Base::Restart */
 void AuthenticatedSymmetricCipherGeneric::Base::Restart()
 {
     m_mac->Restart();
@@ -146,7 +170,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherGeneric_setMacKey, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherGeneric;
 
 static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherGeneric[] = {
@@ -164,7 +188,8 @@ void init_class_AuthenticatedSymmetricCipherGeneric(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ Get needed cipher/mac elements to build an authenticated cipher object */
+/* {{{ getCipherMacElements
+   Get needed cipher/mac elements to build an authenticated cipher object */
 static bool getCipherMacElements(
     zval *cipherObject,
     zval *macObject,
@@ -248,7 +273,8 @@ static bool getCipherMacElements(
 }
 /* }}} */
 
-/* {{{ returns the mac key */
+/* {{{ getMacKey
+   returns the mac key */
 static inline zval *getMacKey(zval *object TSRMLS_DC) {
     zval *mac               = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, object, "mac", 3, 1 TSRMLS_CC);
     zval *funcname          = makeZval("getKey");
@@ -258,7 +284,8 @@ static inline zval *getMacKey(zval *object TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherGeneric instance */
+/* {{{ isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid
+   verify that a key size is valid for an AuthenticatedSymmetricCipherGeneric instance */
 static bool isCryptoppAuthenticatedSymmetricCipherGenericMacKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher, int keySize TSRMLS_DC, bool throwIfFalse = true) {
     AuthenticatedSymmetricCipherGeneric::Base *c = dynamic_cast<AuthenticatedSymmetricCipherGeneric::Base*>(cipher);
 
@@ -325,14 +352,16 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, __construct) {
 }
 /* }}} */
 
-/* {{{ proto AuthenticatedSymmetricCipherGeneric::getCipher() */
+/* {{{ proto AuthenticatedSymmetricCipherGeneric::getCipher()
+   Returns the cipher object */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getCipher) {
     zval *cipherObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, getThis(), "cipher", 6, 0 TSRMLS_CC);
     RETURN_ZVAL(cipherObject, 1, 0)
 }
 /* }}} */
 
-/* {{{ proto AuthenticatedSymmetricCipherGeneric::getMac() */
+/* {{{ proto AuthenticatedSymmetricCipherGeneric::getMac()
+   Returns the MAC object */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGeneric, getMac) {
     zval *macObject = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherGeneric, getThis(), "mac", 3, 0 TSRMLS_CC);
     RETURN_ZVAL(macObject, 1, 0)

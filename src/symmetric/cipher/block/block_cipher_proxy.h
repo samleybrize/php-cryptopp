@@ -14,6 +14,7 @@
 #include "php_block_cipher_interface.h"
 #include <string>
 
+/* {{{ TODO */
 class BlockCipherProxy
 {
 public:
@@ -83,6 +84,7 @@ public:
     };
     /* }}} */
 };
+/* }}} */
 
 #endif /* PHP_BLOCK_CIPHER_PROXY_H */
 

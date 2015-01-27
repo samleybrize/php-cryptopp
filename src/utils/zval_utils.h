@@ -12,7 +12,8 @@
 
 #include "src/php_cryptopp.h"
 
-/* {{{ create a zval */
+/* {{{ makeZval
+   create a zval */
 inline zval *makeZval(const char *str) {
     zval *output;
     MAKE_STD_ZVAL(output);
@@ -38,7 +39,8 @@ inline zval *makeZval(long number) {
 }
 /* }}} */
 
-/* {{{ call a php object method */
+/* {{{ call_user_method
+   call a php object method */
 inline zval *call_user_method(zval *object, zval *methodName, int numArgs, zval **args TSRMLS_DC) {
     zval *output;
     MAKE_STD_ZVAL(output);

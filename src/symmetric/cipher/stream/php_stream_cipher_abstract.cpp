@@ -18,7 +18,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ StreamCipherAbstract_free_storage
+   custom object free handler */
 void StreamCipherAbstract_free_storage(void *object TSRMLS_DC) {
     StreamCipherAbstractContainer *obj = static_cast<StreamCipherAbstractContainer *>(object);
     delete obj->encryptor;
@@ -67,7 +68,8 @@ void init_class_StreamCipherAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_StreamCipherAbstractChild
+   inits a child class */
 void init_class_StreamCipherAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -80,7 +82,8 @@ void init_class_StreamCipherAbstractChild(const char *algoName, const char* clas
 }
 /* }}} */
 
-/* {{{ get the pointer to the native encryptor object of a php cipher class */
+/* {{{ getCryptoppStreamCipherEncryptorPtr
+   get the pointer to the native encryptor object of a php cipher class */
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::SymmetricCipher *encryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
@@ -92,7 +95,8 @@ CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TS
 }
 /* }}} */
 
-/* {{{ get the pointer to the native decryptor object of a php cipher class */
+/* {{{ getCryptoppStreamCipherDecryptorPtr
+   get the pointer to the native decryptor object of a php cipher class */
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherDecryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::SymmetricCipher *decryptor = static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
@@ -104,19 +108,22 @@ CryptoPP::SymmetricCipher *getCryptoppStreamCipherDecryptorPtr(zval *this_ptr TS
 }
 /* }}} */
 
-/* {{{ set the pointer to the native encryptor object of a php cipher class */
+/* {{{ setCryptoppStreamCipherEncryptorPtr
+   set the pointer to the native encryptor object of a php cipher class */
 void setCryptoppStreamCipherEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *encryptorPtr TSRMLS_DC) {
     static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor = encryptorPtr;
 }
 /* }}} */
 
-/* {{{ set the pointer to the native decryptor object of a php cipher class */
+/* {{{ setCryptoppStreamCipherDecryptorPtr
+   set the pointer to the native decryptor object of a php cipher class */
 void setCryptoppStreamCipherDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *decryptorPtr TSRMLS_DC) {
     static_cast<StreamCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor = decryptorPtr;
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a StreamCipherAbstract instance */
+/* {{{ isCryptoppStreamCipherKeyValid
+   verify that a key size is valid for a StreamCipherAbstract instance */
 bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC) {
     zval *key   = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
@@ -125,7 +132,8 @@ bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cip
 }
 /* }}} */
 
-/* {{{ verify that an iv size is valid for a StreamCipherAbstract instance */
+/* {{{ isCryptoppStreamCipherIvValid
+   verify that an iv size is valid for a StreamCipherAbstract instance */
 bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC) {
     zval *iv    = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);
     int ivSize  = Z_STRLEN_P(iv);
@@ -134,7 +142,8 @@ bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *ciph
 }
 /* }}} */
 
-/* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
+/* {{{ setKeyWithIv
+   sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor TSRMLS_DC) {
     zval *zKey      = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     zval *zIv       = zend_read_property(cryptopp_ce_StreamCipherAbstract, object, "iv", 2, 1 TSRMLS_CC);

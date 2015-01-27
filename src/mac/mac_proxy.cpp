@@ -16,6 +16,7 @@
 #include <exception>
 #include <algorithm>
 
+/* {{{ MacProxy::MacProxy */
 MacProxy::MacProxy(zval *macObject TSRMLS_DC)
 {
     SET_M_TSRMLS_C()
@@ -72,7 +73,9 @@ MacProxy::MacProxy(zval *macObject TSRMLS_DC)
     m_macObject = macObject;
     Z_ADDREF_P(m_macObject);
 }
+/* }}} */
 
+/* {{{ MacProxy::~MacProxy */
 MacProxy::~MacProxy()
 {
     zval_ptr_dtor(&m_macObject);
@@ -83,19 +86,27 @@ MacProxy::~MacProxy()
     zval_ptr_dtor(&m_funcnameSetKey);
     zval_ptr_dtor(&m_funcnameIsValidKeyLength);
 }
+/* }}} */
 
+/* {{{ MacProxy::DigestSize */
 unsigned int MacProxy::DigestSize() const {
     return m_digestSize;
 }
+/* }}} */
 
+/* {{{ MacProxy::BlockSize */
 unsigned int MacProxy::BlockSize() const {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ MacProxy::OptimalBlockSize */
 unsigned int MacProxy::OptimalBlockSize() const {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ MacProxy::TruncatedFinal */
 void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     zval *zOutput = call_user_method(m_macObject, m_funcnameFinal M_TSRMLS_CC);
 
@@ -115,7 +126,9 @@ void MacProxy::TruncatedFinal(byte *digest, size_t digestSize) {
     memcpy(digest, Z_STRVAL_P(zOutput), length);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ MacProxy::CalculateDigest */
 void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_macObject, m_funcnameCalculateDigest, zInput M_TSRMLS_CC);
@@ -138,7 +151,9 @@ void MacProxy::CalculateDigest(byte *digest, const byte *input, size_t length) {
     zval_ptr_dtor(&zInput);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ MacProxy::Update */
 void MacProxy::Update(const byte *input, size_t length) {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(input), length);
     zval *zOutput   = call_user_method(m_macObject, m_funcnameUpdate, zInput M_TSRMLS_CC);
@@ -146,16 +161,22 @@ void MacProxy::Update(const byte *input, size_t length) {
     zval_ptr_dtor(&zInput);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ MacProxy::Final */
 void MacProxy::Final(byte *digest) {
     TruncatedFinal(digest, m_digestSize);
 }
+/* }}} */
 
+/* {{{ MacProxy::Restart */
 void MacProxy::Restart() {
     zval *zOutput = call_user_method(m_macObject, m_funcnameRestart M_TSRMLS_CC);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ MacProxy::SetKey */
 void MacProxy::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     zval *zInput    = makeZval(reinterpret_cast<const char*>(key), length);
@@ -164,12 +185,16 @@ void MacProxy::SetKey(const byte *key, size_t length, const CryptoPP::NameValueP
     zval_ptr_dtor(&zInput);
     zval_ptr_dtor(&zOutput);
 }
+/* }}} */
 
+/* {{{ MacProxy::IsValidKeyLength */
 bool MacProxy::IsValidKeyLength(size_t n) const
 {
     return const_cast<MacProxy*>(this)->IsValidKeyLength(n);
 }
+/* }}} */
 
+/* {{{ MacProxy::IsValidKeyLength */
 bool MacProxy::IsValidKeyLength(size_t n)
 {
     zval *zKeySize  = makeZval(static_cast<long>(n));
@@ -181,6 +206,7 @@ bool MacProxy::IsValidKeyLength(size_t n)
 
     return isValid;
 }
+/* }}} */
 
 /*
  * Local variables:

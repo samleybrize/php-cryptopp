@@ -12,7 +12,6 @@
 
 #include "src/php_cryptopp.h"
 
-/* inits the StreamCipherInterface php interface */
 extern zend_class_entry *cryptopp_ce_StreamCipherInterface;
 void init_interface_StreamCipherInterface(TSRMLS_D);
 

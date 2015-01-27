@@ -18,8 +18,10 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 
 CryptoPP::MessageAuthenticationCode *getCryptoppMacNativePtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppMacNativePtr(zval *this_ptr, CryptoPP::MessageAuthenticationCode *nativePtr TSRMLS_DC);
+bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC);
 
-/* {{{ get the pointer to the native mac object of a php hash class */
+/* {{{ CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR
+   get the pointer to the native mac object of a php hash class */
 #define CRYPTOPP_MAC_ABSTRACT_GET_NATIVE_PTR(ptrName)           \
     ptrName = getCryptoppMacNativePtr(getThis() TSRMLS_CC);     \
                                                                 \
@@ -60,9 +62,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_MacAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* verify that a key size is valid for a MacAbstract instance */
-bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC);
 
 #endif /* PHP_MAC_ABSTRACT_H */
 

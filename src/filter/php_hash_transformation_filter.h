@@ -29,7 +29,8 @@ protected:
 };
 /* }}} */
 
-/* {{{ get the pointer to the native htf encryptor object of the php class */
+/* {{{ CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR
+   get the pointer to the native htf encryptor object of the php class */
 #define CRYPTOPP_HASH_TRANSFORMATION_FILTER_GET_NATIVE_PTR(ptrName)         \
     ptrName = getCryptoppHashTransformationFilterNativePtr(getThis() TSRMLS_CC); \
                                                                             \

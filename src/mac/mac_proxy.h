@@ -12,6 +12,7 @@
 
 #include "src/php_cryptopp.h"
 
+/* {{{ TODO */
 class MacProxy : public CryptoPP::MessageAuthenticationCode
 {
 public:
@@ -60,6 +61,7 @@ protected:
     zval *m_funcnameIsValidKeyLength;
     M_TSRMLS_D;
 };
+/* }}} */
 
 #endif /* PHP_MAC_PROXY_H */
 

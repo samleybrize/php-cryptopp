@@ -17,7 +17,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ MacAbstract_free_storage
+   custom object free handler */
 void MacAbstract_free_storage(void *object TSRMLS_DC) {
     MacAbstractContainer *obj = static_cast<MacAbstractContainer *>(object);
     delete obj->mac;
@@ -63,7 +64,8 @@ void init_class_MacAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_MacAbstractChild
+   inits a child class */
 void init_class_MacAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -76,7 +78,8 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a MacAbstract instance */
+/* {{{ isCryptoppMacKeyValid
+   verify that a key size is valid for a MacAbstract instance */
 bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC) {
     zval *key   = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
@@ -85,7 +88,8 @@ bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *ma
 }
 /* }}} */
 
-/* {{{ get the pointer to the native mac object of a php mac class */
+/* {{{ getCryptoppMacNativePtr
+   get the pointer to the native mac object of a php mac class */
 CryptoPP::MessageAuthenticationCode *getCryptoppMacNativePtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::MessageAuthenticationCode *mac = static_cast<MacAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->mac;
 
@@ -97,7 +101,8 @@ CryptoPP::MessageAuthenticationCode *getCryptoppMacNativePtr(zval *this_ptr TSRM
 }
 /* }}} */
 
-/* {{{ set the pointer to the native mac object of a php mac class */
+/* {{{ setCryptoppMacNativePtr
+   set the pointer to the native mac object of a php mac class */
 void setCryptoppMacNativePtr(zval *this_ptr, CryptoPP::MessageAuthenticationCode *nativePtr TSRMLS_DC) {
     static_cast<MacAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->mac = nativePtr;
 }

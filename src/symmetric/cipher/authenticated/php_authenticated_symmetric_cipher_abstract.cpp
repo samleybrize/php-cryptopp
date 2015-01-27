@@ -25,7 +25,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ AuthenticatedSymmetricCipherAbstract_free_storage
+   custom object free handler */
 void AuthenticatedSymmetricCipherAbstract_free_storage(void *object TSRMLS_DC) {
     AuthenticatedSymmetricCipherAbstractContainer *obj = static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(object);
     delete obj->encryptor;
@@ -82,7 +83,8 @@ void init_class_AuthenticatedSymmetricCipherAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_AuthenticatedSymmetricCipherAbstractChild
+   inits a child class */
 void init_class_AuthenticatedSymmetricCipherAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -95,7 +97,8 @@ void init_class_AuthenticatedSymmetricCipherAbstractChild(const char *algoName, 
 }
 /* }}} */
 
-/* {{{ get the pointer to the native encryptor object of a php cipher class */
+/* {{{ getCryptoppAuthenticatedSymmetricCipherEncryptorPtr
+   get the pointer to the native encryptor object of a php cipher class */
 CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::AuthenticatedSymmetricCipher *encryptor = static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
 
@@ -107,7 +110,8 @@ CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherE
 }
 /* }}} */
 
-/* {{{ get the pointer to the native decryptor object of a php cipher class */
+/* {{{ getCryptoppAuthenticatedSymmetricCipherDecryptorPtr
+   get the pointer to the native decryptor object of a php cipher class */
 CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::AuthenticatedSymmetricCipher *decryptor = static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
 
@@ -119,19 +123,22 @@ CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherD
 }
 /* }}} */
 
-/* {{{ set the pointer to the native encryptor object of a php cipher class */
+/* {{{ setCryptoppAuthenticatedSymmetricCipherEncryptorPtr
+   set the pointer to the native encryptor object of a php cipher class */
 void setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(zval *this_ptr, CryptoPP::AuthenticatedSymmetricCipher *encryptorPtr TSRMLS_DC) {
     static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor = encryptorPtr;
 }
 /* }}} */
 
-/* {{{ set the pointer to the native decryptor object of a php cipher class */
+/* {{{ setCryptoppAuthenticatedSymmetricCipherDecryptorPtr
+   set the pointer to the native decryptor object of a php cipher class */
 void setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(zval *this_ptr, CryptoPP::AuthenticatedSymmetricCipher *decryptorPtr TSRMLS_DC) {
     static_cast<AuthenticatedSymmetricCipherAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor = decryptorPtr;
 }
 /* }}} */
 
-/* {{{ Get needed cipher elements to build an authenticated cipher object */
+/* {{{ cryptoppAuthenticatedSymmetricCipherGetCipherElements
+   Get needed cipher elements to build an authenticated cipher object */
 bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     const char *authenticatedCipherName,
     zval *cipherObject,
@@ -184,7 +191,8 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
 }
 /* }}} */
 
-/* {{{ returns the cipher key */
+/* {{{ getCipherKey
+   returns the cipher key */
 static inline zval *getCipherKey(zval *object TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zval *funcname          = makeZval("getKey");
@@ -194,7 +202,8 @@ static inline zval *getCipherKey(zval *object TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ returns the cipher iv */
+/* {{{ getCipherIv
+   returns the cipher iv */
 static inline zval *getCipherIv(zval *object TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zend_class_entry *ce    = zend_get_class_entry(cipher TSRMLS_CC);
@@ -214,7 +223,8 @@ static inline zval *getCipherIv(zval *object TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ destruct an IV zval if it was retrieved from an underlying cipher object */
+/* {{{ ivDtor
+   destruct an IV zval if it was retrieved from an underlying cipher object */
 static inline void ivDtor(zval *object, zval *iv TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zend_class_entry *ce    = zend_get_class_entry(cipher TSRMLS_CC);
@@ -225,7 +235,8 @@ static inline void ivDtor(zval *object, zval *iv TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
+/* {{{ isCryptoppAuthenticatedSymmetricCipherKeyValid
+   verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
 bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *key   = getCipherKey(object TSRMLS_CC);
     int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
@@ -235,7 +246,8 @@ bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::Auth
 }
 /* }}} */
 
-/* {{{ verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
+/* {{{ isCryptoppAuthenticatedSymmetricCipherIvValid
+   verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
 bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC) {
     zval *iv                = getCipherIv(object TSRMLS_CC);
     int ivSize              = IS_STRING == Z_TYPE_P(iv) ? Z_STRLEN_P(iv) : 0;
@@ -245,7 +257,8 @@ bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::Authe
 }
 /* }}} */
 
-/* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
+/* {{{ setKeyWithIv
+   sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
     zval *zKey              = getCipherKey(object TSRMLS_CC);
     zval *zIv               = getCipherIv(object TSRMLS_CC);
@@ -259,13 +272,15 @@ static void setKeyWithIv(zval *object, CryptoPP::AuthenticatedSymmetricCipher *e
 }
 /* }}} */
 
-/* {{{ resets the mac and the iv of the cipher to their initial state */
+/* {{{ restart
+   resets the mac and the iv of the cipher to their initial state */
 static inline void restart(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
     setKeyWithIv(object, encryptor, decryptor TSRMLS_CC);
 }
 /* }}} */
 
-/* {{{ ensure the iv is set.
+/* {{{ ensureIvIsSet
+   ensure the iv is set.
    If cipher's setKey() is called after setIv(), the internal iv of the native cryptopp object may not be set. */
 static inline void ensureIvIsSet(zval *object, CryptoPP::AuthenticatedSymmetricCipher *encryptor, CryptoPP::AuthenticatedSymmetricCipher *decryptor TSRMLS_DC) {
     zval *ivSetted = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);

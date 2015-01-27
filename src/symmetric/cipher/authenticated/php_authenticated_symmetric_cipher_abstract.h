@@ -20,8 +20,11 @@ CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherE
 CryptoPP::AuthenticatedSymmetricCipher *getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppAuthenticatedSymmetricCipherEncryptorPtr(zval *this_ptr, CryptoPP::AuthenticatedSymmetricCipher *nativePtr TSRMLS_DC);
 void setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(zval *this_ptr, CryptoPP::AuthenticatedSymmetricCipher *nativePtr TSRMLS_DC);
+bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
+bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
 
-/* {{{ get the pointer to the native encryptor object of a php cipher class */
+/* {{{ CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR
+   get the pointer to the native encryptor object of a php cipher class */
 #define CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(ptrName)     \
     ptrName = getCryptoppAuthenticatedSymmetricCipherEncryptorPtr(getThis() TSRMLS_CC); \
                                                                         \
@@ -30,7 +33,8 @@ void setCryptoppAuthenticatedSymmetricCipherDecryptorPtr(zval *this_ptr, CryptoP
     }                                                                   \
 /* }}} */
 
-/* {{{ get the pointer to the native decryptor object of a php cipher class */
+/* {{{ CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR
+   get the pointer to the native decryptor object of a php cipher class */
 #define CRYPTOPP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_GET_DECRYPTOR_PTR(ptrName)     \
     ptrName = getCryptoppAuthenticatedSymmetricCipherDecryptorPtr(getThis() TSRMLS_CC); \
                                                                         \
@@ -91,12 +95,6 @@ bool cryptoppAuthenticatedSymmetricCipherGetCipherElements(
     TSRMLS_DC
 );
 /* }}} */
-
-/* verify that a key size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-bool isCryptoppAuthenticatedSymmetricCipherKeyValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
-
-/* verify that an iv size is valid for an AuthenticatedSymmetricCipherAbstract instance */
-bool isCryptoppAuthenticatedSymmetricCipherIvValid(zval *object, CryptoPP::AuthenticatedSymmetricCipher *cipher TSRMLS_DC);
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_ABSTRACT_H */
 

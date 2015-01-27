@@ -12,6 +12,9 @@
 
 #include "src/php_cryptopp.h"
 
+extern zend_class_entry *cryptopp_ce_SymmetricTransformationInterface;
+void init_interface_SymmetricTransformationInterface(TSRMLS_D);
+
 /* {{{ php symmetric transformation classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_setIv, 0)
     ZEND_ARG_INFO(0, iv)
@@ -35,10 +38,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationInterface_restart, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* inits the SymmetricTransformationInterface php interface */
-extern zend_class_entry *cryptopp_ce_SymmetricTransformationInterface;
-void init_interface_SymmetricTransformationInterface(TSRMLS_D);
 
 #endif /* PHP_SYMMETRIC_TRANSFORMATION_INTERFACE_H */
 

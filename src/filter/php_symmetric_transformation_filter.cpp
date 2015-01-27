@@ -301,7 +301,8 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricTransformationFilter_decryptString, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ custom object free handler */
+/* {{{ SymmetricTransformationFilter_free_storage
+   custom object free handler */
 void SymmetricTransformationFilter_free_storage(void *object TSRMLS_DC) {
     SymmetricTransformationFilterContainer *obj = static_cast<SymmetricTransformationFilterContainer *>(object);
     delete obj->stfEncryptor;
@@ -340,7 +341,8 @@ void init_class_SymmetricTransformationFilter(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ get the pointer to the native stf encryptor object of the php class */
+/* {{{ getCryptoppSymmetricTransformationFilterEncryptorPtr
+   get the pointer to the native stf encryptor object of the php class */
 static SymmetricTransformationFilter *getCryptoppSymmetricTransformationFilterEncryptorPtr(zval *this_ptr TSRMLS_DC) {
     SymmetricTransformationFilter *stf = static_cast<SymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor;
 
@@ -352,7 +354,8 @@ static SymmetricTransformationFilter *getCryptoppSymmetricTransformationFilterEn
 }
 /* }}} */
 
-/* {{{ get the pointer to the native stf decryptor object of the php class */
+/* {{{ getCryptoppSymmetricTransformationFilterDecryptorPtr
+   get the pointer to the native stf decryptor object of the php class */
 static SymmetricTransformationFilter *getCryptoppSymmetricTransformationFilterDecryptorPtr(zval *this_ptr TSRMLS_DC) {
     SymmetricTransformationFilter *stf = static_cast<SymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor;
 
@@ -364,19 +367,22 @@ static SymmetricTransformationFilter *getCryptoppSymmetricTransformationFilterDe
 }
 /* }}} */
 
-/* {{{ set the pointer to the native stf encryptor object of the php class */
+/* {{{ setCryptoppSymmetricTransformationFilterEncryptorPtr
+   set the pointer to the native stf encryptor object of the php class */
 static void setCryptoppSymmetricTransformationFilterEncryptorPtr(zval *this_ptr, SymmetricTransformationFilter *nativePtr TSRMLS_DC) {
     static_cast<SymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfEncryptor = nativePtr;
 }
 /* }}} */
 
-/* {{{ set the pointer to the native stf decryptor object of the php class */
+/* {{{ setCryptoppSymmetricTransformationFilterDecryptorPtr
+   set the pointer to the native stf decryptor object of the php class */
 static void setCryptoppSymmetricTransformationFilterDecryptorPtr(zval *this_ptr, SymmetricTransformationFilter *nativePtr TSRMLS_DC) {
     static_cast<SymmetricTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->stfDecryptor = nativePtr;
 }
 /* }}} */
 
-/* {{{ indicates if the native symmetric transformation object holded by a stf object is valid */
+/* {{{ isNativeSymmetricTransformationObjectValid
+   indicates if the native symmetric transformation object holded by a stf object is valid */
 static bool isNativeSymmetricTransformationObjectValid(zval *stfObject TSRMLS_DC) {
     zval *cipherObject = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
 
@@ -403,7 +409,8 @@ static bool isNativeSymmetricTransformationObjectValid(zval *stfObject TSRMLS_DC
 }
 /* }}} */
 
-/* {{{ restart the cipher holded by a SymmetricTransformationFilter php object */
+/* {{{ restartSymmetricCipherObject
+   restart the cipher holded by a SymmetricTransformationFilter php object */
 static void restartSymmetricCipherObject(zval *stfObject TSRMLS_DC) {
     zval *cipherObject  = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, stfObject, "cipher", 6, 0 TSRMLS_CC);
     zval *funcName      = makeZval("restart");
@@ -534,7 +541,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, __construct) {
 /* }}} */
 
 /* {{{ proto Cryptopp\SymmetricTransformationInterface SymmetricTransformationFilter::getCipher(void)
-       Returns the cipher object */
+   Returns the cipher object */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher) {
     zval *cipherObject = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, getThis(), "cipher", 6, 0 TSRMLS_CC);
     RETURN_ZVAL(cipherObject, 1, 0)
@@ -542,7 +549,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getCipher) {
 /* }}} */
 
 /* {{{ proto Cryptopp\PaddingInterface SymmetricTransformationFilter::getPadding(void)
-       Returns the padding object */
+   Returns the padding object */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getPadding) {
     zval *paddingObject = zend_read_property(cryptopp_ce_SymmetricTransformationFilter, getThis(), "padding", 7, 0 TSRMLS_CC);
     RETURN_ZVAL(paddingObject, 1, 0)
@@ -552,7 +559,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, getPadding) {
 // TODO method encrypt/decrypt: accept an input and output object (return boolean)
 
 /* {{{ proto bool|string SymmetricTransformationFilter::encryptString(string data)
-       Encrypts a string */
+   Encrypts a string */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString) {
     char *data      = NULL;
     int dataSize    = 0;
@@ -597,7 +604,7 @@ PHP_METHOD(Cryptopp_SymmetricTransformationFilter, encryptString) {
 /* }}} */
 
 /* {{{ proto bool|string SymmetricTransformationFilter::decryptString(string ciphertext)
-       Decrypts a string */
+   Decrypts a string */
 PHP_METHOD(Cryptopp_SymmetricTransformationFilter, decryptString) {
     char *ciphertext    = NULL;
     int ciphertextSize  = 0;

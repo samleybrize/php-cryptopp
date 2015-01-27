@@ -26,7 +26,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_HashSha3_512_construct, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP classes déclaration */
+/* {{{ PHP classes declaration */
 zend_class_entry *cryptopp_ce_HashSha3_224;
 zend_class_entry *cryptopp_ce_HashSha3_256;
 zend_class_entry *cryptopp_ce_HashSha3_384;

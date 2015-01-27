@@ -20,6 +20,8 @@ CryptoPP::SymmetricCipher *getCryptoppStreamCipherEncryptorPtr(zval *this_ptr TS
 CryptoPP::SymmetricCipher *getCryptoppStreamCipherDecryptorPtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppStreamCipherEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
 void setCryptoppStreamCipherDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
+bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC);
+bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC);
 
 /* {{{ get the pointer to the native encryptor object of a php cipher class */
 #define CRYPTOPP_STREAM_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(ptrName)       \
@@ -73,12 +75,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_StreamCipherAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* verify that a key size is valid for a StreamCipherAbstract instance */
-bool isCryptoppStreamCipherKeyValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC);
-
-/* verify that an iv size is valid for a StreamCipherAbstract instance */
-bool isCryptoppStreamCipherIvValid(zval *object, CryptoPP::SymmetricCipher *cipher TSRMLS_DC);
 
 #endif /* PHP_STREAM_CIPHER_ABSTRACT_H */
 

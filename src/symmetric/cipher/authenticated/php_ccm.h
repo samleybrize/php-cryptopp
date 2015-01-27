@@ -14,6 +14,8 @@
 #include "authenticated_symmetric_cipher_prespecified_lengths.h"
 #include <ccm.h>
 
+void init_class_AuthenticatedSymmetricCipherCcm(TSRMLS_D);
+
 /* {{{ fork of CryptoPP::CCM that take a cipher as parameter instead of a template parameter */
 class CCM
 {
@@ -62,10 +64,11 @@ public:
 };
 /* }}} */
 
-void init_class_AuthenticatedSymmetricCipherCcm(TSRMLS_D);
+/* {{{ methods declaration */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, __construct);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, setDigestSize);
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, specifyDataSize);
+/* }}} */
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_CCM_H */
 

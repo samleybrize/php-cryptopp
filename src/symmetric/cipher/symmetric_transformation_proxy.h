@@ -13,6 +13,7 @@
 #include "src/php_cryptopp.h"
 #include "symmetric_transformation_user_interface.h"
 
+/* {{{ TODO */
 class SymmetricTransformationProxy
 {
     /* {{{ base class */
@@ -75,6 +76,7 @@ public:
     };
     /* }}} */
 };
+/* }}} */
 
 #endif /* PHP_SYMMETRIC_TRANSFORMATION_PROXY_H */
 

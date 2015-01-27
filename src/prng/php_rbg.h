@@ -13,16 +13,19 @@
 #include "src/php_cryptopp.h"
 
 void init_class_RandomByteGenerator(TSRMLS_D);
-PHP_METHOD(Cryptopp_RandomByteGenerator, __construct);
-PHP_METHOD(Cryptopp_RandomByteGenerator, __sleep);
-PHP_METHOD(Cryptopp_RandomByteGenerator, __wakeup);
-PHP_METHOD(Cryptopp_RandomByteGenerator, generate);
 
 /* {{{ object creation related stuff */
 struct RandomByteGeneratorContainer {
     zend_object std;
     CryptoPP::RandomNumberGenerator *rbg;
 };
+/* }}} */
+
+/* {{{ methods declarations */
+PHP_METHOD(Cryptopp_RandomByteGenerator, __construct);
+PHP_METHOD(Cryptopp_RandomByteGenerator, __sleep);
+PHP_METHOD(Cryptopp_RandomByteGenerator, __wakeup);
+PHP_METHOD(Cryptopp_RandomByteGenerator, generate);
 /* }}} */
 
 #endif /* PHP_RBG_H */

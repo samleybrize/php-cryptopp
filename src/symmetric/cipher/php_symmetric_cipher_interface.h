@@ -12,6 +12,9 @@
 
 #include "src/php_cryptopp.h"
 
+extern zend_class_entry *cryptopp_ce_SymmetricCipherInterface;
+void init_interface_SymmetricCipherInterface(TSRMLS_D);
+
 /* {{{ php symmetric cipher classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getName, 0)
 ZEND_END_ARG_INFO()
@@ -30,10 +33,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_SymmetricCipherInterface_getKey, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* inits the SymmetricCipherInterface php interface */
-extern zend_class_entry *cryptopp_ce_SymmetricCipherInterface;
-void init_interface_SymmetricCipherInterface(TSRMLS_D);
 
 #endif /* PHP_SYMMETRIC_CIPHER_INTERFACE_H */
 

@@ -48,7 +48,8 @@ static void object_properties_init(zend_object *object, zend_class_entry *class_
 #endif
 /* }}} */
 
-/* {{{ init a class with custom object storage */
+/* {{{ zend_custom_create_handler
+   init a class with custom object storage */
 template<class CONTAINER, zend_object_free_storage FREE_STORAGE, zend_object_handlers *OBJECT_HANDLERS>
 zend_object_value zend_custom_create_handler(zend_class_entry *type TSRMLS_DC) {
     zend_object_value retval;

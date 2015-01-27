@@ -15,12 +15,17 @@
 
 using namespace std;
 
+/* {{{ AlgoList::addAlgo
+   adds an algorithm */
 void AlgoList::addAlgo(const std::string algoName, const std::string hashClassname)
 {
     algoList.push_back(algoName);
     classList.push_back(hashClassname);
 }
+/* }}} */
 
+/* {{{ AlgoList::getAlgoList
+   returns algorithm list */
 vector<string> AlgoList::getAlgoList()
 {
     vector<string> _algos(algoList);
@@ -37,7 +42,10 @@ void AlgoList::getAlgoList(zval *returnValue)
         add_next_index_string(returnValue, it->c_str(), it->length());
     }
 }
+/* }}} */
 
+/* {{{ AlgoList::getAlgoClass
+   returns the class name of an algorithm */
 string AlgoList::getAlgoClass(const string &algoName)
 {
     vector<string>::iterator iterator = find(algoList.begin(), algoList.end(), algoName);
@@ -52,6 +60,7 @@ string AlgoList::getAlgoClass(const string &algoName)
         return classList[pos];
     }
 }
+/* }}} */
 
 /*
  * Local variables:

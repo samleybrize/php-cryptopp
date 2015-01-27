@@ -13,6 +13,9 @@
 #include "src/php_cryptopp.h"
 #include <gcm.h>
 
+void init_class_AuthenticatedSymmetricCipherGcm(TSRMLS_D);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct);
+
 /* {{{ fork of CryptoPP::GCM that take a cipher as parameter instead of a template parameter */
 class GCM
 {
@@ -55,9 +58,6 @@ public:
     /* }}} */
 };
 /* }}} */
-
-void init_class_AuthenticatedSymmetricCipherGcm(TSRMLS_D);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherGcm, __construct);
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_GCM_H */
 

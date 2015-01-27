@@ -21,7 +21,8 @@ void init_class_CryptoppMacVerificationFailedException(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ return a pointer to the CryptoppMacVerificationFailedException class entry */
+/* {{{ getCryptoppMacVerificationFailedException
+   return a pointer to the CryptoppMacVerificationFailedException class entry */
 zend_class_entry *getCryptoppMacVerificationFailedException() {
     return cryptopp_ce_CryptoppMacVerificationFailedException;
 }

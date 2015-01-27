@@ -14,6 +14,9 @@
 #include <hmac.h>
 #include <seckey.h>
 
+void init_class_MacHmac(TSRMLS_D);
+PHP_METHOD(Cryptopp_MacHmac, __construct);
+
 /* {{{ fork of CryptoPP::HMAC that take a hash as parameter instead of a template parameter */
 class Hmac : public CryptoPP::MessageAuthenticationCodeImpl<CryptoPP::HMAC_Base, Hmac>
 {
@@ -31,9 +34,6 @@ private:
     bool m_freeHashObject;
 };
 /* }}} */
-
-void init_class_MacHmac(TSRMLS_D);
-PHP_METHOD(Cryptopp_MacHmac, __construct);
 
 #endif /* PHP_MAC_HMAC_H */
 

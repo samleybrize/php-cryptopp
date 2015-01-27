@@ -15,6 +15,7 @@
 #include <zend_exceptions.h>
 #include <exception>
 
+/* {{{ BlockCipherProxy::Base::Base */
 BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname TSRMLS_DC)
 {
     SET_M_TSRMLS_C()
@@ -64,7 +65,9 @@ BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFun
     m_blockCipherObject = blockCipherObject;
     Z_ADDREF_P(m_blockCipherObject);
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::~Base */
 BlockCipherProxy::Base::~Base()
 {
     zval_ptr_dtor(&m_blockCipherObject);
@@ -73,17 +76,23 @@ BlockCipherProxy::Base::~Base()
     zval_ptr_dtor(&m_funcnameIsValidKeyLength);
     zval_ptr_dtor(&m_funcnameSetKey);
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::BlockSize */
 unsigned int BlockCipherProxy::Base::BlockSize() const
 {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::IsValidKeyLength */
 bool BlockCipherProxy::Base::IsValidKeyLength(size_t n) const
 {
     return const_cast<BlockCipherProxy::Base*>(this)->IsValidKeyLength(n);
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::IsValidKeyLength */
 bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 {
     zval *zKeySize  = makeZval(static_cast<long>(n));
@@ -95,7 +104,9 @@ bool BlockCipherProxy::Base::IsValidKeyLength(size_t n)
 
     return isValid;
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::SetKey */
 void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
@@ -104,12 +115,16 @@ void BlockCipherProxy::Base::SetKey(const byte *key, size_t length, const Crypto
     zval_ptr_dtor(&zKey);
     zval_ptr_dtor(&output);
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::ProcessAndXorBlock */
 void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
     const_cast<BlockCipherProxy::Base*>(this)->ProcessAndXorBlock(inBlock, xorBlock, outBlock);
 }
+/* }}} */
 
+/* {{{ BlockCipherProxy::Base::ProcessAndXorBlock */
 void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock)
 {
     // TODO optimize? (use of AdvancedProcessBlocks)
@@ -136,6 +151,7 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
     zval_ptr_dtor(&zInBlock);
     zval_ptr_dtor(&zProcessedBlock);
 }
+/* }}} */
 
 /*
  * Local variables:

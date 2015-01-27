@@ -17,6 +17,7 @@
 #include <algparam.h>
 #include <argnames.h>
 
+/* {{{ SymmetricTransformationProxy::Base::Base */
 SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, const char* processDataFuncname TSRMLS_DC)
 {
     SET_M_TSRMLS_C()
@@ -56,7 +57,9 @@ SymmetricTransformationProxy::Base::Base(zval *symmetricTransformationObject, co
     m_symmetricTransformationObject = symmetricTransformationObject;
     Z_ADDREF_P(m_symmetricTransformationObject);
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::~Base */
 SymmetricTransformationProxy::Base::~Base()
 {
     zval_ptr_dtor(&m_symmetricTransformationObject);
@@ -67,17 +70,23 @@ SymmetricTransformationProxy::Base::~Base()
     zval_ptr_dtor(&m_funcnameSetIv);
     zval_ptr_dtor(&m_funcnameRestart);
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::MandatoryBlockSize */
 unsigned int SymmetricTransformationProxy::Base::MandatoryBlockSize() const
 {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::OptimalBlockSize */
 unsigned int SymmetricTransformationProxy::Base::OptimalBlockSize() const
 {
     return m_blockSize;
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::ProcessData */
 void SymmetricTransformationProxy::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
     zval *input     = makeZval(reinterpret_cast<const char*>(inString), length);
@@ -93,12 +102,16 @@ void SymmetricTransformationProxy::Base::ProcessData(byte *outString, const byte
     zval_ptr_dtor(&input);
     zval_ptr_dtor(&output);
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::IsValidKeyLength */
 bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n) const
 {
     return const_cast<SymmetricTransformationProxy::Base*>(this)->IsValidKeyLength(n);
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::IsValidKeyLength */
 bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
 {
     zval *zKeySize  = makeZval(static_cast<long>(n));
@@ -110,7 +123,9 @@ bool SymmetricTransformationProxy::Base::IsValidKeyLength(size_t n)
 
     return isValid;
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::IsValidIvLength */
 bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
 {
     zval *zIvSize   = makeZval(static_cast<long>(n));
@@ -122,7 +137,9 @@ bool SymmetricTransformationProxy::Base::IsValidIvLength(size_t n)
 
     return isValid;
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::SetKeyWithIV */
 void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t length, const byte *iv, size_t ivLength)
 {
     zval *zKey      = makeZval(reinterpret_cast<const char*>(key), length);
@@ -137,7 +154,9 @@ void SymmetricTransformationProxy::Base::SetKeyWithIV(const byte *key, size_t le
 
     Restart();
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::SetKey */
 void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, const CryptoPP::NameValuePairs &params)
 {
     // retrieve IV from parameters
@@ -160,12 +179,15 @@ void SymmetricTransformationProxy::Base::SetKey(const byte *key, size_t length, 
 
     SetKeyWithIV(key, length, iv, ivLength);
 }
+/* }}} */
 
+/* {{{ SymmetricTransformationProxy::Base::Restart */
 void SymmetricTransformationProxy::Base::Restart()
 {
     zval *output = call_user_method(m_symmetricTransformationObject, m_funcnameRestart M_TSRMLS_CC);
     zval_ptr_dtor(&output);
 }
+/* }}} */
 
 /*
  * Local variables:

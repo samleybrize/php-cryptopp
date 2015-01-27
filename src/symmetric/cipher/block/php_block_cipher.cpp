@@ -26,7 +26,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_BlockCipher_getClassname, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_BlockCipher;
 
 static zend_function_entry cryptopp_methods_BlockCipher[] = {

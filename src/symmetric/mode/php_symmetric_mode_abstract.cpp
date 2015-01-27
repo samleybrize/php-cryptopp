@@ -22,7 +22,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ SymmetricModeAbstract_free_storage
+   custom object free handler */
 void SymmetricModeAbstract_free_storage(void *object TSRMLS_DC) {
     SymmetricModeAbstractContainer *obj = static_cast<SymmetricModeAbstractContainer *>(object);
     delete obj->encryptor;
@@ -72,7 +73,8 @@ void init_class_SymmetricModeAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_SymmetricModeAbstractChild
+   inits a child class */
 void init_class_SymmetricModeAbstractChild(const char *modeName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -85,7 +87,8 @@ void init_class_SymmetricModeAbstractChild(const char *modeName, const char* cla
 }
 /* }}} */
 
-/* {{{ get the pointer to the native encryptor object of a php mode class */
+/* {{{ getCryptoppSymmetricModeEncryptorPtr
+   get the pointer to the native encryptor object of a php mode class */
 CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::SymmetricCipher *encryptor;
     encryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->encryptor;
@@ -98,7 +101,8 @@ CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr T
 }
 /* }}} */
 
-/* {{{ get the pointer to the native decryptor object of a php mode class */
+/* {{{ getCryptoppSymmetricModeDecryptorPtr
+   get the pointer to the native decryptor object of a php mode class */
 CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::SymmetricCipher *decryptor;
     decryptor = static_cast<SymmetricModeAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->decryptor;
@@ -111,7 +115,8 @@ CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr T
 }
 /* }}} */
 
-/* {{{ set the pointer to the native encryptor object of a php mode class */
+/* {{{ setCryptoppSymmetricModeEncryptorPtr
+   set the pointer to the native encryptor object of a php mode class */
 void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *encryptorPtr TSRMLS_DC) {
     if (encryptorPtr->MandatoryBlockSize() < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0");
@@ -122,7 +127,8 @@ void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCip
 }
 /* }}} */
 
-/* {{{ set the pointer to the native decryptor object of a php mode class */
+/* {{{ setCryptoppSymmetricModeDecryptorPtr
+   set the pointer to the native decryptor object of a php mode class */
 void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *decryptorPtr TSRMLS_DC) {
     if (decryptorPtr->MandatoryBlockSize() < 1) {
         zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"Cryptopp\\SymmetricModeAbstract can only be used with a block cipher with a block size greater than 0");
@@ -133,7 +139,8 @@ void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCip
 }
 /* }}} */
 
-/* {{{ Get needed cipher elements to build a mode object */
+/* {{{ cryptoppSymmetricModeGetCipherElements
+   Get needed cipher elements to build a mode object */
 bool cryptoppSymmetricModeGetCipherElements(
     const char *modeName,
     zval *cipherObject,
@@ -203,7 +210,8 @@ bool cryptoppSymmetricModeGetCipherElements(
 }
 /* }}} */
 
-/* {{{ returns the cipher key */
+/* {{{ getCipherKey
+   returns the cipher key */
 static inline zval *getCipherKey(zval *object TSRMLS_DC) {
     zval *cipher            = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "cipher", 6, 1 TSRMLS_CC);
     zval *funcname          = makeZval("getKey");
@@ -213,7 +221,8 @@ static inline zval *getCipherKey(zval *object TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ verify that a key size is valid for a SymmetricModeAbstract instance */
+/* {{{ isCryptoppSymmetricModeKeyValid
+   verify that a key size is valid for a SymmetricModeAbstract instance */
 bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC) {
     zval *key;
     key         = getCipherKey(object TSRMLS_CC);
@@ -224,7 +233,8 @@ bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mo
 }
 /* }}} */
 
-/* {{{ verify that an iv size is valid for a SymmetricModeAbstract instance */
+/* {{{ isCryptoppSymmetricModeIvValid
+   verify that an iv size is valid for a SymmetricModeAbstract instance */
 bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC) {
     zval *iv;
     iv          = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "iv", 2, 1 TSRMLS_CC);
@@ -234,7 +244,8 @@ bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mod
 }
 /* }}} */
 
-/* {{{ sets the key and the iv (if applicable) of the native mode objects of a mode php object */
+/* {{{ setKeyWithIv
+   sets the key and the iv (if applicable) of the native mode objects of a mode php object */
 static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor TSRMLS_DC) {
     zval *zKey      = getCipherKey(object TSRMLS_CC);
     zval *zIv       = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "iv", 2, 1 TSRMLS_CC);
@@ -247,7 +258,8 @@ static void setKeyWithIv(zval *object, CryptoPP::SymmetricCipher *encryptor, Cry
 }
 /* }}} */
 
-/* {{{ ensure the iv is set.
+/* {{{ ensureIvIsSet
+   ensure the iv is set.
    If cipher's setKey() is called after setIv(), the internal iv of the native cryptopp object may not be set. */
 static inline void ensureIvIsSet(zval *object, CryptoPP::SymmetricCipher *encryptor, CryptoPP::SymmetricCipher *decryptor TSRMLS_DC) {
     zval *ivSetted = zend_read_property(cryptopp_ce_SymmetricModeAbstract, object, "ivSetted", 8, 1 TSRMLS_CC);

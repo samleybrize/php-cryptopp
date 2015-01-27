@@ -13,7 +13,8 @@
 #include "zend_object_utils.h"
 #include <zend_exceptions.h>
 
-/* {{{ verify that a key size is valid for a given algorithm */
+/* {{{ isCryptoppSymmetricKeyValid
+   verify that a key size is valid for a given algorithm */
 bool isCryptoppSymmetricKeyValid(zval *object, CryptoPP::SimpleKeyingInterface *keying, int keySize TSRMLS_DC, bool throwIfFalse) {
     if (!keying->IsValidKeyLength(keySize)) {
         zend_class_entry *ce;
@@ -34,7 +35,8 @@ bool isCryptoppSymmetricKeyValid(zval *object, CryptoPP::SimpleKeyingInterface *
 }
 /* }}} */
 
-/* {{{ verify that an IV size is valid for a given algorithm */
+/* {{{ isCryptoppSymmetricIvValid
+   verify that an IV size is valid for a given algorithm */
 bool isCryptoppSymmetricIvValid(zval *object, CryptoPP::SimpleKeyingInterface *keying, int ivSize TSRMLS_DC, bool throwIfFalse) {
     bool isValid = false;
 
@@ -67,7 +69,8 @@ bool isCryptoppSymmetricIvValid(zval *object, CryptoPP::SimpleKeyingInterface *k
 }
 /* }}} */
 
-/* {{{ sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
+/* {{{ setSymmetricCipherKeyIv
+   sets the key and the iv (if applicable) of the native cipher objects of a cipher php object */
 bool setSymmetricCipherKeyIv(
     zval *object,
     CryptoPP::SimpleKeyingInterface *encryptor,

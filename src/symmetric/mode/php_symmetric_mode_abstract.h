@@ -20,6 +20,8 @@ CryptoPP::SymmetricCipher *getCryptoppSymmetricModeEncryptorPtr(zval *this_ptr T
 CryptoPP::SymmetricCipher *getCryptoppSymmetricModeDecryptorPtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppSymmetricModeEncryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
 void setCryptoppSymmetricModeDecryptorPtr(zval *this_ptr, CryptoPP::SymmetricCipher *nativePtr TSRMLS_DC);
+bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
+bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
 
 /* {{{ get the pointer to the native encryptor object of a php mode class */
 #define CRYPTOPP_SYMMETRIC_MODE_ABSTRACT_GET_ENCRYPTOR_PTR(ptrName)         \
@@ -86,12 +88,6 @@ bool cryptoppSymmetricModeGetCipherElements(
     TSRMLS_DC
 );
 /* }}} */
-
-/* verify that a key size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeKeyValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
-
-/* verify that an iv size is valid for a SymmetricModeAbstract instance */
-bool isCryptoppSymmetricModeIvValid(zval *object, CryptoPP::SymmetricCipher *mode TSRMLS_DC);
 
 #endif /* PHP_SYMMETRIC_MODE_ABSTRACT_H */
 

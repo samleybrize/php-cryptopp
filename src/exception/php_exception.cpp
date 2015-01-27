@@ -21,7 +21,8 @@ void init_class_CryptoppException(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ return a pointer to the CryptoppException class entry */
+/* {{{ getCryptoppException
+   return a pointer to the CryptoppException class entry */
 zend_class_entry *getCryptoppException() {
     return cryptopp_ce_CryptoppException;
 }

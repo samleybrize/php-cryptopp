@@ -12,6 +12,9 @@
 
 #include "src/php_cryptopp.h"
 
+extern zend_class_entry *cryptopp_ce_PaddingInterface;
+void init_interface_PaddingInterface(TSRMLS_D);
+
 /* {{{ php padding classes methods arg info */
 ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_pad, 0)
     ZEND_ARG_INFO(0, data)
@@ -29,10 +32,6 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_PaddingInterface_canUnpad, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
-
-/* inits the PaddingInterface php interface */
-extern zend_class_entry *cryptopp_ce_PaddingInterface;
-void init_interface_PaddingInterface(TSRMLS_D);
 
 #endif /* PHP_PADDING_INTERFACE_H */
 

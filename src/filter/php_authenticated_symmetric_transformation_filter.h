@@ -70,7 +70,8 @@ protected:
 };
 /* }}} */
 
-/* {{{ get the pointer to the native stf encryptor object of the php class */
+/* {{{ CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR
+   get the pointer to the native stf encryptor object of the php class */
 #define CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_ENCRYPTOR_PTR(ptrName) \
     ptrName = getCryptoppAuthenticatedSymmetricTransformationFilterEncryptorPtr(getThis() TSRMLS_CC); \
                                                                             \
@@ -79,7 +80,8 @@ protected:
     }                                                                       \
 /* }}} */
 
-/* {{{ get the pointer to the native stf decryptor object of the php class */
+/* {{{ CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR
+   get the pointer to the native stf decryptor object of the php class */
 #define CRYPTOPP_AUTHENTICATED_SYMMETRIC_TRANSFORMATION_FILTER_GET_DECRYPTOR_PTR(ptrName) \
     ptrName = getCryptoppAuthenticatedSymmetricTransformationFilterDecryptorPtr(getThis() TSRMLS_CC); \
                                                                             \

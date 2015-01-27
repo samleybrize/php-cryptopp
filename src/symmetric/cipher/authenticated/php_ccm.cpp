@@ -16,21 +16,25 @@
 #include <zend_exceptions.h>
 #include <ccm.h>
 
-/* {{{ fork of CryptoPP::CCM that take a cipher as parameter instead of a template parameter */
+/* {{{ CCM::Base::Base */
 CCM::Base::Base(CryptoPP::BlockCipher *cipher, bool cipherMustBeDestructed TSRMLS_DC)
     : m_cipher(cipher)
     , m_cipherMustBeDestructed(cipherMustBeDestructed)
 {
     SET_M_TSRMLS_C()
 }
+/* }}} */
 
+/* {{{ CCM::Base::~Base */
 CCM::Base::~Base()
 {
     if (m_cipherMustBeDestructed) {
         delete m_cipher;
     }
 }
+/* }}} */
 
+/* {{{ CCM::Base::SetDigestSize */
 void CCM::Base::SetDigestSize(int digestSize)
 {
     if (digestSize % 2 > 0 || digestSize < 4 || digestSize > 16) {
@@ -39,7 +43,9 @@ void CCM::Base::SetDigestSize(int digestSize)
 
     m_digestSize = digestSize;
 }
+/* }}} */
 
+/* {{{ CCM::Base::ProcessData */
 void CCM::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
     if (m_totalMessageLength + length > m_messageLength) {
@@ -49,7 +55,9 @@ void CCM::Base::ProcessData(byte *outString, const byte *inString, size_t length
 
     CryptoPP::AuthenticatedSymmetricCipherBase::ProcessData(outString, inString, length);
 }
+/* }}} */
 
+/* {{{ CCM::Base::Update */
 void CCM::Base::Update(const byte *input, size_t length)
 {
     if (m_totalHeaderLength + length > m_aadLength) {
@@ -59,7 +67,9 @@ void CCM::Base::Update(const byte *input, size_t length)
 
     CryptoPP::AuthenticatedSymmetricCipherBase::Update(input, length);
 }
+/* }}} */
 
+/* {{{ CCM::Base::Final */
 void CCM::Base::Final(byte *digest)
 {
     if (m_totalMessageLength != m_messageLength) {
@@ -89,7 +99,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_AuthenticatedSymmetricCipherCcm_specifyDataSize, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_AuthenticatedSymmetricCipherCcm;
 
 static zend_function_entry cryptopp_methods_AuthenticatedSymmetricCipherCcm[] = {
@@ -107,7 +117,8 @@ void init_class_AuthenticatedSymmetricCipherCcm(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ sets the digest size, data size and AAD size of the native cipher objects of a CCM php object */
+/* {{{ setDataSizeAndDigestSize
+   sets the digest size, data size and AAD size of the native cipher objects of a CCM php object */
 static void setDataSizeAndDigestSize(zval *object, CCM::Base *encryptor, CCM::Base *decryptor TSRMLS_DC) {
     zval *zDigestSize   = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherCcm, object, "digestSize", 10, 1 TSRMLS_CC);
     zval *zDataSize     = zend_read_property(cryptopp_ce_AuthenticatedSymmetricCipherCcm, object, "dataSize", 8, 1 TSRMLS_CC);
@@ -174,7 +185,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, __construct) {
 /* }}} */
 
 /* {{{ proto void AuthenticatedSymmetricCipherCcm::setDigestSize(int digestSize)
-       Sets the digest size */
+   Sets the digest size */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, setDigestSize) {
     long digestSize;
 
@@ -204,7 +215,7 @@ PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, setDigestSize) {
 /* }}} */
 
 /* {{{ proto void AuthenticatedSymmetricCipherCcm::specifyDataSize(int dataSize, int aadSize)
-       Specify data and AAD size */
+   Specify data and AAD size */
 PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherCcm, specifyDataSize) {
     long dataSize;
     long aadSize;

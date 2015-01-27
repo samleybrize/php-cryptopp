@@ -12,7 +12,6 @@
 
 #include "src/php_cryptopp.h"
 
-/* inits the HashInterface php interface */
 extern zend_class_entry *cryptopp_ce_HashInterface;
 void init_interface_HashInterface(TSRMLS_D);
 

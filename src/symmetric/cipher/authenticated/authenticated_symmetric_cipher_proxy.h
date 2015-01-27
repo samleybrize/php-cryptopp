@@ -13,6 +13,7 @@
 #include "src/php_cryptopp.h"
 #include <string>
 
+/* {{{ TODO */
 class AuthenticatedSymmetricCipherProxy
 {
 public:
@@ -100,6 +101,7 @@ public:
     };
     /* }}} */
 };
+/* }}} */
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_PROXY_H */
 

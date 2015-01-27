@@ -28,7 +28,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_SymmetricModeEcb_construct, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_SymmetricModeEcb;
 
 static zend_function_entry cryptopp_methods_SymmetricModeEcb[] = {

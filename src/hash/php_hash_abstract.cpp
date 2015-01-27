@@ -17,7 +17,8 @@
 #include <zend_exceptions.h>
 #include <string>
 
-/* {{{ custom object free handler */
+/* {{{ HashAbstract_free_storage
+   custom object free handler */
 void HashAbstract_free_storage(void *object TSRMLS_DC) {
     HashAbstractContainer *obj = static_cast<HashAbstractContainer *>(object);
     delete obj->hash;
@@ -59,7 +60,8 @@ void init_class_HashAbstract(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ inits a child class */
+/* {{{ init_class_HashAbstractChild
+   inits a child class */
 void init_class_HashAbstractChild(const char *algoName, const char* className, zend_class_entry **classEntryPtr, zend_function_entry *classMethods TSRMLS_DC) {
     std::string namespacedClassName("Cryptopp\\");
     namespacedClassName.append(className);
@@ -72,7 +74,8 @@ void init_class_HashAbstractChild(const char *algoName, const char* className, z
 }
 /* }}} */
 
-/* {{{ get the pointer to the native hash object of a php hash class */
+/* {{{ getCryptoppHashNativePtr
+   get the pointer to the native hash object of a php hash class */
 CryptoPP::HashTransformation *getCryptoppHashNativePtr(zval *this_ptr TSRMLS_DC) {
     CryptoPP::HashTransformation *hash = static_cast<HashAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->hash;
 
@@ -84,7 +87,8 @@ CryptoPP::HashTransformation *getCryptoppHashNativePtr(zval *this_ptr TSRMLS_DC)
 }
 /* }}} */
 
-/* {{{ set the pointer to the native hash object of a php hash class */
+/* {{{ setCryptoppHashNativePtr
+   set the pointer to the native hash object of a php hash class */
 void setCryptoppHashNativePtr(zval *this_ptr, CryptoPP::HashTransformation *nativePtr TSRMLS_DC) {
     static_cast<HashAbstractContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->hash = nativePtr;
 }

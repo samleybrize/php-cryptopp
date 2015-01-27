@@ -13,6 +13,9 @@
 #include "src/php_cryptopp.h"
 #include <eax.h>
 
+void init_class_AuthenticatedSymmetricCipherEax(TSRMLS_D);
+PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherEax, __construct);
+
 /* {{{ fork of CryptoPP::CMAC that take a cipher as parameter instead of a template parameter */
 class CMAC : public CryptoPP::CMAC_Base
 {
@@ -74,9 +77,6 @@ public:
     /* }}} */
 };
 /* }}} */
-
-void init_class_AuthenticatedSymmetricCipherEax(TSRMLS_D);
-PHP_METHOD(Cryptopp_AuthenticatedSymmetricCipherEax, __construct);
 
 #endif /* PHP_AUTHENTICATED_SYMMETRIC_CIPHER_EAX_H */
 

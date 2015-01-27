@@ -17,7 +17,7 @@ ZEND_BEGIN_ARG_INFO(arginfo_HashMd5___construct, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ PHP class déclaration */
+/* {{{ PHP class declaration */
 zend_class_entry *cryptopp_ce_HashMd5;
 
 static zend_function_entry cryptopp_methods_HashMd5[] = {

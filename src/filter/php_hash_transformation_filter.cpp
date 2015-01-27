@@ -58,7 +58,8 @@ ZEND_BEGIN_ARG_INFO(arginfo_HashTransformationFilter_calculateDigestString, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
-/* {{{ custom object free handler */
+/* {{{ HashTransformationFilter_free_storage
+   custom object free handler */
 void HashTransformationFilter_free_storage(void *object TSRMLS_DC) {
     HashTransformationFilterContainer *obj = static_cast<HashTransformationFilterContainer *>(object);
     delete obj->htf;
@@ -93,7 +94,8 @@ void init_class_HashTransformationFilter(TSRMLS_D) {
 }
 /* }}} */
 
-/* {{{ get the pointer to the native htf object of the php class */
+/* {{{ getCryptoppHashTransformationFilterNativePtr
+   get the pointer to the native htf object of the php class */
 static HashTransformationFilter *getCryptoppHashTransformationFilterNativePtr(zval *this_ptr TSRMLS_DC) {
     HashTransformationFilter *htf = static_cast<HashTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->htf;
 
@@ -105,13 +107,15 @@ static HashTransformationFilter *getCryptoppHashTransformationFilterNativePtr(zv
 }
 /* }}} */
 
-/* {{{ set the pointer to the native stf encryptor object of the php class */
+/* {{{ setCryptoppHashTransformationFilterNativePtr
+   set the pointer to the native stf encryptor object of the php class */
 static void setCryptoppHashTransformationFilterNativePtr(zval *this_ptr, HashTransformationFilter *nativePtr TSRMLS_DC) {
     static_cast<HashTransformationFilterContainer *>(zend_object_store_get_object(this_ptr TSRMLS_CC))->htf = nativePtr;
 }
 /* }}} */
 
-/* {{{ indicates if the native hash object holded by a stf object is valid */
+/* {{{ isNativeHashTransformationObjectValid
+   indicates if the native hash object holded by a stf object is valid */
 static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
     zval *hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, stfObject, "hash", 4, 0 TSRMLS_CC);
 
@@ -134,7 +138,8 @@ static bool isNativeHashTransformationObjectValid(zval *stfObject TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ restart the hash holded by a HashTransformationFilter php object */
+/* {{{ restartHashObject
+   restart the hash holded by a HashTransformationFilter php object */
 static void restartHashObject(zval *htfObject TSRMLS_DC) {
     zval *hashObject    = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
     zval *funcName      = makeZval("restart");
@@ -144,7 +149,8 @@ static void restartHashObject(zval *htfObject TSRMLS_DC) {
 }
 /* }}} */
 
-/* {{{ returns the hash object digest size */
+/* {{{ getHashObjectDigestSize
+   returns the hash object digest size */
 static int getHashObjectDigestSize(zval *htfObject TSRMLS_DC) {
     zval *hashObject    = zend_read_property(cryptopp_ce_HashTransformationFilter, htfObject, "hash", 4, 0 TSRMLS_CC);
     zval *funcName      = makeZval("getDigestSize");
@@ -241,7 +247,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, __construct) {
 /* }}} */
 
 /* {{{ proto Cryptopp\HashTransformationInterface HashTransformationFilter::getHash(void)
-       Returns the hash object */
+   Returns the hash object */
 PHP_METHOD(Cryptopp_HashTransformationFilter, getHash) {
     zval *hashObject = zend_read_property(cryptopp_ce_HashTransformationFilter, getThis(), "hash", 4, 0 TSRMLS_CC);
     RETURN_ZVAL(hashObject, 1, 0)
@@ -251,7 +257,7 @@ PHP_METHOD(Cryptopp_HashTransformationFilter, getHash) {
 // TODO method encrypt: accept an input and output object (return boolean)
 
 /* {{{ proto bool|string HashTransformationFilter::calculateDigestString(string data)
-       Calculate the digest of a string */
+   Calculate the digest of a string */
 PHP_METHOD(Cryptopp_HashTransformationFilter, calculateDigestString) {
     char *data      = NULL;
     int dataSize    = 0;
