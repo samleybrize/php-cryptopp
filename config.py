@@ -99,6 +99,7 @@ configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_abstract.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_cbc.py")
 
 configFileList.append("src/padding/config/padding_interface.py")
 configFileList.append("src/padding/config/padding_no_padding.py")
