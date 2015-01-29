@@ -33,7 +33,9 @@ Now you can add the following line to your `php.ini` file:
 
 ## Documentation
 
-Full documentation is not available for now. See the PHP stubs available in the [php-stubs](php-stubs) directory, which may be also used in your IDE for code completion.
+Full documentation is not finalized yet. You can see the current version in the [wiki](/wiki).
+
+See the PHP stubs available in the [php-stubs](php-stubs) directory, which may be also used in your IDE for code completion.
 
 ## Status
 
