@@ -20,7 +20,7 @@ CryptoPP::BlockCipher *getCryptoppBlockCipherEncryptorPtr(zval *this_ptr TSRMLS_
 CryptoPP::BlockCipher *getCryptoppBlockCipherDecryptorPtr(zval *this_ptr TSRMLS_DC);
 void setCryptoppBlockCipherEncryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *nativePtr TSRMLS_DC);
 void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *nativePtr TSRMLS_DC);
-bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC);
+bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC, bool throwIfFalse = true);
 
 /* {{{ get the pointer to the native encryptor object of a php cipher class */
 #define CRYPTOPP_BLOCK_CIPHER_ABSTRACT_GET_ENCRYPTOR_PTR(ptrName)       \

@@ -59,7 +59,6 @@ var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e
 $o->restart();
 var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
 
-// TODO
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();

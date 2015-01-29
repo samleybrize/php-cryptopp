@@ -120,11 +120,11 @@ void setCryptoppBlockCipherDecryptorPtr(zval *this_ptr, CryptoPP::BlockCipher *d
 
 /* {{{ isCryptoppBlockCipherKeyValid
    verify that a key size is valid for a BlockCipherAbstract instance */
-bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC) {
+bool isCryptoppBlockCipherKeyValid(zval *object, CryptoPP::BlockCipher *cipher TSRMLS_DC, bool throwIfFalse) {
     zval *key   = zend_read_property(cryptopp_ce_BlockCipherAbstract, object, "key", 3, 1 TSRMLS_CC);
     int keySize = Z_STRLEN_P(key);
 
-    return isCryptoppSymmetricKeyValid(object, cipher, keySize TSRMLS_CC);
+    return isCryptoppSymmetricKeyValid(object, cipher, keySize TSRMLS_CC, throwIfFalse);
 }
 /* }}} */
 
