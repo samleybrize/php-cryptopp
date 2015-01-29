@@ -121,6 +121,7 @@ $fileList = array(
     "Symmetric/Mode/SymmetricModeAbstract.php",
     "Symmetric/Mode/SymmetricModeEcb.php",
     "Symmetric/Mode/SymmetricModeCbc.php",
+    "Symmetric/Mode/SymmetricModeCfb.php",
     "Symmetric/Mode/SymmetricMode.php",
     "Padding/PaddingInterface.php",
     "Padding/PaddingNoPadding.php",
