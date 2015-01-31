@@ -98,9 +98,10 @@ configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_s
 configFileList.append("src/symmetric/mode/config/symmetric_mode.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_interface.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_abstract.py")
-configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_cbc.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_cfb.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_ctr.py")
+configFileList.append("src/symmetric/mode/config/symmetric_mode_ecb.py")
 configFileList.append("src/symmetric/mode/config/symmetric_mode_ofb.py")
 
 configFileList.append("src/padding/config/padding_interface.py")
