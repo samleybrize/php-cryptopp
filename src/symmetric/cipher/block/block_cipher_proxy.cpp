@@ -19,6 +19,7 @@
 BlockCipherProxy::Base::Base(zval *blockCipherObject, const char* processDataFuncname, const char *processBlockFuncname TSRMLS_DC)
 {
     SET_M_TSRMLS_C()
+    m_dataProcessEnabled = true;
 
     // verify that blockCipherObject is an instance of BlockCipherInterface
     if (IS_OBJECT != Z_TYPE_P(blockCipherObject) ||
@@ -128,8 +129,16 @@ void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte 
 void BlockCipherProxy::Base::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock)
 {
     // TODO optimize? (use of AdvancedProcessBlocks)
-    // process block
+
     unsigned int blockSize = BlockSize();
+
+    if (!m_dataProcessEnabled) {
+        // data process is disabled
+        memcpy(outBlock, inBlock, blockSize);
+        return;
+    }
+
+    // process block
     zval *zInBlock          = makeZval(reinterpret_cast<const char*>(inBlock), blockSize);
     zval *zProcessedBlock   = call_user_method(m_blockCipherObject, m_funcnameProcessBlock, zInBlock M_TSRMLS_CC);
 

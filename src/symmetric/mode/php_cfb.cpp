@@ -8,6 +8,7 @@
  */
 
 #include "src/php_cryptopp.h"
+#include "src/symmetric/cipher/block/block_cipher_proxy.h"
 #include "src/symmetric/cipher/block/php_block_cipher_interface.h"
 #include "src/symmetric/cipher/block/php_block_cipher_abstract.h"
 #include "src/utils/zval_utils.h"
@@ -63,18 +64,34 @@ PHP_METHOD(Cryptopp_SymmetricModeCfb, __construct) {
 
     // the cipher native object must have a key defined
     // if not, we set a dummy key
-    if (!isCryptoppBlockCipherKeyValid(cipherObject, cipherEncryptor TSRMLS_CC, false)) {
-        byte dummyKey[cipherEncryptor->DefaultKeyLength()];
-        cipherEncryptor->SetKey(dummyKey, cipherEncryptor->DefaultKeyLength());
-        cipherDecryptor->SetKey(dummyKey, cipherEncryptor->DefaultKeyLength());
+    if (!cipherMustBeDestructed && !isCryptoppBlockCipherKeyValid(cipherObject, cipherEncryptor TSRMLS_CC, false)) {
+        int dummyKeyLength = cipherEncryptor->DefaultKeyLength();
+        byte dummyKey[dummyKeyLength];
+        memset(dummyKey, 0, dummyKeyLength);
+
+        cipherEncryptor->SetKey(dummyKey, dummyKeyLength);
+        cipherDecryptor->SetKey(dummyKey, dummyKeyLength);
+    } else if (cipherMustBeDestructed) {
+        // cfb mode try to encrypt the iv in the constructor.
+        // because of that, we need to set a dummy key, but it is not desirable for user classes because a key would already be setted
+        // and the user won't be notified if he does not set its own key.
+        // so we disable cipher encryption.
+        dynamic_cast<BlockCipherProxy::Encryption*>(cipherEncryptor)->DisableDataProcess();
     }
 
     // instanciate mode encryptor/decryptor
-    byte dummyIv[16];
+    byte dummyIv[cipherEncryptor->BlockSize()];
+    memset(dummyIv, 0, cipherEncryptor->BlockSize());
     Cfb::Encryption *encryptor = new Cfb::Encryption(cipherEncryptor, cipherMustBeDestructed, dummyIv, cipherEncryptor->BlockSize());
-    Cfb::Decryption *decryptor = new Cfb::Decryption(cipherEncryptor, cipherMustBeDestructed, dummyIv, cipherEncryptor->BlockSize());
+    Cfb::Decryption *decryptor = new Cfb::Decryption(cipherEncryptor, false, dummyIv, cipherEncryptor->BlockSize());
     setCryptoppSymmetricModeEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppSymmetricModeDecryptorPtr(getThis(), decryptor TSRMLS_CC);
+
+    if (cipherMustBeDestructed) {
+        // re-enable cipher encryption
+        dynamic_cast<BlockCipherProxy::Encryption*>(cipherEncryptor)->EnableDataProcess();
+        delete cipherDecryptor;
+    }
 
     zend_update_property_stringl(cryptopp_ce_SymmetricModeAbstract, getThis(), "name", 4, modeName->c_str(), modeName->size() TSRMLS_CC);
     delete modeName;

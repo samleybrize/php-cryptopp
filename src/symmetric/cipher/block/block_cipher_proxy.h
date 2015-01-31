@@ -24,6 +24,9 @@ public:
     public:
         ~Base();
 
+        void DisableDataProcess() {m_dataProcessEnabled = false;}
+        void EnableDataProcess() {m_dataProcessEnabled = true;}
+
         unsigned int BlockSize() const;
         bool IsValidKeyLength(size_t n) const;
         bool IsValidKeyLength(size_t n);
@@ -60,6 +63,7 @@ public:
         zval *m_funcnameProcessBlock;
         zval *m_funcnameIsValidKeyLength;
         zval *m_funcnameSetKey;
+        bool m_dataProcessEnabled;
         M_TSRMLS_D;
     };
     /* }}} */
