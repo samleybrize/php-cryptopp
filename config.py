@@ -85,6 +85,7 @@ configFileList.append("src/symmetric/cipher/stream/config/stream_cipher.py")
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_interface.py")
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_abstract.py")
 configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_sosemanuk.py")
+configFileList.append("src/symmetric/cipher/stream/config/stream_cipher_salsa20.py")
 
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher.py")
 configFileList.append("src/symmetric/cipher/authenticated/config/authenticated_symmetric_cipher_interface.py")
