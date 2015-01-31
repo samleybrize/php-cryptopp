@@ -49,7 +49,7 @@ void CCM::Base::SetDigestSize(int digestSize)
 void CCM::Base::ProcessData(byte *outString, const byte *inString, size_t length)
 {
     if (m_totalMessageLength + length > m_messageLength) {
-        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%d expected, %d given)", m_messageLength, m_totalMessageLength + length);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%llu expected, %llu given)", m_messageLength, m_totalMessageLength + length);
         throw false;
     }
 
@@ -61,7 +61,7 @@ void CCM::Base::ProcessData(byte *outString, const byte *inString, size_t length
 void CCM::Base::Update(const byte *input, size_t length)
 {
     if (m_totalHeaderLength + length > m_aadLength) {
-        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%d expected, %d given)", m_aadLength, m_totalHeaderLength + length);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%llu expected, %llu given)", m_aadLength, m_totalHeaderLength + length);
         throw false;
     }
 
@@ -73,10 +73,10 @@ void CCM::Base::Update(const byte *input, size_t length)
 void CCM::Base::Final(byte *digest)
 {
     if (m_totalMessageLength != m_messageLength) {
-        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%d expected, %d given)", m_messageLength, m_totalMessageLength);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : message length doesn't match that given in specifyDataSize (%llu expected, %llu given)", m_messageLength, m_totalMessageLength);
         throw false;
     } else if (m_totalHeaderLength != m_aadLength) {
-        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%d expected, %d given)", m_aadLength, m_totalHeaderLength);
+        zend_throw_exception_ex(getCryptoppException(), 0 M_TSRMLS_CC, (char*)"Cryptopp\\AuthenticatedSymmetricCipherCcm : AAD length doesn't match that given in specifyDataSize (%llu expected, %llu given)", m_aadLength, m_totalHeaderLength);
         throw false;
     }
 
