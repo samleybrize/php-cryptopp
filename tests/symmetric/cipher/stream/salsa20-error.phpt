@@ -56,6 +56,16 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// invalid rounds
+echo "- invalid rounds:\n";
+$o = new Cryptopp\StreamCipherSalsa20();
+
+try {
+    $o->setRounds(13);
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -109,6 +119,8 @@ Cryptopp\StreamCipherSalsa20 : an initialization vector is required
 Cryptopp\StreamCipherSalsa20 : a key is required
 - no iv:
 Cryptopp\StreamCipherSalsa20 : an initialization vector is required
+- invalid rounds:
+Cryptopp\StreamCipherSalsa20: number of rounds must be one of 8, 12 or 20
 - sleep:
 You cannot serialize or unserialize Cryptopp\StreamCipherAbstract instances
 - bad arguments:
