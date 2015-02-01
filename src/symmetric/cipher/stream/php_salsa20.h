@@ -21,21 +21,38 @@ PHP_METHOD(Cryptopp_StreamCipherSalsa20, setRounds);
 class Salsa20
 {
 public:
+    /* {{{ base class */
+    class Base
+    {
+    protected:
+        Base(zval *object TSRMLS_DC);
+
+        zval *m_object;
+        M_TSRMLS_D;
+    };
+    /* }}} */
+
     /* {{{ encryption class */
-    class Encryption : public CryptoPP::Salsa20::Encryption
+    class Encryption : public Base, public CryptoPP::Salsa20::Encryption
     {
     public:
-        Encryption() : CryptoPP::Salsa20::Encryption(){};
+        Encryption(zval *object TSRMLS_DC)
+            : Base(object TSRMLS_CC)
+            , CryptoPP::Salsa20::Encryption() {};
+
         void SetRounds(int rounds);
         void CipherSetKey(const CryptoPP::NameValuePairs &params, const byte *key, size_t length);
     };
     /* }}} */
 
     /* {{{ decryption class */
-    class Decryption : public CryptoPP::Salsa20::Decryption
+    class Decryption : public Base, public CryptoPP::Salsa20::Decryption
     {
     public:
-        Decryption() : CryptoPP::Salsa20::Decryption(){};
+        Decryption(zval *object TSRMLS_DC)
+            : Base(object TSRMLS_CC)
+            , CryptoPP::Salsa20::Decryption() {};
+
         void SetRounds(int rounds);
         void CipherSetKey(const CryptoPP::NameValuePairs &params, const byte *key, size_t length);
     };

@@ -9,20 +9,38 @@
 
 #include "src/php_cryptopp.h"
 #include "src/exception/php_exception.h"
+#include "src/utils/zval_utils.h"
 #include "php_stream_cipher_abstract.h"
 #include "php_salsa20.h"
 #include <salsa.h>
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::Salsa20 that allow to set the number of rounds */
+Salsa20::Base::Base(zval *object TSRMLS_DC) : m_object(object)
+{
+   SET_M_TSRMLS_C()
+}
+
 void Salsa20::Encryption::SetRounds(int rounds)
 {
     m_rounds = rounds;
+
+    // restart
+    zval *funcname  = makeZval("restart");
+    zval *output    = call_user_method(m_object, funcname M_TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&output);
 }
 
 void Salsa20::Decryption::SetRounds(int rounds)
 {
     m_rounds = rounds;
+
+    // restart
+    zval *funcname  = makeZval("restart");
+    zval *output    = call_user_method(m_object, funcname M_TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&output);
 }
 
 void Salsa20::Encryption::CipherSetKey(const CryptoPP::NameValuePairs &params, const byte *key, size_t length)
@@ -71,8 +89,8 @@ void init_class_StreamCipherSalsa20(TSRMLS_D) {
 
 /* {{{ proto StreamCipherSalsa20::__construct(void) */
 PHP_METHOD(Cryptopp_StreamCipherSalsa20, __construct) {
-    Salsa20::Encryption *encryptor = new Salsa20::Encryption();
-    Salsa20::Decryption *decryptor = new Salsa20::Decryption();
+    Salsa20::Encryption *encryptor = new Salsa20::Encryption(getThis() TSRMLS_CC);
+    Salsa20::Decryption *decryptor = new Salsa20::Decryption(getThis() TSRMLS_CC);
     setCryptoppStreamCipherEncryptorPtr(getThis(), encryptor TSRMLS_CC);
     setCryptoppStreamCipherDecryptorPtr(getThis(), decryptor TSRMLS_CC);
 
