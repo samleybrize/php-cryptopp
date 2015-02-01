@@ -106,6 +106,7 @@ $fileList = array(
     "Symmetric/Cipher/Stream/StreamCipherAbstract.php",
     "Symmetric/Cipher/Stream/StreamCipherSalsa20.php",
     "Symmetric/Cipher/Stream/StreamCipherSosemanuk.php",
+    "Symmetric/Cipher/Stream/StreamCipherXSalsa20.php",
     "Symmetric/Cipher/Stream/StreamCipher.php",
     "Symmetric/Cipher/Block/BlockCipherInterface.php",
     "Symmetric/Cipher/Block/BlockCipherAbstract.php",
