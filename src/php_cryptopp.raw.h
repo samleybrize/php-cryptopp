@@ -47,6 +47,9 @@ extern zend_module_entry cryptopp_module_entry;
 #define phpext_cryptopp_ptr &cryptopp_module_entry;
 /* }}} */
 
+#define PHP_CRYPTOPP_LITTLE_ENDIAN  1
+#define PHP_CRYPTOPP_BIG_ENDIAN     2
+
 #endif /* PHP_CRYPTOPP_H */
 
 /*

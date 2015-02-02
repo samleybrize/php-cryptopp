@@ -1,3 +1,4 @@
+
 /*
  * This file is part of php-cryptopp.
  *
@@ -27,7 +28,11 @@ using namespace std;
 /* {{{ PHP_MINIT_FUNCTION */
 static PHP_MINIT_FUNCTION(cryptopp) {
     PHP_MINIT_STATEMENTS
-	return SUCCESS;
+
+    REGISTER_NS_LONG_CONSTANT("Cryptopp", "LITTLE_ENDIAN", PHP_CRYPTOPP_LITTLE_ENDIAN, CONST_PERSISTENT);
+    REGISTER_NS_LONG_CONSTANT("Cryptopp", "BIG_ENDIAN", PHP_CRYPTOPP_BIG_ENDIAN, CONST_PERSISTENT);
+
+    return SUCCESS;
 }
 /* }}} */
 
