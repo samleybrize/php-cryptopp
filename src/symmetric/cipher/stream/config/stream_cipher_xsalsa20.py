@@ -3,7 +3,7 @@ import os
 def getConfig(cryptoppDir):
     config = {}
 
-    # check if sosemanuk is supported by installed crypto++
+    # check if xsalsa20 is supported by installed crypto++
     if not os.path.isfile(cryptoppDir + "/salsa.h"):
         config["enabled"] = False
         return config

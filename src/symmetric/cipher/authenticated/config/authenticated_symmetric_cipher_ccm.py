@@ -3,7 +3,7 @@ import os
 def getConfig(cryptoppDir):
     config = {}
 
-    # check if gcm is supported by installed crypto++
+    # check if ccm is supported by installed crypto++
     if not os.path.isfile(cryptoppDir + "/ccm.h"):
         config["enabled"] = False
         return config
