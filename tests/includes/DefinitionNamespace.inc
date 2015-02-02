@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/DefinitionClass.inc";
+require_once __DIR__ . "/DefinitionConstant.inc";
 
 class DefinitionNamespace
 {
@@ -26,7 +27,9 @@ class DefinitionNamespace
     public function getDefinition()
     {
         $definition = array();
-        $classList  = get_declared_classes();
+
+        // classes
+        $classList = get_declared_classes();
 
         foreach ($classList as $class) {
             // check namespace
@@ -35,8 +38,22 @@ class DefinitionNamespace
             }
 
             // add definition
-            $generator          = new DefinitionClass($class);
-            $definition[$class] = $generator->getDefinition();
+            $generator                      = new DefinitionClass($class);
+            $definition["class"][$class]    = $generator->getDefinition();
+        }
+
+        // constants
+        $constants = get_defined_constants();
+
+        foreach ($constants as $name => $value) {
+            // check namespace
+            if (0 !== strpos($name, $this->name)) {
+                continue;
+            }
+
+            $shortName                      = substr($name, strrpos($name, "\\") + 1);
+            $generator                      = new DefinitionConstant($shortName, $value);
+            $definition["constant"][$name]  = $generator->getDefinition();
         }
 
         ksort($definition);
