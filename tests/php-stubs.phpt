@@ -104,6 +104,7 @@ $fileList = array(
     "Symmetric/Cipher/SymmetricTransformationInterface.php",
     "Symmetric/Cipher/Stream/StreamCipherInterface.php",
     "Symmetric/Cipher/Stream/StreamCipherAbstract.php",
+    "Symmetric/Cipher/Stream/StreamCipherPanama.php",
     "Symmetric/Cipher/Stream/StreamCipherSalsa20.php",
     "Symmetric/Cipher/Stream/StreamCipherSosemanuk.php",
     "Symmetric/Cipher/Stream/StreamCipherXSalsa20.php",
@@ -135,6 +136,7 @@ $fileList = array(
     "Mac/MacTwoTrackMac.php",
     "Mac/Mac.php",
     "Mac/MacHmac.php",
+    "constants.php",
 );
 
 $dir = __DIR__ . "/../php-stubs";
