@@ -5,8 +5,8 @@ Authenticated symmetric cipher: CCM (errors)
 
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\AuthenticatedSymmetricCipherCcm($c);
-$o->setKey(hex2bin("77be63708971c4e240d1cb79e8d77feb"));
-$o->setIv(hex2bin("e0e00f19fed7ba0136a797f3"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("77be63708971c4e240d1cb79e8d77feb"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("e0e00f19fed7ba0136a797f3"));
 
 // invalid key
 echo "- invalid key:\n";

@@ -27,15 +27,15 @@ echo "- encryptString:\n";
 $m = new Cryptopp\SymmetricModeEcb(new Cryptopp\BlockCipherAes());
 $o = new Cryptopp\SymmetricTransformationFilter($m, new Cryptopp\PaddingPkcs7());
 $m->setKey("1234567890123456");
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("wxcvbnqsdfg")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("wxcvbnqsdfg")));
 
 // decryptString
 echo "- decryptString:\n";
-var_dump($o->decryptString(hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
-var_dump($o->decryptString(hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
-var_dump($o->decryptString(hex2bin("da7885b5ad196250c037599a7bf9d62a")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("ce86616e5e9d59edfc4ee2cc002f601b")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("da7885b5ad196250c037599a7bf9d62a")));
 
 // stream cipher
 echo "- stream cipher:\n";
@@ -43,10 +43,10 @@ $c = new Cryptopp\StreamCipherSosemanuk();
 $o = new Cryptopp\SymmetricTransformationFilter($c, new Cryptopp\PaddingPkcs7());
 $c->setKey("1234567890123456");
 $c->setIv("0987654321987654");
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
-var_dump($o->decryptString(hex2bin("76312c85afc0bbdf7821")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("76312c85afc0bbdf7821")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("76312c85afc0bbdf7821")));
 
 // large data
 echo "- large data:\n";

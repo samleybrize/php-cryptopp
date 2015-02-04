@@ -12,15 +12,15 @@ var_dump($o->getCipher()->getName());
 echo "- encryptString:\n";
 $a->setKey("1234567890123456");
 $a->setIv("1234567890123456");
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("wxcvbnqsdfg")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("wxcvbnqsdfg")));
 
 // decryptString
 echo "- decryptString:\n";
-var_dump($o->decryptString(hex2bin("e7de80cef314ceaefb14")));
-var_dump($o->decryptString(hex2bin("e7de80cef314ceaefb14")));
-var_dump($o->decryptString(hex2bin("f1dc86cae503cab4f002de")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("e7de80cef314ceaefb14")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("e7de80cef314ceaefb14")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("f1dc86cae503cab4f002de")));
 
 ?>
 --EXPECT--

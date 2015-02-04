@@ -70,15 +70,15 @@ var_dump($o->getCipher()->getName());
 
 // encryptString
 echo "- encryptString:\n";
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("azertyuiop")));
-var_dump(bin2hex($o->encryptString("wxcvbnqsdfg")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptString("wxcvbnqsdfg")));
 
 // decryptString
 echo "- decryptString:\n";
-var_dump($o->decryptString(hex2bin("706f6975797472657a610505050505")));
-var_dump($o->decryptString(hex2bin("706f6975797472657a610505050505")));
-var_dump($o->decryptString(hex2bin("666473716e62766378770404040467")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("706f6975797472657a610505050505")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("706f6975797472657a610505050505")));
+var_dump($o->decryptString(Cryptopp\HexUtils::hex2bin("666473716e62766378770404040467")));
 
 // large data
 echo "- large data:\n";

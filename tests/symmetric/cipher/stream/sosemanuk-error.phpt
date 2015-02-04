@@ -4,8 +4,8 @@ Stream cipher: Sosemanuk (errors)
 <?php
 
 $o = new Cryptopp\StreamCipherSosemanuk();
-$o->setKey(hex2bin("a7c083feb7"));
-$o->setIv(hex2bin("00112233445566778899aabbccddeeff"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("a7c083feb7"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("00112233445566778899aabbccddeeff"));
 
 // invalid key
 echo "- invalid key:\n";

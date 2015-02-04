@@ -55,7 +55,7 @@ class BlockCipherUser implements Cryptopp\BlockCipherInterface
 
 $c = new BlockCipherUser();
 $o = new Cryptopp\SymmetricModeCbc($c);
-$o->setKey(hex2bin("2b7e15"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e15"));
 
 // invalid key
 echo "- invalid key:\n";
@@ -92,7 +92,7 @@ try {
 // encrypt without iv
 echo "- no iv:\n";
 $o = new Cryptopp\SymmetricModeCbc(new BlockCipherUser());
-$o->setKey(hex2bin("2b7e15"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e15"));
 
 try {
     $o->encrypt("123456");

@@ -75,46 +75,46 @@ var_dump($o->isValidIvLength(1256));
 
 // set key
 echo "- set key:\n";
-$o->setKey(hex2bin("2b7e15"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e15"));
 $o->setIv("1234567");
-var_dump(bin2hex($o->getKey()));
-var_dump(bin2hex($c->getKey()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->getKey()));
+var_dump(Cryptopp\HexUtils::bin2hex($c->getKey()));
 
 // encrypt
 echo "- encrypt:\n";
 $c = new BlockCipherUser();
 $o = new Cryptopp\AuthenticatedSymmetricCipherEax($c);
 $o->setIv("1234567");
-$c->setKey(hex2bin("2b7e15"));
-var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
-var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
-var_dump(bin2hex($o->finalizeEncryption()));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e15"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("6bc1bee22e40"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("30c81c46a35c"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalizeEncryption()));
 
 // decrypt
 echo "- decrypt:\n";
 $c = new BlockCipherUser();
 $o = new Cryptopp\AuthenticatedSymmetricCipherEax($c);
 $o->setIv("1234567");
-$c->setKey(hex2bin("2b7e15"));
-var_dump(bin2hex($o->decrypt(hex2bin("a6a2211173dc"))));
-var_dump(bin2hex($o->decrypt(hex2bin("644b418b70eb"))));
-var_dump(bin2hex($o->finalizeDecryption()));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e15"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("a6a2211173dc"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("644b418b70eb"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalizeDecryption()));
 
 // restart encryption
 echo "- restart encryption:\n";
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e40"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("6bc1bee22e40"))));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35c"))));
-var_dump(bin2hex($o->finalizeEncryption()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("30c81c46a35c"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalizeEncryption()));
 
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("a6a2211173dc"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("a6a2211173dc"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("644b418b70eb"))));
-var_dump(bin2hex($o->finalizeDecryption()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("644b418b70eb"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalizeDecryption()));
 
 // large data
 echo "- large data:\n";

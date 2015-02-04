@@ -46,7 +46,7 @@ try {
 }
 
 try {
-    $padding->unpad(hex2bin("04040304"), 4);
+    $padding->unpad(Cryptopp\HexUtils::hex2bin("04040304"), 4);
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }

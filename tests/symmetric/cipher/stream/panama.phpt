@@ -36,46 +36,46 @@ var_dump($o->getIv());
 
 // encrypt
 echo "- encrypt:\n";
-$o->setKey(hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
-$o->setIv(hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt
 echo "- decrypt:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("33d6c41cea88376420433bd3b7f88b27"))));
-var_dump(bin2hex($o->decrypt(hex2bin("506ace67d9841193058773d9b13b33b7"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("33d6c41cea88376420433bd3b7f88b27"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("506ace67d9841193058773d9b13b33b7"))));
 
 // encrypt big endian
 echo "- encrypt big endian:\n";
 $o = new Cryptopp\StreamCipherPanama(Cryptopp\BIG_ENDIAN);
-$o->setKey(hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
-$o->setIv(hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt big endian
 echo "- decrypt big endian:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("9df3d24ff46ccd8db521339fd4f788f8"))));
-var_dump(bin2hex($o->decrypt(hex2bin("bb2767e89d14ca669c8f7b311a8bef6b"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("9df3d24ff46ccd8db521339fd4f788f8"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("bb2767e89d14ca669c8f7b311a8bef6b"))));
 
 // restart encryption
 echo "- restart encryption:\n";
 $o = new Cryptopp\StreamCipherPanama(Cryptopp\LITTLE_ENDIAN);
-$o->setKey(hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
-$o->setIv(hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("f07f5ff2ccd01a0a7d44acd6d239c2af0da1ff35275baf5dfa6e09411b79d8b9"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("33d6c41cea88376420433bd3b7f88b27"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("33d6c41cea88376420433bd3b7f88b27"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("506ace67d9841193058773d9b13b33b7"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("506ace67d9841193058773d9b13b33b7"))));
 
 // large data
 echo "- large data:\n";

@@ -38,33 +38,33 @@ var_dump($o->getIv());
 echo "- encrypt:\n";
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\SymmetricModeCbc($c);
-$o->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
-$o->setIv(hex2bin("000102030405060708090a0b0c0d0e0f"));
-var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
-var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("000102030405060708090a0b0c0d0e0f"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
 
 // decrypt
 echo "- decrypt:\n";
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\SymmetricModeCbc($c);
-$c->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
-$o->setIv(hex2bin("000102030405060708090a0b0c0d0e0f"));
-var_dump(bin2hex($o->decrypt(hex2bin("7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b2"))));
-var_dump(bin2hex($o->decrypt(hex2bin("73bed6b8e3c1743b7116e69e222295163ff1caa1681fac09120eca307586e1a7"))));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("000102030405060708090a0b0c0d0e0f"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b2"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("73bed6b8e3c1743b7116e69e222295163ff1caa1681fac09120eca307586e1a7"))));
 
 // restart encryption
 echo "- restart encryption:\n";
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
 
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b2"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b2"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("73bed6b8e3c1743b7116e69e222295163ff1caa1681fac09120eca307586e1a7"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("73bed6b8e3c1743b7116e69e222295163ff1caa1681fac09120eca307586e1a7"))));
 
 // large data
 echo "- large data:\n";

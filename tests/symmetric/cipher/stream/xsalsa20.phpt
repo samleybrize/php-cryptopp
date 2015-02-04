@@ -36,55 +36,55 @@ var_dump($o->getIv());
 
 // encrypt
 echo "- encrypt:\n";
-$o->setKey(hex2bin("2ecbb5a282ee515b3226952d11d0579607f653a708d18920d18dc5106f76074f"));
-$o->setIv(hex2bin("53f67a3bada58382426b7d2142c327c7a9fa75a8634463c7"));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("2ecbb5a282ee515b3226952d11d0579607f653a708d18920d18dc5106f76074f"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("53f67a3bada58382426b7d2142c327c7a9fa75a8634463c7"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt
 echo "- decrypt:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("f097c0d167658edf4fbb3a9dd5ad2b71"))));
-var_dump(bin2hex($o->decrypt(hex2bin("39b420e15e86515fa935e6b32cf727c4"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("f097c0d167658edf4fbb3a9dd5ad2b71"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("39b420e15e86515fa935e6b32cf727c4"))));
 
 // encrypt (12 rounds)
 echo "- encrypt 12 rounds:\n";
 $o->setRounds(12);
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt (12 rounds)
 echo "- decrypt 12 rounds:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("4ceb42a120607593198ef1211eec957d"))));
-var_dump(bin2hex($o->decrypt(hex2bin("1a66979d67c996203e881a0b2e2120a7"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("4ceb42a120607593198ef1211eec957d"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("1a66979d67c996203e881a0b2e2120a7"))));
 
 // encrypt (8 rounds)
 echo "- encrypt 8 rounds:\n";
 $o->setRounds(8);
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt (8 rounds)
 echo "- decrypt 8 rounds:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("50b85a918f837766062ad25b5a3bc542"))));
-var_dump(bin2hex($o->decrypt(hex2bin("4fcbd495ecfb35d22e2e7b3e301baf7f"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("50b85a918f837766062ad25b5a3bc542"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("4fcbd495ecfb35d22e2e7b3e301baf7f"))));
 
 // restart encryption
 echo "- restart encryption:\n";
 $o->restart();
 $o->setRounds(20);
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("f097c0d167658edf4fbb3a9dd5ad2b71"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("f097c0d167658edf4fbb3a9dd5ad2b71"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("39b420e15e86515fa935e6b32cf727c4"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("39b420e15e86515fa935e6b32cf727c4"))));
 
 // large data
 echo "- large data:\n";

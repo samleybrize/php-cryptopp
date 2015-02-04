@@ -36,30 +36,30 @@ var_dump($o->getIv());
 
 // encrypt
 echo "- encrypt:\n";
-$o->setKey(hex2bin("a7c083feb7"));
-$o->setIv(hex2bin("00112233445566778899aabbccddeeff"));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("a7c083feb7"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("00112233445566778899aabbccddeeff"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // decrypt
 echo "- decrypt:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
-var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("fe81d2162c9a100d04895c454a77515b"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 
 // restart encryption
 echo "- restart encryption:\n";
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 $o->restart();
-var_dump(bin2hex($o->encrypt(hex2bin("00000000000000000000000000000000"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("00000000000000000000000000000000"))));
 
 // restart decryption
 echo "- restart decryption:\n";
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("fe81d2162c9a100d04895c454a77515b"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("fe81d2162c9a100d04895c454a77515b"))));
 $o->restart();
-var_dump(bin2hex($o->decrypt(hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("be6a431a935cb90e2221ebb7ef502328"))));
 
 // large data
 echo "- large data:\n";

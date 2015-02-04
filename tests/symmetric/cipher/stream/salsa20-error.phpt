@@ -4,8 +4,8 @@ Stream cipher: Salsa20 (errors)
 <?php
 
 $o = new Cryptopp\StreamCipherSalsa20();
-$o->setKey(hex2bin("a7c083feb7aabbff1122334455667788"));
-$o->setIv(hex2bin("0011223344556677"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("a7c083feb7aabbff1122334455667788"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("0011223344556677"));
 
 // invalid key
 echo "- invalid key:\n";

@@ -4,7 +4,7 @@ MAC algorithm: Two-Track-Mac (errors)
 <?php
 
 $o = new Cryptopp\MacTwoTrackMac();
-$o->setKey(hex2bin("00112233445566778899aabbccddeeff01234567"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("00112233445566778899aabbccddeeff01234567"));
 
 // invalid key
 echo "- invalid key:\n";

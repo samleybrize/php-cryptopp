@@ -5,7 +5,7 @@ Cipher mode: ECB (errors)
 
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\SymmetricModeEcb($c);
-$c->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
 
 // invalid key
 echo "- invalid key:\n";

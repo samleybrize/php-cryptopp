@@ -6,13 +6,13 @@ Authenticated symmetric transformation filter (errors)
 $c = new Cryptopp\BlockCipherAes();
 $a = new Cryptopp\AuthenticatedSymmetricCipherGcm($c);
 $o = new Cryptopp\AuthenticatedSymmetricTransformationFilter($a);
-$a->setKey(hex2bin("77be63708971c4e240d1cb79e8d77feb"));
-$a->setIv(hex2bin("e0e00f19fed7ba0136a797f3"));
+$a->setKey(Cryptopp\HexUtils::hex2bin("77be63708971c4e240d1cb79e8d77feb"));
+$a->setIv(Cryptopp\HexUtils::hex2bin("e0e00f19fed7ba0136a797f3"));
 
 // mac verification failed
 echo "- mac verification failed:\n";
 try {
-    $o->decryptString("12345678901234567890123456789012", hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
+    $o->decryptString("12345678901234567890123456789012", Cryptopp\HexUtils::hex2bin("7a43ec1d9c0a5a78a0b16533a6213cab"));
 } catch (Cryptopp\CryptoppException $e) {
     echo $e->getMessage() . "\n";
 }

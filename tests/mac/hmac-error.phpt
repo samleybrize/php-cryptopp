@@ -4,7 +4,7 @@ MAC algorithm: HMAC (errors)
 <?php
 
 $o = new Cryptopp\MacHmac(new Cryptopp\HashMd5());
-$o->setKey(hex2bin("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"));
 
 // empty key
 echo "- empty key:\n";

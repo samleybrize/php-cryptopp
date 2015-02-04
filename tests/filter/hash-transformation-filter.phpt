@@ -21,18 +21,18 @@ foreach ($methods as $method) {
 
 // calculate digest
 echo "- calculateDigestString:\n";
-var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
-var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
-var_dump(bin2hex($o->calculateDigestString("wxcvbnqsdfg")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("wxcvbnqsdfg")));
 
 // mac
 echo "- mac:\n";
 $m = new Cryptopp\MacHmac(new Cryptopp\HashSha1());
 $o = new Cryptopp\HashTransformationFilter($m);
 $m->setKey("1234567890123456");
-var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
-var_dump(bin2hex($o->calculateDigestString("azertyuiop")));
-var_dump(bin2hex($o->calculateDigestString("wxcvbnqsdfg")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("azertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigestString("wxcvbnqsdfg")));
 
 // large data
 echo "- large data:\n";

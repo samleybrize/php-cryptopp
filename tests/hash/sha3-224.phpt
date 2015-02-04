@@ -19,22 +19,22 @@ var_dump($o->getDigestSize());
 
 // check digest calculation
 echo "- digest calculation:\n";
-var_dump(bin2hex($o->calculateDigest("qwertyuiop")));
-var_dump(bin2hex($o->calculateDigest("azerty")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("qwertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("azerty")));
 
 // check incremental hash
 echo "- incremental hash:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check that a restart() is not necessary after a call to finalize()
 echo "- restart not necessary:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check restart()
 echo "- restart:\n";
@@ -42,7 +42,7 @@ $o->update("qwerty");
 $o->restart();
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check values returned by Cryptopp\Hash for this algorithm
 echo "- Cryptopp\Hash:\n";

@@ -55,8 +55,8 @@ class BlockCipherUser implements Cryptopp\BlockCipherInterface
 
 $c = new BlockCipherUser();
 $o = new Cryptopp\AuthenticatedSymmetricCipherCcm($c);
-$o->setKey(hex2bin("77be63"));
-$o->setIv(hex2bin("e0e00f19fed7ba0136a797f3"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("77be63"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("e0e00f19fed7ba0136a797f3"));
 
 // invalid key
 echo "- invalid key:\n";

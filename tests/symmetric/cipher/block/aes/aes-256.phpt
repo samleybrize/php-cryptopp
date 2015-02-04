@@ -18,24 +18,24 @@ var_dump($o->getKey());
 
 // encryptBlock
 echo "- encrypt block:\n";
-$o->setKey(hex2bin("603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"));
-var_dump(bin2hex($o->encryptBlock(hex2bin("6bc1bee22e409f96e93d7e117393172a"))));
-var_dump(bin2hex($o->encryptBlock(hex2bin("ae2d8a571e03ac9c9eb76fac45af8e51"))));
+$o->setKey(Cryptopp\HexUtils::hex2bin("603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptBlock(Cryptopp\HexUtils::hex2bin("6bc1bee22e409f96e93d7e117393172a"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encryptBlock(Cryptopp\HexUtils::hex2bin("ae2d8a571e03ac9c9eb76fac45af8e51"))));
 
 // decryptBlock
 echo "- decrypt block:\n";
-var_dump(bin2hex($o->decryptBlock(hex2bin("f3eed1bdb5d2a03c064b5a7e3db181f8"))));
-var_dump(bin2hex($o->decryptBlock(hex2bin("591ccb10d410ed26dc5ba74a31362870"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decryptBlock(Cryptopp\HexUtils::hex2bin("f3eed1bdb5d2a03c064b5a7e3db181f8"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decryptBlock(Cryptopp\HexUtils::hex2bin("591ccb10d410ed26dc5ba74a31362870"))));
 
 // encrypt
 echo "- encrypt:\n";
-var_dump(bin2hex($o->encrypt(hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
-var_dump(bin2hex($o->encrypt(hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->encrypt(Cryptopp\HexUtils::hex2bin("30c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710"))));
 
 // decrypt
 echo "- decrypt:\n";
-var_dump(bin2hex($o->decrypt(hex2bin("f3eed1bdb5d2a03c064b5a7e3db181f8591ccb10d410ed26dc5ba74a31362870"))));
-var_dump(bin2hex($o->decrypt(hex2bin("b6ed21b99ca6f4f9f153e7b1beafed1d23304b7a39f9f3ff067d8d8f9e24ecc7"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("f3eed1bdb5d2a03c064b5a7e3db181f8591ccb10d410ed26dc5ba74a31362870"))));
+var_dump(Cryptopp\HexUtils::bin2hex($o->decrypt(Cryptopp\HexUtils::hex2bin("b6ed21b99ca6f4f9f153e7b1beafed1d23304b7a39f9f3ff067d8d8f9e24ecc7"))));
 
 ?>
 --EXPECT--

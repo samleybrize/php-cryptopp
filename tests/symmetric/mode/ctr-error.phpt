@@ -5,7 +5,7 @@ Cipher mode: CTR (errors)
 
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\SymmetricModeCtr($c);
-$c->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
 
 // invalid key
 echo "- invalid key:\n";
@@ -43,7 +43,7 @@ try {
 echo "- no iv:\n";
 $c = new Cryptopp\BlockCipherAes();
 $o = new Cryptopp\SymmetricModeCtr($c);
-$c->setKey(hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
+$c->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
 
 try {
     $o->encrypt("123456");

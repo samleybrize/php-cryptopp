@@ -6,9 +6,9 @@ Authenticated symmetric cipher generic (errors)
 $c = new Cryptopp\StreamCipherSosemanuk();
 $m = new Cryptopp\MacHmac(new Cryptopp\HashSha1());
 $o = new Cryptopp\AuthenticatedSymmetricCipherGeneric($c, $m);
-$o->setKey(hex2bin("77be637089"));
-$o->setIv(hex2bin("e0e00f19fed7ba0136a797f3ed7ba013"));
-$o->setMacKey(hex2bin("feffe9928665731c6d6a8f9467308308"));
+$o->setKey(Cryptopp\HexUtils::hex2bin("77be637089"));
+$o->setIv(Cryptopp\HexUtils::hex2bin("e0e00f19fed7ba0136a797f3ed7ba013"));
+$o->setMacKey(Cryptopp\HexUtils::hex2bin("feffe9928665731c6d6a8f9467308308"));
 
 // invalid key
 echo "- invalid key:\n";

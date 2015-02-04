@@ -7,14 +7,14 @@ var_dump(is_a("Cryptopp\PaddingPkcs7", "Cryptopp\PaddingInterface", true));
 
 $padding = new Cryptopp\PaddingPkcs7();
 
-var_dump(bin2hex($padding->pad("", 6)));
-var_dump(bin2hex($padding->pad("azerty", 6)));
-var_dump(bin2hex($padding->pad("qwerty", 8)));
-var_dump(bin2hex($padding->pad("wxcvbn", 4)));
-var_dump($padding->unpad(hex2bin("060606060606"), 6));
-var_dump($padding->unpad(hex2bin("617a65727479060606060606"), 6));
-var_dump($padding->unpad(hex2bin("7177657274790202"), 8));
-var_dump($padding->unpad(hex2bin("77786376626e0202"), 8));
+var_dump(Cryptopp\HexUtils::bin2hex($padding->pad("", 6)));
+var_dump(Cryptopp\HexUtils::bin2hex($padding->pad("azerty", 6)));
+var_dump(Cryptopp\HexUtils::bin2hex($padding->pad("qwerty", 8)));
+var_dump(Cryptopp\HexUtils::bin2hex($padding->pad("wxcvbn", 4)));
+var_dump($padding->unpad(Cryptopp\HexUtils::hex2bin("060606060606"), 6));
+var_dump($padding->unpad(Cryptopp\HexUtils::hex2bin("617a65727479060606060606"), 6));
+var_dump($padding->unpad(Cryptopp\HexUtils::hex2bin("7177657274790202"), 8));
+var_dump($padding->unpad(Cryptopp\HexUtils::hex2bin("77786376626e0202"), 8));
 
 $data   = str_repeat("a", 10485760);
 $pad    = str_repeat(chr(16), 16);

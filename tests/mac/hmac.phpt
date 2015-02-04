@@ -31,23 +31,23 @@ var_dump($o->getKey());
 
 // check digest calculation
 echo "- digest calculation (sha1):\n";
-$o->setKey(hex2bin("0102030405060708090a0b0c0d0e0f10111213141516171819"));
-var_dump(bin2hex($o->calculateDigest("qwertyuiop")));
-var_dump(bin2hex($o->calculateDigest("azerty")));
+$o->setKey(Cryptopp\HexUtils::hex2bin("0102030405060708090a0b0c0d0e0f10111213141516171819"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("qwertyuiop")));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("azerty")));
 
 // check incremental hash
 echo "- incremental hash:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check that a restart() is not necessary after a call to finalize()
 echo "- restart not necessary:\n";
 $o->update("qwerty");
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check restart()
 echo "- restart:\n";
@@ -55,13 +55,13 @@ $o->update("qwerty");
 $o->restart();
 $o->update("uio");
 $o->update("p");
-var_dump(bin2hex($o->finalize()));
+var_dump(Cryptopp\HexUtils::bin2hex($o->finalize()));
 
 // check different hash algorithm
 echo "- calculate digest (md5):\n";
 $o = new Cryptopp\MacHmac(new Cryptopp\HashMd5());
-$o->setKey(hex2bin("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"));
-var_dump(bin2hex($o->calculateDigest("Hi There")));
+$o->setKey(Cryptopp\HexUtils::hex2bin("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"));
+var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("Hi There")));
 
 // check values returned by Cryptopp\Mac for this algorithm
 echo "- Cryptopp\Mac:\n";
