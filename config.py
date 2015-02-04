@@ -48,6 +48,7 @@ if cryptoppVersion < "561":
 configFileList = []
 configFileList.append("src/utils/config/hash_equals.py")
 configFileList.append("src/utils/config/hex_bin.py")
+configFileList.append("src/utils/config/hex_utils.py")
 
 configFileList.append("src/exception/config/exception.py")
 configFileList.append("src/exception/config/mac_verification_failed_exception.py")

@@ -25,8 +25,7 @@ licenses:
 
 src/utils/php_hash_equals.cpp:
 src/utils/php_hash_equals.h:
-src/utils/php_hex_bin.cpp:
-src/utils/php_hex_bin.h:
+src/utils/php_hex_utils.cpp:
 
     /*
       +----------------------------------------------------------------------+
