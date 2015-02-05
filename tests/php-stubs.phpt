@@ -136,6 +136,7 @@ $fileList = array(
     "Mac/MacTwoTrackMac.php",
     "Mac/Mac.php",
     "Mac/MacHmac.php",
+    "Utils/DigestUtils.php",
     "Utils/HexUtils.php",
     "constants.php",
 );
