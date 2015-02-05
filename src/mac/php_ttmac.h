@@ -11,9 +11,22 @@
 #define PHP_MAC_TTMAC_H
 
 #include "src/php_cryptopp.h"
+#include <ttmac.h>
 
 void init_class_MacTwoTrackMac(TSRMLS_D);
 PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct);
+
+/* {{{ fork of CryptoPP::TTMAC */
+class Ttmac : public CryptoPP::MessageAuthenticationCodeFinal<CryptoPP::TTMAC_Base>
+{
+public:
+    Ttmac(zval *zThis);
+    void UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params);
+
+protected:
+    zval *m_zThis;
+};
+/* }}} */
 
 #endif /* PHP_MAC_TTMAC_H */
 

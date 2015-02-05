@@ -20,10 +20,11 @@
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::HMAC that take a hash as parameter instead of a template parameter */
-Hmac::Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject)
+Hmac::Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject, zval *zThis)
 {
     m_hash              = hash;
     m_freeHashObject    = freeHashObject;
+    m_zThis             = zThis;
 }
 
 Hmac::~Hmac()
@@ -32,6 +33,14 @@ Hmac::~Hmac()
         delete m_hash;
     }
 }
+
+void Hmac::UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params)
+{
+    CryptoPP::HMAC_Base::UncheckedSetKey(userKey, keylength, params);
+    // TODO update "key" property
+}
+
+// TODO getKey
 /* }}} */
 
 /* {{{ arginfo */
@@ -51,6 +60,7 @@ static zend_function_entry cryptopp_methods_MacHmac[] = {
 void init_class_MacHmac(TSRMLS_D) {
     init_class_MacAbstractChild("hmac", "MacHmac", &cryptopp_ce_MacHmac, cryptopp_methods_MacHmac TSRMLS_CC);
     zend_declare_property_null(cryptopp_ce_MacHmac, "hash", 4,  ZEND_ACC_PRIVATE TSRMLS_CC);
+    // TODO declare property "key"
 }
 /* }}} */
 
@@ -68,11 +78,11 @@ PHP_METHOD(Cryptopp_MacHmac, __construct) {
     if (instanceof_function(Z_OBJCE_P(hashObject), cryptopp_ce_HashAbstract TSRMLS_CC)) {
         // retrieve native hash object
         hash    = getCryptoppHashNativePtr(hashObject TSRMLS_CC);
-        mac     = new Hmac(hash, false);
+        mac     = new Hmac(hash, false, getThis());
     } else {
         // create a proxy to the user php object
         hash    = new HashProxy(hashObject TSRMLS_CC);
-        mac     = new Hmac(hash, true);
+        mac     = new Hmac(hash, true, getThis());
     }
 
     // ensure that the hash algorithm is compatible

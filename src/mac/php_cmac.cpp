@@ -20,10 +20,11 @@
 #include <zend_exceptions.h>
 
 /* {{{ fork of CryptoPP::CMAC that take a cipher as parameter instead of a template parameter */
-Cmac::Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject)
+Cmac::Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis)
 {
     m_cipher            = cipher;
     m_freeCipherObject  = freeCipherObject;
+    m_zThis             = zThis;
 }
 
 Cmac::~Cmac()
@@ -37,6 +38,14 @@ bool Cmac::IsValidKeyLength(size_t n) const
 {
     return m_cipher->IsValidKeyLength(n);
 }
+
+void Cmac::UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params)
+{
+    CryptoPP::CMAC_Base::UncheckedSetKey(userKey, keylength, params);
+    // TODO update cipher key
+}
+
+// TODO getKey
 /* }}} */
 
 /* {{{ arginfo */
@@ -73,12 +82,12 @@ PHP_METHOD(Cryptopp_MacCmac, __construct) {
     if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract TSRMLS_CC)) {
         // retrieve native cipher object
         cipher  = getCryptoppBlockCipherEncryptorPtr(cipherObject TSRMLS_CC);
-        mac     = new Cmac(cipher, false);
+        mac     = new Cmac(cipher, false, getThis());
     } else {
         // create a proxy to the user php object
         try {
             cipher  = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
-            mac     = new Cmac(cipher, true);
+            mac     = new Cmac(cipher, true, getThis());
         } catch (bool e) {
             return;
         }

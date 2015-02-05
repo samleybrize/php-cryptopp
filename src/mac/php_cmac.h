@@ -20,8 +20,11 @@ PHP_METHOD(Cryptopp_MacCmac, __construct);
 class Cmac : public CryptoPP::CMAC_Base
 {
 public:
-    Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject);
+    Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis);
     ~Cmac();
+
+    bool IsValidKeyLength(size_t n) const;
+    void UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params);
 
     size_t MinKeyLength() const {return m_cipher->MinKeyLength();}
     size_t MaxKeyLength() const {return m_cipher->MaxKeyLength();}
@@ -29,7 +32,6 @@ public:
     size_t GetValidKeyLength(size_t n) const {return m_cipher->GetValidKeyLength(n);}
     SimpleKeyingInterface::IV_Requirement IVRequirement() const {return m_cipher->IVRequirement();}
     unsigned int IVSize() const {return m_cipher->IVSize();}
-    bool IsValidKeyLength(size_t n) const;
 
     static std::string StaticAlgorithmName() {return std::string("CMAC");}
     std::string AlgorithmName() const {return std::string("CMAC(") + m_cipher->AlgorithmName() + ")";}
@@ -39,6 +41,7 @@ private:
 
     CryptoPP::BlockCipher *m_cipher;
     bool m_freeCipherObject;
+    zval *m_zThis;
 };
 /* }}} */
 
