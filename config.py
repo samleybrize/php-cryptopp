@@ -47,6 +47,7 @@ if cryptoppVersion < "561":
 # config file list
 configFileList = []
 configFileList.append("src/utils/config/hash_equals.py")
+configFileList.append("src/utils/config/digest_utils.py")
 configFileList.append("src/utils/config/hex_utils.py")
 
 configFileList.append("src/exception/config/exception.py")

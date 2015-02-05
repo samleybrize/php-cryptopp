@@ -23,8 +23,7 @@ THE SOFTWARE.
 Portions of this code base are borrowed from other projects under the following
 licenses:
 
-src/utils/php_hash_equals.cpp:
-src/utils/php_hash_equals.h:
+src/utils/php_digest_utils.cpp:
 src/utils/php_hex_utils.cpp:
 
     /*
