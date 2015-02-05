@@ -21,6 +21,20 @@ Salsa20::Base::Base(zval *object TSRMLS_DC) : m_object(object)
    SET_M_TSRMLS_C()
 }
 
+Salsa20::Encryption::Encryption(zval *object TSRMLS_DC)
+    : Base(object TSRMLS_CC)
+    , CryptoPP::Salsa20::Encryption()
+{
+    m_rounds = 20;
+}
+
+Salsa20::Decryption::Decryption(zval *object TSRMLS_DC)
+    : Base(object TSRMLS_CC)
+    , CryptoPP::Salsa20::Decryption()
+{
+    m_rounds = 20;
+}
+
 void Salsa20::Encryption::SetRounds(int rounds)
 {
     m_rounds = rounds;

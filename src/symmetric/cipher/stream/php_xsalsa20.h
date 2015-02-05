@@ -36,9 +36,7 @@ public:
     class Encryption : public Base, public CryptoPP::XSalsa20::Encryption
     {
     public:
-        Encryption(zval *object TSRMLS_DC)
-            : Base(object TSRMLS_CC)
-            , CryptoPP::XSalsa20::Encryption() {};
+        Encryption(zval *object TSRMLS_DC);
 
         void SetRounds(int rounds);
         void CipherSetKey(const CryptoPP::NameValuePairs &params, const byte *key, size_t length);
@@ -49,9 +47,7 @@ public:
     class Decryption : public Base, public CryptoPP::XSalsa20::Decryption
     {
     public:
-        Decryption(zval *object TSRMLS_DC)
-            : Base(object TSRMLS_CC)
-            , CryptoPP::XSalsa20::Decryption() {};
+        Decryption(zval *object TSRMLS_DC);
 
         void SetRounds(int rounds);
         void CipherSetKey(const CryptoPP::NameValuePairs &params, const byte *key, size_t length);
