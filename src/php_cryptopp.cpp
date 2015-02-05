@@ -18,7 +18,6 @@
 #include "src/symmetric/cipher/block/php_block_cipher.h"
 #include "src/symmetric/cipher/stream/php_stream_cipher.h"
 #include "src/symmetric/mode/php_symmetric_mode.h"
-#include "src/utils/php_hash_equals.h"
 #include <ext/standard/info.h>
 #include <string>
 #include <vector>
