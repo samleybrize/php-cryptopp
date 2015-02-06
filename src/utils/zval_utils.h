@@ -37,6 +37,14 @@ inline zval *makeZval(long number) {
 
     return output;
 }
+
+inline zval *makeZval(zval *z) {
+    zval *output;
+    MAKE_STD_ZVAL(output);
+    ZVAL_ZVAL(output, z, 1, 0);
+
+    return output;
+}
 /* }}} */
 
 /* {{{ call_user_method

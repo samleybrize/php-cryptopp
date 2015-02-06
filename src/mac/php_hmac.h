@@ -11,6 +11,7 @@
 #define PHP_MAC_HMAC_H
 
 #include "src/php_cryptopp.h"
+#include "php_mac_abstract.h"
 #include <hmac.h>
 #include <seckey.h>
 
@@ -21,10 +22,8 @@ PHP_METHOD(Cryptopp_MacHmac, __construct);
 class Hmac : public CryptoPP::MessageAuthenticationCodeImpl<CryptoPP::HMAC_Base, Hmac>
 {
 public:
-    Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject, zval *zThis);
+    Hmac(CryptoPP::HashTransformation *hash, bool freeHashObject, zval *zThis TSRMLS_DC);
     ~Hmac();
-
-    void UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params);
 
     static std::string StaticAlgorithmName() {return std::string("HMAC");}
     std::string AlgorithmName() const {return std::string("HMAC(") + m_hash->AlgorithmName() + ")";}
@@ -35,6 +34,7 @@ private:
     CryptoPP::HashTransformation *m_hash;
     bool m_freeHashObject;
     zval *m_zThis;
+    M_TSRMLS_D;
 };
 /* }}} */
 

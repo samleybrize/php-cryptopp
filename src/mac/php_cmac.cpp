@@ -19,12 +19,15 @@
 #include <string>
 #include <zend_exceptions.h>
 
+zend_class_entry *cryptopp_ce_MacCmac;
+
 /* {{{ fork of CryptoPP::CMAC that take a cipher as parameter instead of a template parameter */
-Cmac::Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis)
+Cmac::Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis TSRMLS_DC)
 {
     m_cipher            = cipher;
     m_freeCipherObject  = freeCipherObject;
     m_zThis             = zThis;
+    SET_M_TSRMLS_C();
 }
 
 Cmac::~Cmac()
@@ -42,10 +45,26 @@ bool Cmac::IsValidKeyLength(size_t n) const
 void Cmac::UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params)
 {
     CryptoPP::CMAC_Base::UncheckedSetKey(userKey, keylength, params);
-    // TODO update cipher key
+
+    // update cipher key
+    zval *zCipher   = zend_read_property(cryptopp_ce_MacCmac, m_zThis, "cipher", 6, 1 M_TSRMLS_CC);
+    zval *funcname  = makeZval("setKey");
+    zval *zKey      = makeZval(reinterpret_cast<const char*>(userKey), keylength);
+    zval *output    = call_user_method(zCipher, funcname, zKey M_TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+    zval_ptr_dtor(&zKey);
+    zval_ptr_dtor(&output);
 }
 
-// TODO getKey
+zval *Cmac::GetUnderlyingKey()
+{
+    zval *zCipher   = zend_read_property(cryptopp_ce_MacCmac, m_zThis, "cipher", 6, 1 M_TSRMLS_CC);
+    zval *funcname  = makeZval("getKey");
+    zval *output    = call_user_method(zCipher, funcname M_TSRMLS_CC);
+    zval_ptr_dtor(&funcname);
+
+    return output;
+}
 /* }}} */
 
 /* {{{ arginfo */
@@ -55,8 +74,6 @@ ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ PHP class declaration */
-zend_class_entry *cryptopp_ce_MacCmac;
-
 static zend_function_entry cryptopp_methods_MacCmac[] = {
     PHP_ME(Cryptopp_MacCmac, __construct, arginfo_MacCmac_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
     PHP_FE_END
@@ -82,12 +99,12 @@ PHP_METHOD(Cryptopp_MacCmac, __construct) {
     if (instanceof_function(Z_OBJCE_P(cipherObject), cryptopp_ce_BlockCipherAbstract TSRMLS_CC)) {
         // retrieve native cipher object
         cipher  = getCryptoppBlockCipherEncryptorPtr(cipherObject TSRMLS_CC);
-        mac     = new Cmac(cipher, false, getThis());
+        mac     = new Cmac(cipher, false, getThis() TSRMLS_CC);
     } else {
         // create a proxy to the user php object
         try {
             cipher  = new BlockCipherProxy::Encryption(cipherObject TSRMLS_CC);
-            mac     = new Cmac(cipher, true, getThis());
+            mac     = new Cmac(cipher, true, getThis() TSRMLS_CC);
         } catch (bool e) {
             return;
         }

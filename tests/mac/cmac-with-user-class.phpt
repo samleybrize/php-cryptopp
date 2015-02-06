@@ -70,7 +70,7 @@ var_dump($o->isValidKeyLength(0));
 
 // check digest calculation
 echo "- calculate digest:\n";
-$o->setKey("123"); // TODO $c
+$o->setKey("123");
 var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("qwertyuiop")));
 var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("azerty")));
 

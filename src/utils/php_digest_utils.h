@@ -14,6 +14,7 @@
 
 void init_class_DigestUtils(TSRMLS_D);
 PHP_METHOD(Cryptopp_DigestUtils, equals);
+bool cryptoppDigestEquals(char *strKnown, int strKnownLength, char *strUser, int strUserLength);
 
 #endif /* PHP_CRYPTOPP_DIGEST_UTILS_H */
 

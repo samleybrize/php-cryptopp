@@ -63,6 +63,16 @@ ZEND_BEGIN_ARG_INFO(arginfo_MacAbstract___sleep, 0)
 ZEND_END_ARG_INFO()
 /* }}} */
 
+/* {{{ MacUnderlyingKeyInterface
+   interface that allow to retrieve the key */
+class MacUnderlyingKeyInterface
+{
+public:
+    virtual ~MacUnderlyingKeyInterface(){};
+    virtual zval *GetUnderlyingKey() =0;
+};
+/* }}} */
+
 #endif /* PHP_MAC_ABSTRACT_H */
 
 /*

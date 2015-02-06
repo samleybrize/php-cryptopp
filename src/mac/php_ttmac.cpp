@@ -8,25 +8,10 @@
  */
 
 #include "src/php_cryptopp.h"
+#include "src/utils/zval_utils.h"
 #include "php_mac_abstract.h"
 #include "php_ttmac.h"
 #include <ttmac.h>
-
-/* {{{ fork of CryptoPP::TTMAC */
-Ttmac::Ttmac(zval *zThis)
-{
-    m_zThis = zThis;
-}
-
-void Ttmac::UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params)
-{
-    CryptoPP::TTMAC_Base::UncheckedSetKey(userKey, keylength, params);
-    // TODO update "key" property
-    php_printf("unchecked\n");
-}
-
-// TODO getKey
-/* }}} */
 
 /* {{{ arginfo */
 ZEND_BEGIN_ARG_INFO(arginfo_MacTwoTrackMac_construct, 0)
@@ -43,13 +28,12 @@ static zend_function_entry cryptopp_methods_MacTwoTrackMac[] = {
 
 void init_class_MacTwoTrackMac(TSRMLS_D) {
     init_class_MacAbstractChild("two_track_mac", "MacTwoTrackMac", &cryptopp_ce_MacTwoTrackMac, cryptopp_methods_MacTwoTrackMac TSRMLS_CC);
-    // TODO declare property "key"
 }
 /* }}} */
 
 /* {{{ proto MacTwoTrackMac::__construct(void) */
 PHP_METHOD(Cryptopp_MacTwoTrackMac, __construct) {
-    CryptoPP::TTMAC *mac = new Ttmac(getThis());
+    CryptoPP::TTMAC *mac = new CryptoPP::TTMAC();
     setCryptoppMacNativePtr(getThis(), mac TSRMLS_CC);
 
     zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "name", 4, "two_track_mac", 13 TSRMLS_CC);

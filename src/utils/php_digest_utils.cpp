@@ -51,12 +51,27 @@ void init_class_DigestUtils(TSRMLS_D) {
 }
 /* }}} */
 
+// TODO
+bool cryptoppDigestEquals(char *strKnown, int strKnownLength, char *strUser, int strUserLength) {
+    if (strKnownLength != strUserLength) {
+        return false;
+    }
+
+    int result = 0;
+    int j;
+
+    for (j = 0; j < strKnownLength; j++) {
+        result |= strKnown[j] ^ strUser[j];
+    }
+
+    return 0 == result;
+}
+
 /* {{{ proto boolean DigestUtils::equals(string, string)
    Compares two strings using the same time whether they're equal or not. */
 PHP_METHOD(Cryptopp_DigestUtils, equals) {
     zval *known_zval, *user_zval;
-    char *known_str, *user_str;
-    int result = 0, j;
+    int result = 0;
 
     if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "zz", &known_zval, &user_zval) == FAILURE) {
         return;
@@ -73,19 +88,8 @@ PHP_METHOD(Cryptopp_DigestUtils, equals) {
         RETURN_FALSE;
     }
 
-    if (Z_STRLEN_P(known_zval) != Z_STRLEN_P(user_zval)) {
-        RETURN_FALSE;
-    }
-
-    known_str   = Z_STRVAL_P(known_zval);
-    user_str    = Z_STRVAL_P(user_zval);
-
-    /* This is security sensitive code. Do not optimize this for speed. */
-    for (j = 0; j < Z_STRLEN_P(known_zval); j++) {
-        result |= known_str[j] ^ user_str[j];
-    }
-
-    RETURN_BOOL(0 == result);
+    result = cryptoppDigestEquals(Z_STRVAL_P(known_zval), Z_STRLEN_P(known_zval), Z_STRVAL_P(user_zval), Z_STRLEN_P(user_zval));
+    RETURN_BOOL(result)
 }
 /* }}} */
 

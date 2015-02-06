@@ -9,6 +9,7 @@
 
 #include "src/php_cryptopp.h"
 #include "src/exception/php_exception.h"
+#include "src/utils/php_digest_utils.h"
 #include "src/utils/zend_object_utils.h"
 #include "src/hash/php_hash_transformation_interface.h"
 #include "php_mac.h"
@@ -78,13 +79,34 @@ void init_class_MacAbstractChild(const char *algoName, const char* className, ze
 }
 /* }}} */
 
-// TODO getKey function (retrieve from the native getKey)
+/* {{{ isCryptoppMacUnderlyingKeyValid
+   verify that the key of an underlying object is equal to the one owned by this object */
+static bool isCryptoppMacUnderlyingKeyValid(CryptoPP::MessageAuthenticationCode *mac, zval *key) {
+    MacUnderlyingKeyInterface *t = dynamic_cast<MacUnderlyingKeyInterface*>(mac);
+
+    if (NULL == t) {
+        return true;
+    } else {
+        zval *underlyingKey = t->GetUnderlyingKey();
+        bool result = cryptoppDigestEquals(Z_STRVAL_P(key), Z_STRLEN_P(key), Z_STRVAL_P(underlyingKey), Z_STRLEN_P(underlyingKey));
+        zval_ptr_dtor(&underlyingKey);
+        return result;
+    }
+}
+/* }}} */
 
 /* {{{ isCryptoppMacKeyValid
    verify that a key size is valid for a MacAbstract instance */
 bool isCryptoppMacKeyValid(zval *object, CryptoPP::MessageAuthenticationCode *mac TSRMLS_DC) {
-    zval *key   = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC); // TODO replace with a getKey function
-    int keySize = Z_STRLEN_P(key);
+    zval *key   = zend_read_property(cryptopp_ce_MacAbstract, object, "key", 3, 1 TSRMLS_CC);
+    int keySize = IS_STRING == Z_TYPE_P(key) ? Z_STRLEN_P(key) : 0;
+
+    // check against underlying object key, if any
+    if (!isCryptoppMacUnderlyingKeyValid(mac, key)) {
+        zend_class_entry *ce = zend_get_class_entry(object TSRMLS_CC);
+        zend_throw_exception_ex(getCryptoppException(), 0 TSRMLS_CC, (char*)"%s: key is not matching the one owned by the underlying object", ce->name);
+        return false;
+    }
 
     return isCryptoppSymmetricKeyValid(object, mac, keySize TSRMLS_CC);
 }
@@ -196,14 +218,13 @@ PHP_METHOD(Cryptopp_MacAbstract, setKey) {
     // set the key on both the php object and the native cryptopp object
     mac->SetKey(reinterpret_cast<byte*>(key), keySize);
     mac->Restart();
-    zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC); // TODO todel
+    zend_update_property_stringl(cryptopp_ce_MacAbstract, getThis(), "key", 3, key, keySize TSRMLS_CC);
 }
 /* }}} */
 
 /* {{{ proto string MacAbstract::getKey(void)
    Returns the key */
 PHP_METHOD(Cryptopp_MacAbstract, getKey) {
-    // TODO replace with a getKey function
     zval *key = zend_read_property(cryptopp_ce_MacAbstract, getThis(), "key", 3, 1 TSRMLS_CC);
     RETURN_ZVAL(key, 1, 0)
 }

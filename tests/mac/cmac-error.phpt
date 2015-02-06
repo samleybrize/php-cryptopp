@@ -24,6 +24,19 @@ try {
     echo $e->getMessage() . "\n";
 }
 
+// key not matching
+echo "- key not matching:\n";
+$c = new Cryptopp\BlockCipherAes();
+$o = new Cryptopp\MacCmac($c);
+$o->setKey("1234567890123456");
+$c->setKey("6543210987654321");
+
+try {
+    $o->calculateDigest("123456");
+} catch (Cryptopp\CryptoppException $e) {
+    echo $e->getMessage() . "\n";
+}
+
 // sleep
 echo "- sleep:\n";
 try {
@@ -69,6 +82,8 @@ try {
 Cryptopp\MacCmac : a key is required
 - no key:
 Cryptopp\MacCmac : a key is required
+- key not matching:
+Cryptopp\MacCmac: key is not matching the one owned by the underlying object
 - sleep:
 You cannot serialize or unserialize Cryptopp\MacAbstract instances
 - bad arguments:

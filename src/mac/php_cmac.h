@@ -11,20 +11,22 @@
 #define PHP_MAC_CMAC_H
 
 #include "src/php_cryptopp.h"
+#include "php_mac_abstract.h"
 #include <cmac.h>
 
 void init_class_MacCmac(TSRMLS_D);
 PHP_METHOD(Cryptopp_MacCmac, __construct);
 
 /* {{{ fork of CryptoPP::CMAC that take a cipher as parameter instead of a template parameter */
-class Cmac : public CryptoPP::CMAC_Base
+class Cmac : public CryptoPP::CMAC_Base, public MacUnderlyingKeyInterface
 {
 public:
-    Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis);
+    Cmac(CryptoPP::BlockCipher *cipher, bool freeCipherObject, zval *zThis TSRMLS_DC);
     ~Cmac();
 
     bool IsValidKeyLength(size_t n) const;
     void UncheckedSetKey(const byte *userKey, unsigned int keylength, const CryptoPP::NameValuePairs &params);
+    zval *GetUnderlyingKey();
 
     size_t MinKeyLength() const {return m_cipher->MinKeyLength();}
     size_t MaxKeyLength() const {return m_cipher->MaxKeyLength();}
@@ -42,6 +44,7 @@ private:
     CryptoPP::BlockCipher *m_cipher;
     bool m_freeCipherObject;
     zval *m_zThis;
+    M_TSRMLS_D;
 };
 /* }}} */
 

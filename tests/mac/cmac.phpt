@@ -28,7 +28,7 @@ var_dump($o->getKey());
 
 // check digest calculation
 echo "- digest calculation:\n";
-$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c")); // TODO $c
+$o->setKey(Cryptopp\HexUtils::hex2bin("2b7e151628aed2a6abf7158809cf4f3c"));
 var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("qwertyuiop")));
 var_dump(Cryptopp\HexUtils::bin2hex($o->calculateDigest("azerty")));
 
